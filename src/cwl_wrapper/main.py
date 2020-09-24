@@ -3,22 +3,13 @@ import os
 import signal
 import sys
 from typing import (
-    IO,
     Any,
-    Callable,
-    Dict,
     List,
-    Mapping,
-    MutableMapping,
-    MutableSequence,
-    Optional,
-    Sized,
-    TextIO,
-    Tuple,
-    Union,
-    cast,
+    Optional
 )
 from .arguments import arg_parser as arp
+from .workflow import Workflow
+
 
 def _terminate_processes() -> None:
     pass
@@ -31,9 +22,8 @@ def _signal_handler(signum: int, _: Any) -> None:
 
 def main(
         args: Optional[List[str]] = None, **kwargs):
-    a = arp().parse_args(args)
-
-    print(a.cwlFie)
+    allA = arp().parse_args(args)
+    wf = Workflow(allA)
 
 
 def run(*args, **kwargs):
