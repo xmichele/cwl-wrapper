@@ -1,5 +1,5 @@
 import sys
-from cwlwrapper import main
+from src.cwl_wrapper import main
 
 if __name__ == "__main__":
-    main.run(sys.argv[1:]
+    main.run(sys.argv[1:])
