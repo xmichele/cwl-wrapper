@@ -31,6 +31,13 @@ $graph:
   doc: Vegetation index processor
   id: vegetation-index
   inputs:
+
+    aoi2:
+      doc: Area of interest in WKT
+      label: Area of interest
+      type: string
+
+
     aoi:
       doc: Area of interest in WKT
       label: Area of interest
@@ -41,7 +48,7 @@ $graph:
           - class: csasd
             sdas: asdas
 
-    aoi2:
+    ao3:
       doc: Area of interest in WKT
       label: Area of interest
       type: string[]

@@ -43,9 +43,9 @@ class InputParam(Param):
 
         if type(self.type) is dict:
             if 'type' in self.type and 'items' in self.type:
-                mtype = self.type['type']
-                if mtype == 'array':
+                if self.type['type'] == 'array':
                     self.items = self.type['items']
+                    self.type = 'array'
 
         self.description = param.get('doc', param.get('description', None))
         self.default = param.get('default', None)
@@ -53,6 +53,12 @@ class InputParam(Param):
         if input_binding:
             self.input_binding = InputBinding(input_binding)
         self.stac_catalog = param.get('stac:catalog', None)
+
+        if type(self.items) == str:
+            s  = self.items
+            self.items=[]
+            self.items.append(s)
+
 
     def get_type(self):
         if type(self.type) is list and self.type[0] == 'null':
