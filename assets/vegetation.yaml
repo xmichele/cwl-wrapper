@@ -32,6 +32,11 @@ $graph:
   id: vegetation-index
   inputs:
 
+    pollo:
+      doc: Area of interest in WKT
+      label: Area of interest
+      type: Directory
+
     aoi2:
       doc: Area of interest in WKT
       label: Area of interest

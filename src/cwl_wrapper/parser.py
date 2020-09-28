@@ -13,25 +13,12 @@ class Parser:
 
         self.workflow = Workflow(kwargs,self.rulez)
 
-        inputs = self.workflow.get_inputs()
-        if inputs is not None:
-            for input in inputs:
-                ccc= inputs[input]
-                print(ccc.id ,ccc.type)
-                # print("req:",str(ccc.get_type()) )
-                print(ccc.items , "\n")
-                pass
+        # inputs = self.workflow.get_raw_inputs()
+        # outputs = self.workflow.get_raw_outputs()
 
-        print ("---------")
-        inputs = self.workflow.get_outputs()
-        if inputs is not None:
-            for input in inputs:
-                ccc= inputs[input]
-                print(ccc.id ,ccc.type)
-                # print("req:",str(ccc.get_type()) )
-                print(ccc.items , "\n")
-                pass
+        inputs = self.workflow.get_inputs_directory()
+        for i in inputs:
+            print(i)
 
 
 
-        # print(str(self.workflow))

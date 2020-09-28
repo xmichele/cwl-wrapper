@@ -55,22 +55,9 @@ class InputParam(Param):
         self.stac_catalog = param.get('stac:catalog', None)
 
         if type(self.items) == str:
-            s  = self.items
-            self.items=[]
+            s = self.items
+            self.items = []
             self.items.append(s)
-
-
-    def get_type(self):
-        if type(self.type) is list and self.type[0] == 'null':
-            arg_type = self.type[1]
-            if type(arg_type) is dict:
-                return arg_type['type']
-            else:
-                return arg_type
-        elif type(self.type) is dict:
-            return self.type['type']
-        else:
-            return self.type
 
 
 class Workflow:
