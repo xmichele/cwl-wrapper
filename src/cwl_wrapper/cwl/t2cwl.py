@@ -67,16 +67,6 @@ class InputParam(Param):
             return self.type
 
 
-class OutputParam(Param):
-    def __init__(self, param):
-        self.id = param['id']
-        self.type = param.get('type', None)
-        self.description = param.get('description', None)
-        output_binding = param.get('outputBinding', None)
-        if output_binding:
-            self.output_binding = OutputBinding(output_binding)
-
-
 class Workflow:
     outputs = None
     inputs = None
@@ -127,12 +117,12 @@ class Workflow:
         if jworkflow['outputs']:
             if type(jworkflow['outputs']) is list:  # ids not mapped
                 for param_dict in jworkflow['outputs']:
-                    param = OutputParam(param_dict)
+                    param = InputParam(param_dict)
                     self.outputs[param.id] = param
             elif type(jworkflow['outputs']) is dict:  # ids mapped
                 for id, param_dict in jworkflow['outputs'].items():
                     param_dict['id'] = id
-                    param = OutputParam(param_dict)
+                    param = InputParam(param_dict)
                     self.outputs[id] = param
         self.description = jworkflow.get('doc', jworkflow.get('description', None))
         self.cwl_version = jworkflow.get('cwlVersion', '')

@@ -62,6 +62,13 @@ $graph:
     type:
       items: Directory
       type: array
+
+  - id: wf_outputs3
+    outputSource:
+      - node_1/results
+    type: Directory[]
+
+
   requirements:
   - class: ScatterFeatureRequirement
   steps:

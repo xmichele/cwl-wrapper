@@ -22,8 +22,15 @@ class Parser:
                 print(ccc.items , "\n")
                 pass
 
-
-
+        print ("---------")
+        inputs = self.workflow.get_outputs()
+        if inputs is not None:
+            for input in inputs:
+                ccc= inputs[input]
+                print(ccc.id ,ccc.type)
+                # print("req:",str(ccc.get_type()) )
+                print(ccc.items , "\n")
+                pass
 
 
 
