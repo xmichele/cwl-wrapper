@@ -34,7 +34,20 @@ $graph:
     aoi:
       doc: Area of interest in WKT
       label: Area of interest
-      type: string
+      type:
+        type: array
+        items:
+          - Directory
+          - class: csasd
+            sdas: asdas
+
+    aoi2:
+      doc: Area of interest in WKT
+      label: Area of interest
+      type: string[]
+
+
+
     input_reference:
       doc: EO product for vegetation index
       label: EO product for vegetation index
