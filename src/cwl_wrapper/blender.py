@@ -9,12 +9,12 @@ class Blender:
         self.main_stage_in = None
         self.main_stage_out = None
 
+        self.user_wf = None
         self.inputs = []
         self.outputs = []
 
     @staticmethod
     def __prepare_step_run(step, name):
-
         if name not in step:
             step[name] = {}
 
@@ -76,11 +76,11 @@ class Blender:
     def set_stage_out(self, wf_out):
         pass
 
-    def set_inputs(self, inputs):
-        self.inputs = inputs
+    def set_user_workflow(self,wf: Workflow):
+        self.user_wf = wf
+        self.inputs = self.user_wf.get_inputs_directory()
+        self.outputs = self.user_wf.get_outputs_directory()
 
-    def set_outputs(self, outputs):
-        self.outputs = outputs
 
     def get_output(self):
 

@@ -7,9 +7,10 @@ class Directory:
     is_array = False
     id: str = None
 
-    def __init__(self, id: str, is_array=False):
+    def __init__(self, id: str, is_array, raw=None):
         self.id = id
         self.is_array = is_array
+        self.raw = raw
 
     def __str__(self):
         return str({'id': self.id, 'is_array': self.is_array})
@@ -20,12 +21,12 @@ def parse_cwl_param_directory(vals):
     for it in vals:
         cwl_param = vals[it]
         if cwl_param.type == "Directory":
-            res.append(Directory(cwl_param.id, False))
+            res.append(Directory(cwl_param.id, False,cwl_param))
 
         elif cwl_param.type == "array":
             for it in cwl_param.items:
                 if type(it) == str and it == 'Directory':
-                    res.append(Directory(cwl_param.id, True))
+                    res.append(Directory(cwl_param.id, True,cwl_param))
                     break
 
     return res
@@ -59,3 +60,7 @@ class Workflow:
 
     def __str__(self):
         return 'workflow'  # "#self.wf['id']
+
+
+class CWL:
+    pass

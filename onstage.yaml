@@ -14,8 +14,6 @@ $graph:
         input_reference: input_reference
       out: {}
       run:
-        arguments:
-        - '@@@@INIZIO'
         baseCommand: echo
         class: CommandLineTool
         id: stagein_wf

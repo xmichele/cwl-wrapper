@@ -25,9 +25,10 @@ class Parser:
             with open(kwargs["stageout"]) as f:
                 self.blender.set_stage_out(load_yaml_file(f))
 
-        self.blender.set_inputs(self.workflow.get_inputs_directory())
-        self.blender.set_outputs(self.workflow.get_outputs_directory())
+        # self.blender.set_inputs(self.workflow.get_inputs_directory())
+        # self.blender.set_outputs(self.workflow.get_outputs_directory())
 
+        self.blender.set_user_workflow(self.workflow)
         out = self.blender.get_output()
 
         if self.rulez.get('/output/driver') == "cwl":
