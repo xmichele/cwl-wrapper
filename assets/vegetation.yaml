@@ -36,7 +36,7 @@ $graph:
       label: EO product for vegetation index
       stac:catalog:
         stac:collection: input_reference
-      type: Directory[]
+      type: Directory
   label: Vegetation index
   outputs:
   - id: wf_outputs

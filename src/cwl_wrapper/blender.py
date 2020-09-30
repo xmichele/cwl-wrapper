@@ -12,55 +12,56 @@ class Blender:
         self.inputs = []
         self.outputs = []
 
-    def __add_stage_in_cwl(self):
+    @staticmethod
+    def __prepare_step_run(step, name):
+
+        if name not in step:
+            step[name] = {}
+
+        if 'run' not in step[name]:
+            step[name]['run'] = {}
+
+        if 'out' not in step[name]:
+            step[name]['out'] = []
+
+        if 'in' not in step[name]:
+            step[name]['in'] = []
+
+    def __add_stage_in_graph_cwl(self, start):
         driver = self.rulez.get('/onstage/driver')
-        connection_node_node_stage_in = self.rulez.get('/onstage/stage_in/connection_node')
-        if connection_node_node_stage_in == '':
-            connection_node_node_stage_in = 'node_stage_in'
+        if len(self.inputs) > 0 and type(start) is list:
 
-        if self.main_wf is None:
-            raise Exception('maincwl.yaml not defined')
+            connection_node_node_stage_in = self.rulez.get('/onstage/stage_in/connection_node')
+            if connection_node_node_stage_in == '':
+                connection_node_node_stage_in = 'node_stage_in'
 
-        start_step = None
-        if 'steps' not in self.main_wf:
-            start_step = {
-                connection_node_node_stage_in: {
-                    'in': [],
-                    'out': [],
-                    'run': ''},
-            }
-            self.main_wf['steps'] = start_step
-        else:
-            if connection_node_node_stage_in in self.main_wf['steps']:
-                # steps exist
-                start_step = self.main_wf['steps'][connection_node_node_stage_in]
-            else:
-                raise Exception("Cant't find entry point: " + connection_node_node_stage_in)
+            if self.main_wf is None:
+                raise Exception('maincwl.yaml not defined')
 
+            if 'steps' not in self.main_wf:
+                # steps does not exist
+                self.main_wf['steps'] = {}
 
+            steps = self.main_wf['steps']
+            cursor = 0
+            start_node_name = connection_node_node_stage_in
+            for it in self.inputs:
+                if not it.is_array:
+                    print(str(it))
+                    self.__prepare_step_run(steps, start_node_name)
 
-        print(start_step)
+                    steps[start_node_name]['run'] = self.main_stage_in
 
-
-
-        # self.main_wf['steps'][node]['run'] = self.main_stage_in
-        #
-        # # check if is required ScatterFeature
-        # if len(self.inputs) > 0:
-        #     for it in self.inputs:
-        #         print(it)
-
-        pass
+                    cursor = cursor + 1
+                    start_node_name = connection_node_node_stage_in + '_' + str(cursor)
 
     def set_main_workflow(self, wf_main):
         self.main_wf = wf_main
-        pass
 
-    def set_stagein(self, wf_in):
+    def set_stage_in(self, wf_in):
         self.main_stage_in = wf_in
-        pass
 
-    def set_stageout(self, wf_out):
+    def set_stage_out(self, wf_out):
         pass
 
     def set_inputs(self, inputs):
@@ -71,12 +72,18 @@ class Blender:
 
     def get_output(self):
 
+        start = self.main_wf
+        if self.rulez.get('/output/type') == '$graph':
+            start = {'$graph': [self.main_wf]}
+        else:
+            raise Exception('Driver output: ' + self.rulez.get('/output/type') + ' not found')
+
         if self.rulez.get('/onstage/driver') == 'cwl':
-            self.__add_stage_in_cwl()
+            if self.rulez.get('/output/type') == '$graph':
+                self.__add_stage_in_graph_cwl(start['$graph'])
+            else:
+                raise Exception("Non $graph request")
         else:
             raise Exception('Driver onstage: ' + self.rulez.get('/output/driver') + ' not found')
 
-        if self.rulez.get('/output/type') == '$graph':
-            return {'$graph': self.main_wf}
-        else:
-            raise Exception('Driver output: ' + self.rulez.get('/output/type') + ' not found')
+        return start

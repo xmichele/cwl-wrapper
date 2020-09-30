@@ -26,12 +26,6 @@ output:
   name: onstage.yaml
   type: $graph
 
-cwl:
-  template:
-    node_stage_in:
-      in: []
-      out: []
-      run: {}
 
 
 

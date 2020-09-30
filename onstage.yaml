@@ -1,5 +1,5 @@
 $graph:
-  class: Workflow
+- class: Workflow
   doc: Main stage manager
   id: stage-manager
   inputs: []
@@ -12,4 +12,13 @@ $graph:
     node_stage_in:
       in: []
       out: []
-      run: ''
+      run:
+        arguments:
+        - '@@@@INIZIO'
+        baseCommand: echo
+        class: CommandLineTool
+        id: stagein_wf
+        inputs: []
+        outputs: []
+        stderr: outerr.txt
+        stdout: output.txt

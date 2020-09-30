@@ -20,10 +20,10 @@ class Parser:
                 self.blender.set_main_workflow(load_yaml_file(f))
 
             with open(kwargs["stagein"]) as f:
-                self.blender.set_stagein(load_yaml_file(f))
+                self.blender.set_stage_in(load_yaml_file(f))
 
             with open(kwargs["stageout"]) as f:
-                self.blender.set_stageout(load_yaml_file(f))
+                self.blender.set_stage_out(load_yaml_file(f))
 
         self.blender.set_inputs(self.workflow.get_inputs_directory())
         self.blender.set_outputs(self.workflow.get_outputs_directory())
