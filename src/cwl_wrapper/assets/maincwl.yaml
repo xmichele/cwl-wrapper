@@ -1,47 +1,29 @@
-
 class: Workflow
-doc: Vegetation index processor
-id: stagein
-requirements:
-SubworkflowFeatureRequirement: {}
-inputs:
-
-message_main:
-  type: string
-
+doc: Main stage manager
+id: stage-manager
 label: theStage
+
+inputs: []
+
 outputs: []
+
+requirements:
+  SubworkflowFeatureRequirement: {}
+  ScatterFeatureRequirement: {}
+
 steps:
-node_1:
-  in: []
-  out: [the_out,the_err]
-  run:
-    class: CommandLineTool
-    baseCommand: echo
-    stdout: output.txt
-    stderr: outerr.txt
-    id: stagein
-    arguments: ["@@@@INIZIO"]
-    inputs: []
-    outputs:
-      the_out:
-        type: stdout
-      the_err:
-        type: stderr
-node_2:
-  in:
-    lastout: node_1/the_out
-    lasterr: node_1/the_err
-
-    message: message_main
-  out: [theRes]
-  run: '#vegetation'
-
-node_3:
-  in:
-    the_in: node_2/theRes
-
-
-
-
+  node_stage_in:
+    in: []
+    out: []
+    run: ''
+#
+#  on_stage:
+#    in: []
+#    out: []
+#    run: ''
+#
+#  node_stage_out:
+#    in: []
+#    out: []
+#    run: ''
 

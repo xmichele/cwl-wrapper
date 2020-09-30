@@ -119,6 +119,7 @@ class Workflow:
                     self.outputs[id] = param
         self.description = jworkflow.get('doc', jworkflow.get('description', None))
         self.cwl_version = jworkflow.get('cwlVersion', '')
+        self.id = jworkflow.get('id', '')
 
     def get_inputs(self):
         return self.inputs

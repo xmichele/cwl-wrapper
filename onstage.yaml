@@ -1,0 +1,15 @@
+$graph:
+  class: Workflow
+  doc: Main stage manager
+  id: stage-manager
+  inputs: []
+  label: theStage
+  outputs: []
+  requirements:
+    ScatterFeatureRequirement: {}
+    SubworkflowFeatureRequirement: {}
+  steps:
+    node_stage_in:
+      in: []
+      out: []
+      run: ''

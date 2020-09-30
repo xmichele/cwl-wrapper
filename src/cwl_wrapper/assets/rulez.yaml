@@ -1,3 +1,4 @@
+
 rulez:
   version: 1
 
@@ -5,5 +6,33 @@ parser:
   type: $graph
   driver: cwl
 
+onstage:
+  driver: cwl
+
+  stage_in:
+    connection_node: node_stage_in
+    if_scatter:
+      scatterMethod: dotproduct
+
+  on_stage:
+    connection_node: on_stage
+
+  stageout:
+    connection_node: node_stage_out
+
+
 output:
   driver: cwl
+  name: onstage.yaml
+  type: $graph
+
+cwl:
+  template:
+    node_stage_in:
+      in: []
+      out: []
+      run: {}
+
+
+
+

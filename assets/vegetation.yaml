@@ -31,35 +31,6 @@ $graph:
   doc: Vegetation index processor
   id: vegetation-index
   inputs:
-
-    pollo:
-      doc: Area of interest in WKT
-      label: Area of interest
-      type: Directory
-
-    aoi2:
-      doc: Area of interest in WKT
-      label: Area of interest
-      type: string
-
-
-    aoi:
-      doc: Area of interest in WKT
-      label: Area of interest
-      type:
-        type: array
-        items:
-          - Directory
-          - class: csasd
-            sdas: asdas
-
-    ao3:
-      doc: Area of interest in WKT
-      label: Area of interest
-      type: string[]
-
-
-
     input_reference:
       doc: EO product for vegetation index
       label: EO product for vegetation index

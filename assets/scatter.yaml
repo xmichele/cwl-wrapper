@@ -1,0 +1,132 @@
+$graph:
+  - baseCommand: flood-preprocessing
+    class: CommandLineTool
+    hints:
+      DockerRequirement:
+        dockerPull: flood-preprocessing:0.1
+    id: preproc
+    inputs:
+      inp1:
+        inputBinding:
+          position: 1
+          prefix: --input-reference
+        type: Directory
+    outputs:
+      results:
+        outputBinding:
+          glob: .
+        type: Directory
+    requirements:
+      EnvVarRequirement:
+        envDef:
+          PATH: /opt/anaconda/envs/env_flood_pre/bin:/opt/anaconda/envs/env_vi/bin:/opt/anaconda/envs/env_default/bin:/opt/anaconda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          PREFIX: /opt/anaconda/envs/env_flood_pre
+      ResourceRequirement: {}
+  - baseCommand: flood-delineation
+    class: CommandLineTool
+    hints:
+      DockerRequirement:
+        dockerPull: flood-delineation:0.1
+    id: delineation
+    inputs:
+      inp1:
+        inputBinding:
+          position: 1
+          prefix: --input_references
+        type: Directory[]
+      inp2:
+        inputBinding:
+          position: 2
+          prefix: --hsba_depth_in
+        type: string
+      inp3:
+        inputBinding:
+          position: 3
+          prefix: --ashman_coeff
+        type: string
+      inp4:
+        inputBinding:
+          position: 4
+          prefix: --min_pixnb_bimodd
+        type: string
+      inp5:
+        inputBinding:
+          position: 5
+          prefix: --blobs_size
+        type: string
+    outputs:
+      results:
+        outputBinding:
+          glob: .
+        type: Any
+    requirements:
+      EnvVarRequirement:
+        envDef:
+          PATH: /opt/anaconda/envs/env_flood_pre/bin:/opt/anaconda/envs/env_vi/bin:/opt/anaconda/envs/env_default/bin:/opt/anaconda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          PREFIX: /opt/anaconda/envs/env_flood_pre
+          LM_LICENSE_FILE: 1700@idl.terradue.com
+          DISPLAY: :99
+      ResourceRequirement: {}
+  - class: Workflow
+    label: HAZARD flood detection processor
+    doc: HAZARD flood detection processor
+    id: hazard
+    inputs:
+      input_reference:
+        doc: A pair of Sentinel-1 GRD products
+        label: Sentinel-1 GRD products
+        stac:catalog: catalog.json
+        stac:collection: input_reference
+        type: Directory[]
+
+
+
+
+
+      hsba_depth_in:
+        label: Splitting level
+        doc: HSBA splitting level
+        type: string
+      ashman_coeff:
+        label: Check bimodal distribution (Ashman D)
+        doc: Check bimodal distribution Ashman D coefficient
+        type: string
+      min_pixnb_bimodd:
+        label: Minimum number of pixels per tile
+        doc: Minimum number of pixels per tile for checking the bimodality hypothesis
+        type: string
+      blobs_size:
+        label: Number of pixels for small object removal
+        doc: Number of pixels for small objects (blobs) removal
+        type: string
+    outputs:
+      - id: wf_outputs
+        outputSource:
+          - node_2/results
+        type:
+          items: Directory
+          type: array
+    requirements:
+      - class: ScatterFeatureRequirement
+    steps:
+      node_1:
+        in:
+          inp1: input_reference
+        out:
+          - results
+        run: '#preproc'
+        scatter: inp1
+        scatterMethod: dotproduct
+      node_2:
+        in:
+          inp1: node_1/results
+          inp2: hsba_depth_in
+          inp3: ashman_coeff
+          inp4: min_pixnb_bimodd
+          inp5: blobs_size
+        out:
+          - results
+        run: '#delineation'
+$namespaces:
+  stac: http://www.me.net/stac/cwl/extension
+cwlVersion: v1.0

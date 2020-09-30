@@ -1,19 +1,21 @@
 from yaml import full_load as load_yaml_file
+from yaml import dump as write_yaml_file
 from .rulez import Rulez
 from .workflow import Workflow
 from .blender import Blender
+
 
 class Parser:
     rulez = None
     workflow = None
 
     def __init__(self, kwargs):
-        print(str(kwargs))
+        # print(str(kwargs))
         self.rulez = Rulez(kwargs["rulez"])
-        self.blender = Blender(kwargs,self.rulez)
+        self.blender = Blender(kwargs, self.rulez)
+        self.workflow = Workflow(kwargs, self.rulez)
 
-        load_driver = self.rulez.parser_driver
-        if load_driver == "cwl":
+        if self.rulez.get('/parser/driver') == "cwl":
             with open(kwargs["maincwl"]) as f:
                 self.blender.set_main_workflow(load_yaml_file(f))
 
@@ -23,17 +25,14 @@ class Parser:
             with open(kwargs["stageout"]) as f:
                 self.blender.set_stageout(load_yaml_file(f))
 
+        self.blender.set_inputs(self.workflow.get_inputs_directory())
+        self.blender.set_outputs(self.workflow.get_outputs_directory())
 
+        out = self.blender.get_output()
 
+        if self.rulez.get('/output/driver') == "cwl":
+            with open(self.rulez.get('output/name'), 'w+') as ff:
+                write_yaml_file(out, ff, allow_unicode=True)
 
-
-        self.workflow = Workflow(kwargs,self.rulez)
         # inputs = self.workflow.get_raw_inputs()
         # outputs = self.workflow.get_raw_outputs()
-
-        inputs = self.workflow.get_inputs_directory()
-        for i in inputs:
-            print(i)
-
-
-
