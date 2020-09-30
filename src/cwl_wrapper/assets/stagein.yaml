@@ -4,5 +4,6 @@ stdout: output.txt
 stderr: outerr.txt
 id: stagein_wf
 arguments: ["@@@@INIZIO"]
-inputs:  []
+inputs: {}
+
 outputs: []

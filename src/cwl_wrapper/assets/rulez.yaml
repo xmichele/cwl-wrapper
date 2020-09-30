@@ -1,4 +1,3 @@
-
 rulez:
   version: 1
 
@@ -27,6 +26,15 @@ output:
   type: $graph
 
 
+cwl:
+  Directory:
+    type: Directory
+    inputBinding:
+      position: 1
 
+  Directory[]:
+    type: Directory[]
+    inputBinding:
+      position: 1
 
 

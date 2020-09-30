@@ -22,10 +22,10 @@ class Blender:
             step[name]['run'] = {}
 
         if 'out' not in step[name]:
-            step[name]['out'] = []
+            step[name]['out'] = {}
 
         if 'in' not in step[name]:
-            step[name]['in'] = []
+            step[name]['in'] = {}
 
     def __add_stage_in_graph_cwl(self, start):
         driver = self.rulez.get('/onstage/driver')
@@ -46,20 +46,32 @@ class Blender:
             cursor = 0
             start_node_name = connection_node_node_stage_in
             for it in self.inputs:
-                if not it.is_array:
-                    print(str(it))
-                    self.__prepare_step_run(steps, start_node_name)
+                print(str(it))
+                self.__prepare_step_run(steps, start_node_name)
 
-                    steps[start_node_name]['run'] = self.main_stage_in
+                the_command = self.main_stage_in
+                the_command_imputs = the_command['inputs']
+                the_val = self.rulez.get('/cwl/Directory[]') if it.is_array else self.rulez.get('/cwl/Directory')
 
-                    cursor = cursor + 1
-                    start_node_name = connection_node_node_stage_in + '_' + str(cursor)
+                if type(the_command_imputs) is list:
+                    the_val['id'] = it.id
+                    the_command_imputs.append(the_val)
+                elif type(the_command_imputs) is dict:
+                    the_command_imputs[it.id] = the_val
+
+                steps[start_node_name]['in'][it.id] = it.id
+                steps[start_node_name]['run'] = the_command
+
+                cursor = cursor + 1
+                start_node_name = connection_node_node_stage_in + '_' + str(cursor)
 
     def set_main_workflow(self, wf_main):
         self.main_wf = wf_main
 
     def set_stage_in(self, wf_in):
         self.main_stage_in = wf_in
+        if 'inputs' not in self.main_stage_in:
+            self.main_stage_in['inputs'] = {}
 
     def set_stage_out(self, wf_out):
         pass

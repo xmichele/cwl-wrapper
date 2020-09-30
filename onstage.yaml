@@ -10,15 +10,20 @@ $graph:
     SubworkflowFeatureRequirement: {}
   steps:
     node_stage_in:
-      in: []
-      out: []
+      in:
+        input_reference: input_reference
+      out: {}
       run:
         arguments:
         - '@@@@INIZIO'
         baseCommand: echo
         class: CommandLineTool
         id: stagein_wf
-        inputs: []
+        inputs:
+          input_reference:
+            inputBinding:
+              position: 1
+            type: Directory
         outputs: []
         stderr: outerr.txt
         stdout: output.txt
