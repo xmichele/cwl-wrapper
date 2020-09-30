@@ -3,7 +3,7 @@
 $graph:
   - class: Workflow
     doc: Vegetation index processor
-    id: main
+    id: stagein
     requirements:
       SubworkflowFeatureRequirement: {}
     inputs:

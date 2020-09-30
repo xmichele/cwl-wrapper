@@ -3,5 +3,7 @@ rulez:
 
 parser:
   type: $graph
+  driver: cwl
 
-driver: cwl
+output:
+  driver: cwl

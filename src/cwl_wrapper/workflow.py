@@ -37,7 +37,7 @@ class Workflow:
 
     def __init__(self, args, rulez: Rulez):
         # print(args)
-        if rulez.driver == 'cwl':
+        if rulez.parser_driver == 'cwl':
             self.wf = CWLWorkflow(args['cwl'])
             self.driver = 'cwl'
         else:
@@ -54,7 +54,8 @@ class Workflow:
             return parse_cwl_param_directory(self.get_raw_inputs())
 
     def get_outputs_directory(self):
-        pass
+        if self.driver == 'cwl':
+            return parse_cwl_param_directory(self.get_raw_outputs())
 
     def __str__(self):
         return 'workflow'  # "#self.wf['id']
