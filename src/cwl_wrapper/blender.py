@@ -1,6 +1,8 @@
 from .rulez import Rulez
 from .workflow import Workflow
 
+import copy
+
 
 class Blender:
     def __init__(self, kwargs, rulez: Rulez):
@@ -93,24 +95,32 @@ class Blender:
             print(str(it))
             self.__prepare_step_run(steps, start_node_name)
 
-            the_command = self.main_stage_in
-            the_command_imputs = the_command['inputs']
-            the_val = self.rulez.get('/cwl/Directory[]') if it.is_array else self.rulez.get('/cwl/Directory')
-
-            if type(the_command_imputs) is list:
-                the_val['id'] = it.id
-                the_command_imputs.append(the_val)
-            elif type(the_command_imputs) is dict:
-                the_command_imputs[it.id] = the_val
-
             if type(steps[start_node_name]['in']) is list:
                 steps[start_node_name]['in'].append('%s:%s' % (it.id, it.id))
 
             elif type(steps[start_node_name]['in']) is dict:
                 steps[start_node_name]['in'][it.id] = it.id
 
+            the_command = copy.deepcopy(self.main_stage_in)  # self.main_stage_in.copy()
+            the_command_inputs = the_command['inputs']
+
+            # why am I using copy.deepcopy??
+            # https://ttl255.com/yaml-anchors-and-aliases-and-how-to-disable-them/
+            the_val = copy.deepcopy(self.rulez.get('/cwl/Directory[]')) if it.is_array else copy.deepcopy(
+                self.rulez.get('/cwl/Directory'))
+
+            if type(the_command_inputs) is list:
+                the_val['id'] = it.id
+                the_command_inputs.append(the_val)
+            elif type(the_command_inputs) is dict:
+                the_command_inputs[it.id] = the_val
+
             steps[start_node_name]['run'] = the_command
 
+            cursor = cursor + 1
+            start_node_name = '%s_%d' % (start_node_name, cursor)
+
+        print(str(start))
         return start
 
     def set_main_workflow(self, wf_main):

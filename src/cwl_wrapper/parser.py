@@ -1,5 +1,7 @@
 from yaml import full_load as load_yaml_file
-from yaml import dump as write_yaml_file
+# from yaml import dump as write_yaml_file
+from yaml import safe_dump as write_yaml_file
+
 from .rulez import Rulez
 from .workflow import Workflow
 from .blender import Blender

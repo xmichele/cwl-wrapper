@@ -10,6 +10,12 @@ inputs:
   stac:catalog:
     stac:collection: input_reference
   type: Directory
+- doc: EO product for vegetation index
+  id: casale_me
+  label: EO product for vegetation index
+  stac:catalog:
+    stac:collection: input_reference
+  type: Directory
 label: theStage
 outputs: []
 requirements:
@@ -23,9 +29,23 @@ steps:
     run:
       baseCommand: echo
       class: CommandLineTool
-      id: stagein_wf
       inputs:
         input_reference:
+          inputBinding:
+            position: 1
+          type: Directory
+      outputs: []
+      stderr: outerr.txt
+      stdout: output.txt
+  node_stage_in_1:
+    in:
+      casale_me: casale_me
+    out: {}
+    run:
+      baseCommand: echo
+      class: CommandLineTool
+      inputs:
+        casale_me:
           inputBinding:
             position: 1
           type: Directory

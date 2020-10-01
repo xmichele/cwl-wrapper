@@ -47,6 +47,17 @@ $graph:
       stac:catalog:
         stac:collection: input_reference
       type: Directory
+
+    - id: casale_me
+      doc: EO product for vegetation index
+      label: EO product for vegetation index
+      stac:catalog:
+        stac:collection: input_reference
+      type: Directory
+
+
+
+
 #    - id: input_reference2
 #      doc: EO product for vegetation index
 #      label: EO product for vegetation index
