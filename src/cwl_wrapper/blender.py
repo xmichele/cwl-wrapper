@@ -21,8 +21,13 @@ class Blender:
             step[name] = {}
         if 'run' not in step[name]:
             step[name]['run'] = {}
+
         if 'out' not in step[name]:
-            step[name]['out'] = {}
+            step[name]['out'] = []
+        else:
+            if type(step[name]['out']) is not list:
+                raise Exception('Step output can be only array')
+
         if 'in' not in step[name]:
             step[name]['in'] = {}
 
@@ -120,14 +125,24 @@ class Blender:
 
             steps[start_node_name]['run'] = the_command
 
-            command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult'))
+            # add outputs to command
+            command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command'))
             command_id = '%s_out' % it.id
-
             if type(the_command_outputs) is list:
                 command_out['id'] = command_id
                 the_command_outputs.append(command_out)
             elif type(the_command_outputs) is dict:
                 the_command_outputs[command_id] = command_out
+
+            # add step output
+            steps[start_node_name]['out'].append(command_id)
+
+            # step_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/stepOut'))
+            # step_out['outputSource'] = [ '%s/%s' %() ]
+            # if type(steps[start_node_name]['out']) is list:
+            #     pass
+            # elif type(steps[start_node_name]['out']) is dict:
+            #     pass
 
             cursor = cursor + 1
             start_node_name = '%s_%d' % (start_node_name, cursor)

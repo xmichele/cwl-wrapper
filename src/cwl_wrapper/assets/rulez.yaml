@@ -38,9 +38,14 @@ cwl:
       position: 1
 
   outputBindingResult:
-    outputBinding:
-      glob: .
-    type: Directory
+    command:
+      outputBinding:
+        glob: .
+      type: Directory
+    stepOut:
+      type:
+        items: Directory
+        type: array
 
 
 

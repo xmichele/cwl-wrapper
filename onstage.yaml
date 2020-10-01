@@ -25,10 +25,12 @@ steps:
   node_stage_in:
     in:
       input_reference: input_reference
-    out: {}
+    out:
+    - input_reference_out
     run:
       baseCommand: echo
       class: CommandLineTool
+      doc: casale
       inputs:
         input_reference:
           inputBinding:
@@ -44,10 +46,12 @@ steps:
   node_stage_in_1:
     in:
       casale_me: casale_me
-    out: {}
+    out:
+    - casale_me_out
     run:
       baseCommand: echo
       class: CommandLineTool
+      doc: casale
       inputs:
         casale_me:
           inputBinding:
