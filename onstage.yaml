@@ -2,6 +2,8 @@ class: Workflow
 doc: Main stage manager
 id: stage-manager
 inputs:
+- id: csa
+  pollo: string
 - doc: EO product for vegetation index
   id: input_reference
   label: EO product for vegetation index

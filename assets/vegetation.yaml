@@ -38,7 +38,8 @@ $graph:
 #        stac:collection: input_reference
 #      type: Directory
 
-
+    - pollo: string
+      id: csa
 
     - id: input_reference
       doc: EO product for vegetation index

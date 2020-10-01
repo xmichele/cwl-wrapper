@@ -1,4 +1,5 @@
 import sys
+
 from yaml import full_load
 from collections import OrderedDict
 
@@ -26,7 +27,11 @@ class Param:
 
 class InputParam(Param):
     def __init__(self, param):
-        self.id = param['id']
+        if 'id' not in param:
+            raise Exception('Input without id')
+        else:
+            self.id = param['id']
+
         self.type = param.get('type', None)
         self.items = []
         if type(self.type) is str and self.type[-2:] == '[]':

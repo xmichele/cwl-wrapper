@@ -103,7 +103,12 @@ class Blender:
             elif type(the_command_imputs) is dict:
                 the_command_imputs[it.id] = the_val
 
-            steps[start_node_name]['in'][it.id] = it.id
+            if type(steps[start_node_name]['in']) is list:
+                steps[start_node_name]['in'].append('%s:%s' % (it.id, it.id))
+
+            elif type(steps[start_node_name]['in']) is dict:
+                steps[start_node_name]['in'][it.id] = it.id
+
             steps[start_node_name]['run'] = the_command
 
         return start
