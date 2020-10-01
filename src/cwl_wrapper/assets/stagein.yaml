@@ -6,4 +6,4 @@ stderr: outerr.txt
 
 inputs: {}
 
-outputs: []
+outputs: {}

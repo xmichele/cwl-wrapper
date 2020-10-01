@@ -72,6 +72,9 @@ class Blender:
         if 'inputs' not in self.main_stage_in:
             self.main_stage_in['inputs'] = {}
 
+        if 'outputs' not in self.main_stage_in:
+            self.main_stage_in['outputs'] = {}
+
         if 'inputs' not in start:
             start['inputs'] = {}
 
@@ -92,17 +95,17 @@ class Blender:
         cursor = 0
         start_node_name = connection_node_node_stage_in
         for it in self.inputs:
-            print(str(it))
+            # print(str(it))
             self.__prepare_step_run(steps, start_node_name)
 
             if type(steps[start_node_name]['in']) is list:
                 steps[start_node_name]['in'].append('%s:%s' % (it.id, it.id))
-
             elif type(steps[start_node_name]['in']) is dict:
                 steps[start_node_name]['in'][it.id] = it.id
 
             the_command = copy.deepcopy(self.main_stage_in)  # self.main_stage_in.copy()
             the_command_inputs = the_command['inputs']
+            the_command_outputs = the_command['outputs']
 
             # why am I using copy.deepcopy??
             # https://ttl255.com/yaml-anchors-and-aliases-and-how-to-disable-them/
@@ -117,10 +120,19 @@ class Blender:
 
             steps[start_node_name]['run'] = the_command
 
+            command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult'))
+            command_id = '%s_out' % it.id
+
+            if type(the_command_outputs) is list:
+                command_out['id'] = command_id
+                the_command_outputs.append(command_out)
+            elif type(the_command_outputs) is dict:
+                the_command_outputs[command_id] = command_out
+
             cursor = cursor + 1
             start_node_name = '%s_%d' % (start_node_name, cursor)
 
-        print(str(start))
+        # print(str(start))
         return start
 
     def set_main_workflow(self, wf_main):

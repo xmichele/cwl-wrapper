@@ -34,7 +34,11 @@ steps:
           inputBinding:
             position: 1
           type: Directory
-      outputs: []
+      outputs:
+        input_reference_out:
+          outputBinding:
+            glob: .
+          type: Directory
       stderr: outerr.txt
       stdout: output.txt
   node_stage_in_1:
@@ -49,6 +53,10 @@ steps:
           inputBinding:
             position: 1
           type: Directory
-      outputs: []
+      outputs:
+        casale_me_out:
+          outputBinding:
+            glob: .
+          type: Directory
       stderr: outerr.txt
       stdout: output.txt

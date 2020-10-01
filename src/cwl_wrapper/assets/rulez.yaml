@@ -37,4 +37,10 @@ cwl:
     inputBinding:
       position: 1
 
+  outputBindingResult:
+    outputBinding:
+      glob: .
+    type: Directory
+
+
 
