@@ -9,13 +9,13 @@ inputs:
   label: EO product for vegetation index
   stac:catalog:
     stac:collection: input_reference
-  type: Directory
+  type: Directory[]
 - doc: EO product for vegetation index
   id: casale_me
   label: EO product for vegetation index
   stac:catalog:
     stac:collection: input_reference
-  type: Directory
+  type: Directory[]
 label: theStage
 outputs: []
 requirements:
@@ -35,7 +35,7 @@ steps:
         input_reference:
           inputBinding:
             position: 1
-          type: Directory
+          type: Directory[]
       outputs:
         input_reference_out:
           outputBinding:
@@ -43,6 +43,8 @@ steps:
           type: Directory
       stderr: outerr.txt
       stdout: output.txt
+    scatter: input_reference
+    scatterMethod: dotproduct
   node_stage_in_1:
     in:
       casale_me: casale_me
@@ -56,7 +58,7 @@ steps:
         casale_me:
           inputBinding:
             position: 1
-          type: Directory
+          type: Directory[]
       outputs:
         casale_me_out:
           outputBinding:
@@ -64,3 +66,5 @@ steps:
           type: Directory
       stderr: outerr.txt
       stdout: output.txt
+    scatter: casale_me
+    scatterMethod: dotproduct

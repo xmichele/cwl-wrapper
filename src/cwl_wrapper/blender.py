@@ -137,6 +137,11 @@ class Blender:
             # add step output
             steps[start_node_name]['out'].append(command_id)
 
+            # check scattering
+            if it.is_array:
+                steps[start_node_name]['scatter'] = it.id
+                steps[start_node_name]['scatterMethod'] = self.rulez.get('/onstage/stage_in/if_scatter/scatterMethod')
+
             # step_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/stepOut'))
             # step_out['outputSource'] = [ '%s/%s' %() ]
             # if type(steps[start_node_name]['out']) is list:
