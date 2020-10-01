@@ -21,12 +21,12 @@ def parse_cwl_param_directory(vals):
     for it in vals:
         cwl_param = vals[it]
         if cwl_param.type == "Directory":
-            res.append(Directory(cwl_param.id, False,cwl_param))
+            res.append(Directory(cwl_param.id, False, cwl_param))
 
         elif cwl_param.type == "array":
             for it in cwl_param.items:
                 if type(it) == str and it == 'Directory':
-                    res.append(Directory(cwl_param.id, True,cwl_param))
+                    res.append(Directory(cwl_param.id, True, cwl_param))
                     break
 
     return res
@@ -43,6 +43,9 @@ class Workflow:
             self.driver = 'cwl'
         else:
             raise ValueError('Rules driver not found or unknown')
+
+    def get_raw_all_inputs(self):
+        return self.wf.raw_all_inputs
 
     def get_raw_inputs(self):
         return self.wf.get_inputs()

@@ -31,12 +31,28 @@ $graph:
   doc: Vegetation index processor
   id: vegetation-index
   inputs:
-    input_reference:
+#    input_reference:
+#      doc: EO product for vegetation index
+#      label: EO product for vegetation index
+#      stac:catalog:
+#        stac:collection: input_reference
+#      type: Directory
+
+
+
+    - id: input_reference
       doc: EO product for vegetation index
       label: EO product for vegetation index
       stac:catalog:
         stac:collection: input_reference
       type: Directory
+#    - id: input_reference2
+#      doc: EO product for vegetation index
+#      label: EO product for vegetation index
+#      stac:catalog:
+#        stac:collection: input_reference
+#      type: Directory
+
   label: Vegetation index
   outputs:
   - id: wf_outputs

@@ -1,27 +1,32 @@
-$graph:
-- class: Workflow
-  doc: Main stage manager
-  id: stage-manager
-  inputs: []
-  label: theStage
-  outputs: []
-  requirements:
-    ScatterFeatureRequirement: {}
-    SubworkflowFeatureRequirement: {}
-  steps:
-    node_stage_in:
-      in:
-        input_reference: input_reference
-      out: {}
-      run:
-        baseCommand: echo
-        class: CommandLineTool
-        id: stagein_wf
-        inputs:
-          input_reference:
-            inputBinding:
-              position: 1
-            type: Directory
-        outputs: []
-        stderr: outerr.txt
-        stdout: output.txt
+class: Workflow
+doc: Main stage manager
+id: stage-manager
+inputs:
+- doc: EO product for vegetation index
+  id: input_reference
+  label: EO product for vegetation index
+  stac:catalog:
+    stac:collection: input_reference
+  type: Directory
+label: theStage
+outputs: []
+requirements:
+  ScatterFeatureRequirement: {}
+  SubworkflowFeatureRequirement: {}
+steps:
+  node_stage_in:
+    in:
+      input_reference: input_reference
+    out: {}
+    run:
+      baseCommand: echo
+      class: CommandLineTool
+      id: stagein_wf
+      inputs:
+        input_reference:
+          inputBinding:
+            position: 1
+          type: Directory
+      outputs: []
+      stderr: outerr.txt
+      stdout: output.txt
