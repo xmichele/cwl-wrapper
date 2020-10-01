@@ -61,6 +61,12 @@ class Workflow:
         if self.driver == 'cwl':
             return parse_cwl_param_directory(self.get_raw_outputs())
 
+    def get_id(self):
+        if self.driver == 'cwl':
+            return self.wf.id
+
+        return ''
+
     def __str__(self):
         return 'workflow'  # "#self.wf['id']
 

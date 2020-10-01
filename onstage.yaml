@@ -3,7 +3,9 @@ doc: Main stage manager
 id: stage-manager
 inputs:
 - id: csa
-  pollo: string
+  type: string
+- id: salame
+  type: string
 - doc: EO product for vegetation index
   id: input_reference
   label: EO product for vegetation index
@@ -26,7 +28,7 @@ steps:
     in:
       input_reference: input_reference
     out:
-    - input_reference_out
+    - node_stage_in/input_reference_out
     run:
       baseCommand: echo
       class: CommandLineTool
@@ -37,7 +39,7 @@ steps:
             position: 1
           type: Directory[]
       outputs:
-        input_reference_out:
+        node_stage_in/input_reference_out:
           outputBinding:
             glob: .
           type: Directory
@@ -49,7 +51,7 @@ steps:
     in:
       casale_me: casale_me
     out:
-    - casale_me_out
+    - node_stage_in_1/casale_me_out
     run:
       baseCommand: echo
       class: CommandLineTool
@@ -60,7 +62,7 @@ steps:
             position: 1
           type: Directory[]
       outputs:
-        casale_me_out:
+        node_stage_in_1/casale_me_out:
           outputBinding:
             glob: .
           type: Directory
@@ -68,3 +70,13 @@ steps:
       stdout: output.txt
     scatter: casale_me
     scatterMethod: dotproduct
+  on_stage:
+    in:
+      casale_me: node_stage_in_1/casale_me_out
+      csa: csa
+      input_reference: node_stage_in/input_reference_out
+      salame: salame
+    out:
+    - wf_outputs
+    - wf_outputs3
+    run: '#vegetation-index'

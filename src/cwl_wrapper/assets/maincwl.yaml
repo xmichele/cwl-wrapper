@@ -12,11 +12,11 @@ requirements:
 #steps:
 #  node_stage_in:
 #    in: {}
-#    out: {}
+#    out: []
 #    run: ''
-#
+##
 #  on_stage:
-#    in: []
+#    in: {}
 #    out: []
 #    run: ''
 #
