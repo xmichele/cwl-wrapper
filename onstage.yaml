@@ -19,7 +19,17 @@ inputs:
     stac:collection: input_reference
   type: Directory[]
 label: theStage
-outputs: []
+outputs:
+  wf_outputs:
+    outputSource:
+    - node_stage_out/wf_outputs_out
+    type:
+      items: Directory
+      type: array
+  wf_outputs3:
+    outputSource:
+    - node_stage_out_1/wf_outputs3_out
+    type: Directory[]
 requirements:
   ScatterFeatureRequirement: {}
   SubworkflowFeatureRequirement: {}

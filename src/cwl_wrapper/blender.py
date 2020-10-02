@@ -73,7 +73,36 @@ class Blender:
 
         inp = copy.deepcopy(self.user_wf.get_raw_all_outputs())
 
-        pass
+        where_is_dict = self.__is_dict_or_list(where)
+        if where_is_dict is None:
+            raise Exception('__create_global_cwl_outputs where_is_dict is None')
+
+        if inp:
+            for it in inp:
+                if type(it) is str:
+
+                    if it in stage_out_dir:
+                        if 'outputSource' in inp[it]:
+                            inp[it]['outputSource'] = []
+                            inp[it]['outputSource'].append(stage_out_dir[it])
+
+                    if where_is_dict:
+                        where[it] = inp[it]
+                    else:
+                        where.append(self.__to_cwl_list(inp[it], it))
+                else:
+
+                    if 'id' in it:
+                        if it['id'] in stage_out_dir:
+                            if 'outputSource' in it:
+                                it['outputSource'] = []
+                                it['outputSource'].append(stage_out_dir[it['id']])
+
+                        if where_is_dict:
+                            pid, psa = self.__to_cwl_dict(it)
+                            where[pid] = psa
+                        else:
+                            where.append(it)
 
     def __create_global_cwl_inputs(self, where):
 

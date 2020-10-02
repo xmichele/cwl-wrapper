@@ -3,7 +3,7 @@ doc: Main stage manager
 id: stage-manager
 label: theStage
 inputs: []
-outputs: []
+outputs: {}
 
 requirements:
   SubworkflowFeatureRequirement: {}
