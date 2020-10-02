@@ -1,9 +1,6 @@
 class: CommandLineTool
 baseCommand: echo
-stdout: output.txt
-stderr: outerr.txt
-doc: casale
-
+label:
+doc: docs
 inputs: {}
-
 outputs: {}

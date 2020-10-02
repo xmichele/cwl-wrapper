@@ -6,6 +6,8 @@
 - [Configuration file](#configuration-file)
 - [Package configuration file](#configuration-file-help)
 - [Configuration file details](#configuration-file-details)
+- [Templates](#templates)
+
 
 ## Requirements
 
@@ -109,9 +111,9 @@ onstage:
     connection_node: node_stage_out
 ```
 
-`onstage -> driver`
+`onstage -> driver` defines the driver to use during the translation: The result must be a `CWL` format
 
-`onstage -> stage_in`
+`onstage -> stage_in` encloses all the stage in configurations
 
 `onstage -> stage_in -> connection_node`
 
@@ -175,6 +177,65 @@ template
 `cwl -> outputBindingResult -> stepOut`
 
 
+## Templates
 
+### stage in
+
+File: `stagein.yaml` 
+
+```yaml
+class: CommandLineTool
+baseCommand: echo
+label:
+doc: docs
+inputs: {}
+outputs: {}
+```
+
+### main
+
+File: `maincwl.yaml`
+
+```yaml
+class: Workflow
+doc: Main stage manager
+id: stage-manager
+label: theStage
+inputs: []
+outputs: {}
+
+requirements:
+  SubworkflowFeatureRequirement: {}
+  ScatterFeatureRequirement: {}
+
+#steps:
+#  node_stage_in:
+#    in: {}
+#    out: []
+#    run: ''
+##
+#  on_stage:
+#    in: {}
+#    out: []
+#    run: ''
+#
+#  node_stage_out:
+#    in: []
+#    out: []
+#    run: ''
+```
+
+### stage out
+
+File: `stageout.yaml`
+
+```yaml
+class: CommandLineTool
+baseCommand: echo
+label:
+doc: docs
+inputs: {}
+outputs: {}
+```
 
 
