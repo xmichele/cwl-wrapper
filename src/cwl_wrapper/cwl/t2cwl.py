@@ -1,4 +1,5 @@
 import sys
+import copy
 
 from yaml import full_load
 from collections import OrderedDict
@@ -68,9 +69,10 @@ class InputParam(Param):
 class Workflow:
     outputs = None
     inputs = None
+    raw_workflow = None
 
-    @classmethod
-    def graph_parser(self, cwl):
+    @staticmethod
+    def graph_parser(cwl):
         graph = cwl['$graph']
         for it in graph:
             if 'class' in it:
@@ -81,16 +83,15 @@ class Workflow:
 
     def __init__(self, file_cwl):
 
-        raw_workflow = None
         with open(file_cwl) as f:
-            raw_workflow = full_load(f)
+            self.raw_workflow = full_load(f)
 
-        if '$graph' in raw_workflow:
-            jworkflow = self.graph_parser(raw_workflow)
+        if '$graph' in self.raw_workflow:
+            jworkflow = self.graph_parser(self.raw_workflow)
             if jworkflow is None:
                 raise ValueError('Wrong Workflow')
         else:
-            jworkflow = raw_workflow
+            jworkflow = self.raw_workflow
 
         try:
             self.tool_class = jworkflow['class']
@@ -141,3 +142,51 @@ class Workflow:
 
     def get_outputs(self):
         return self.outputs
+
+    def get_raw_workflow(self):
+        return self.raw_workflow
+
+
+class CWLParserTool:
+    raw_workflow = None
+
+    def __init__(self, file_cwl):
+        with open(file_cwl) as f:
+            self.raw_workflow = full_load(f)
+
+    def get_non_graph(self):
+        out = []
+        if self.raw_workflow is not None:
+            for it in self.raw_workflow:
+                if type(it) is str:
+                    if self.raw_workflow[it] != '$graph':
+                        out = copy.deepcopy(self.raw_workflow[it])
+
+        return out
+
+    def get_graph_classes(self):
+
+        out = []
+
+        if self.is_graph():
+            graph = self.raw_workflow['$graph']
+
+            for it in graph:
+                if type(graph) is dict:
+                    pi = copy.deepcopy(graph[it])
+                    pi['id'] = it
+                    out.append(pi)
+                elif type(graph) is list:
+                    out.append(copy.deepcopy(it))
+
+            # return copy.deepcopy(self.raw_workflow)
+
+        return out
+
+    def is_graph(self):
+        if self.raw_workflow is not None:
+            if type(self.raw_workflow) is dict:
+                if '$graph' in self.raw_workflow:
+                    return True
+
+        return False

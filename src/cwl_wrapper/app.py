@@ -35,6 +35,7 @@ def _signal_handler(signum: int, _: Any) -> None:
 def main(**kwargs):
     signal.signal(signal.SIGTERM, _signal_handler)
     wf = Parser(kwargs)
+    wf.write_output()
 
 
 if __name__ == '__main__':

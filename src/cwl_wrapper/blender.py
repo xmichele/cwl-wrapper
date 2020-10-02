@@ -12,6 +12,7 @@ class Blender:
         self.main_stage_out = None
 
         self.user_wf = None
+        self.user_raw_wf_path = kwargs['cwl']
         self.inputs = []
         self.outputs = []
 
@@ -129,7 +130,7 @@ class Blender:
 
     def __add_stage_in_graph_cwl(self, start):
 
-        driver = self.rulez.get('/onstage/driver')
+        # driver = self.rulez.get('/onstage/driver')
 
         if 'inputs' not in self.main_stage_in:
             self.main_stage_in['inputs'] = {}
@@ -138,10 +139,10 @@ class Blender:
             self.main_stage_in['outputs'] = {}
 
         if 'inputs' not in self.main_stage_out:
-            self.main_stage_in['inputs'] = {}
+            self.main_stage_out['inputs'] = {}
 
         if 'outputs' not in self.main_stage_out:
-            self.main_stage_in['outputs'] = {}
+            self.main_stage_out['outputs'] = {}
 
         if 'inputs' not in start:
             start['inputs'] = {}
@@ -283,19 +284,8 @@ class Blender:
             cursor = cursor + 1
             start_node_name = '%s_%d' % (start_node_name, cursor)
 
-        # print(str(nodes_out) )
-
         self.__create_global_cwl_outputs(start['outputs'], nodes_out)
 
-        # OUTPUT WORKFLOW GENERAL
-        # step_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/stepOut'))
-        # step_out['outputSource'] = [ '%s/%s' %() ]
-        # if type(steps[start_node_name]['out']) is list:
-        #     pass
-        # elif type(steps[start_node_name]['out']) is dict:
-        #     pass
-
-        # print(str(start))
         return start
 
     def set_main_workflow(self, wf_main):
@@ -311,18 +301,15 @@ class Blender:
         self.user_wf = wf
         self.inputs = self.user_wf.get_inputs_directory()
         self.outputs = self.user_wf.get_outputs_directory()
-        a = self.user_wf.get_raw_all_inputs()
+        # a = self.user_wf.get_raw_all_inputs()
 
     def get_output(self):
 
-        start = self.__add_stage_in_graph_cwl(self.main_wf)
+        start = copy.deepcopy(self.main_wf)
 
-        # start = self.main_wf
-        # if self.rulez.get('/output/type') == '$graph':
-        #     start = {'$graph': [self.main_wf]}
-        # else:
-        #     raise Exception('Driver output: ' + self.rulez.get('/output/type') + ' not found')
-        #
+        start = self.__add_stage_in_graph_cwl(start)
+
+
         # if self.rulez.get('/onstage/driver') == 'cwl':
         #     if self.rulez.get('/output/type') == '$graph':
         #         self.__add_stage_in_graph_cwl( )
