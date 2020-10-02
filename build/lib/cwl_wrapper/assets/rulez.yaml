@@ -2,7 +2,6 @@ rulez:
   version: 1
 
 parser:
-  type: $graph
   driver: cwl
 
 onstage:
