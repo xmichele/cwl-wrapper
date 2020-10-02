@@ -69,13 +69,19 @@ class Blender:
                 else:
                     where[pid] = pid
 
-    def __create_global_inputs(self, where):
+    def __create_global_cwl_outputs(self, where, stage_out_dir):
+
+        inp = copy.deepcopy(self.user_wf.get_raw_all_outputs())
+
+        pass
+
+    def __create_global_cwl_inputs(self, where):
 
         inp = copy.deepcopy(self.user_wf.get_raw_all_inputs())
 
         where_is_dict = self.__is_dict_or_list(where)
         if where_is_dict is None:
-            raise Exception('__create_global_inputs where_is_dict is None')
+            raise Exception('__create_global_cwl_inputs where_is_dict is None')
 
         # if where_is_dict is not None:
         if inp:
@@ -102,10 +108,19 @@ class Blender:
         if 'outputs' not in self.main_stage_in:
             self.main_stage_in['outputs'] = {}
 
+        if 'inputs' not in self.main_stage_out:
+            self.main_stage_in['inputs'] = {}
+
+        if 'outputs' not in self.main_stage_out:
+            self.main_stage_in['outputs'] = {}
+
         if 'inputs' not in start:
             start['inputs'] = {}
 
-        self.__create_global_inputs(start['inputs'])
+        if 'outputs' not in start:
+            start['outputs'] = {}
+
+        self.__create_global_cwl_inputs(start['inputs'])
 
         connection_node_node_stage_in = self.rulez.get('/onstage/stage_in/connection_node')
         if connection_node_node_stage_in == '':
@@ -122,6 +137,8 @@ class Blender:
         steps = start['steps']
         cursor = 0
         start_node_name = connection_node_node_stage_in
+
+        # stage in
         for it in self.inputs:
             # print(str(it))
             self.__prepare_step_run(steps, start_node_name)
@@ -150,8 +167,8 @@ class Blender:
 
             # add outputs to command
             command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command'))
-            command_id = '%s/%s_out' % (start_node_name, it.id)
-            nodes_out[it.id] = command_id
+            command_id = '%s_out' % it.id
+            nodes_out[it.id] = '%s/%s_out' % (start_node_name, it.id)
             if type(the_command_outputs) is list:
                 command_out['id'] = command_id
                 the_command_outputs.append(command_out)
@@ -183,9 +200,63 @@ class Blender:
 
         self.__create_on_stage_inputs(steps[on_stage_node]['in'], nodes_out)
 
+        # stage out
+        connection_node_node_stage_out = self.rulez.get('/onstage/stage_out/connection_node')
+        if connection_node_node_stage_out == '':
+            connection_node_node_stage_out = 'node_stage_out'
+
+        cursor = 0
+        start_node_name = connection_node_node_stage_out
+
+        nodes_out.clear()
         for it in self.outputs:
             steps[on_stage_node]['out'].append(it.id)
 
+            self.__prepare_step_run(steps, start_node_name)
+
+            if type(steps[start_node_name]['in']) is list:
+                steps[start_node_name]['in'].append('%s:%s/%s' % (it.id, on_stage_node, it.id))
+            elif type(steps[start_node_name]['in']) is dict:
+                steps[start_node_name]['in'][it.id] = '%s/%s' % (on_stage_node, it.id)
+
+            the_command = copy.deepcopy(self.main_stage_out)  # self.main_stage_in.copy()
+            the_command_inputs = the_command['inputs']
+            the_command_outputs = the_command['outputs']
+
+            the_val = copy.deepcopy(self.rulez.get('/cwl/Directory[]')) if it.is_array else copy.deepcopy(
+                self.rulez.get('/cwl/Directory'))
+
+            if type(the_command_inputs) is list:
+                the_val['id'] = it.id
+                the_command_inputs.append(the_val)
+            elif type(the_command_inputs) is dict:
+                the_command_inputs[it.id] = the_val
+
+            steps[start_node_name]['run'] = the_command
+
+            # add outputs to command
+            command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command'))
+            command_id = '%s_out' % it.id
+            nodes_out[it.id] = '%s/%s_out' % (start_node_name, it.id)
+            if type(the_command_outputs) is list:
+                command_out['id'] = command_id
+                the_command_outputs.append(command_out)
+            elif type(the_command_outputs) is dict:
+                the_command_outputs[command_id] = command_out
+            # add step output
+            steps[start_node_name]['out'].append(command_id)
+
+            # check scattering
+            if it.is_array:
+                steps[start_node_name]['scatter'] = it.id
+                steps[start_node_name]['scatterMethod'] = self.rulez.get('/onstage/stage_in/if_scatter/scatterMethod')
+
+            cursor = cursor + 1
+            start_node_name = '%s_%d' % (start_node_name, cursor)
+
+        # print(str(nodes_out) )
+
+        self.__create_global_cwl_outputs(start['outputs'], nodes_out)
 
         # OUTPUT WORKFLOW GENERAL
         # step_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/stepOut'))
@@ -205,7 +276,7 @@ class Blender:
         self.main_stage_in = wf_in
 
     def set_stage_out(self, wf_out):
-        pass
+        self.main_stage_out = wf_out
 
     def set_user_workflow(self, wf: Workflow):
         self.user_wf = wf

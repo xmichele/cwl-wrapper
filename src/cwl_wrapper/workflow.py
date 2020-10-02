@@ -47,6 +47,9 @@ class Workflow:
     def get_raw_all_inputs(self):
         return self.wf.raw_all_inputs
 
+    def get_raw_all_outputs(self):
+        return self.wf.raw_all_outputs
+
     def get_raw_inputs(self):
         return self.wf.get_inputs()
 

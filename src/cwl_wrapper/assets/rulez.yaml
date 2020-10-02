@@ -16,7 +16,7 @@ onstage:
   on_stage:
     connection_node: on_stage
 
-  stageout:
+  stage_out:
     connection_node: node_stage_out
 
 

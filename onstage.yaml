@@ -28,7 +28,7 @@ steps:
     in:
       input_reference: input_reference
     out:
-    - node_stage_in/input_reference_out
+    - input_reference_out
     run:
       baseCommand: echo
       class: CommandLineTool
@@ -39,7 +39,7 @@ steps:
             position: 1
           type: Directory[]
       outputs:
-        node_stage_in/input_reference_out:
+        input_reference_out:
           outputBinding:
             glob: .
           type: Directory
@@ -51,7 +51,7 @@ steps:
     in:
       casale_me: casale_me
     out:
-    - node_stage_in_1/casale_me_out
+    - casale_me_out
     run:
       baseCommand: echo
       class: CommandLineTool
@@ -62,13 +62,59 @@ steps:
             position: 1
           type: Directory[]
       outputs:
-        node_stage_in_1/casale_me_out:
+        casale_me_out:
           outputBinding:
             glob: .
           type: Directory
       stderr: outerr.txt
       stdout: output.txt
     scatter: casale_me
+    scatterMethod: dotproduct
+  node_stage_out:
+    in:
+      wf_outputs: on_stage/wf_outputs
+    out:
+    - wf_outputs_out
+    run:
+      baseCommand: echo
+      class: CommandLineTool
+      doc: casale
+      inputs:
+        wf_outputs:
+          inputBinding:
+            position: 1
+          type: Directory[]
+      outputs:
+        wf_outputs_out:
+          outputBinding:
+            glob: .
+          type: Directory
+      stderr: outerr.txtcc
+      stdout: output.txtcc
+    scatter: wf_outputs
+    scatterMethod: dotproduct
+  node_stage_out_1:
+    in:
+      wf_outputs3: on_stage/wf_outputs3
+    out:
+    - wf_outputs3_out
+    run:
+      baseCommand: echo
+      class: CommandLineTool
+      doc: casale
+      inputs:
+        wf_outputs3:
+          inputBinding:
+            position: 1
+          type: Directory[]
+      outputs:
+        wf_outputs3_out:
+          outputBinding:
+            glob: .
+          type: Directory
+      stderr: outerr.txtcc
+      stdout: output.txtcc
+    scatter: wf_outputs3
     scatterMethod: dotproduct
   on_stage:
     in:

@@ -125,10 +125,16 @@ class Workflow:
         self.description = jworkflow.get('doc', jworkflow.get('description', None))
         self.cwl_version = jworkflow.get('cwlVersion', '')
         self.id = jworkflow.get('id', '')
+
+        # raw
         if 'inputs' in jworkflow:
             self.raw_all_inputs = jworkflow['inputs']
         else:
             self.raw_all_inputs = {}
+        if 'outputs' in jworkflow:
+            self.raw_all_outputs = jworkflow['outputs']
+        else:
+            self.raw_all_outputs = {}
 
     def get_inputs(self):
         return self.inputs
