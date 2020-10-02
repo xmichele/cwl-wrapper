@@ -31,6 +31,7 @@ def _signal_handler(signum: int, _: Any) -> None:
               help='.... maincwl.yaml')
 @click.option('--rulez', 'rulez', default=pkg_resources.resource_filename(__package__, "/assets/rulez.yaml"),
               help='.... maincwl.yaml')
+@click.option('--output', 'output', default='-', help='.... maincwl.yaml')
 @click.argument('cwl')
 def main(**kwargs):
     signal.signal(signal.SIGTERM, _signal_handler)
