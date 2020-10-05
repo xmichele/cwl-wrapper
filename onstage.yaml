@@ -38,6 +38,7 @@ $graph:
     node_stage_in:
       in:
         input_reference: input_reference
+        robert: robert
       out:
       - input_reference_out
       run:

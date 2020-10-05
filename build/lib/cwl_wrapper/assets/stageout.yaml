@@ -1,6 +1,0 @@
-class: CommandLineTool
-baseCommand: echo
-label:
-doc: docs
-inputs: {}
-outputs: {}

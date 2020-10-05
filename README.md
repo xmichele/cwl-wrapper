@@ -117,19 +117,57 @@ The `onstage` configuration is applied to `maincwl.yaml` file
 
 `onstage -> stage_in` 
 
-`onstage -> stage_in -> connection_node` defines the anchor node name. If the node does not exist, the parser creates it.
+`onstage -> stage_in -> connection_node` defines the anchor node name for `stage-in` start. If the node does not exist, the parser creates it.
 
-> `maincwl.yaml' may have a pre-create node, the application looks for the node defined in connection_node and creates a link
+`onstage -> stage_in -> if_scatter` defines the conditions for `scatter` methods
 
-`onstage -> stage_in -> if_scatter` defines 
-
-`onstage -> stage_in -> if_scatter -> scatterMethod`
+`onstage -> stage_in -> if_scatter -> scatterMethod` is the method to use for scatter feature
 
 `onstage -> on_stage`
 
-`onstage -> on_stage -> connection_node`
+`onstage -> on_stage -> connection_node`  defines the anchor node name for `user's node`. If the node does not exist, the parser creates it.
 
-`stage_out -> connection_node`
+`onstage -> stage_out -> connection_node` defines the anchor node name for `stage-out` start. If the node does not exist, the parser creates it.
+
+The `stage_in`, `stage_out` and `on-stage` nodes can be customized by user. 
+
+The Parser uses the node name as an anchor to start the phase.  
+
+example:
+
+Base template
+
+```yaml
+class: Workflow
+doc: Main stage manager
+id: stage-manager
+label: theStage
+inputs: []
+outputs: {}
+
+requirements:
+  SubworkflowFeatureRequirement: {}
+  ScatterFeatureRequirement: {}
+```
+
+or custom template
+
+```yaml
+
+class: Workflow
+doc: Main stage manager
+id: stage-manager
+label: theStage
+inputs: []
+outputs: {}
+
+requirements:
+  SubworkflowFeatureRequirement: {}
+  ScatterFeatureRequirement: {}
+
+
+```
+
 
 ```yaml
 output:
