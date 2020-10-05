@@ -360,7 +360,7 @@ inputs:
 
 ---
 
-### main
+### main cwl
 
 `maincwl.yaml` is the body of main CWL Workflow output. 
 
@@ -409,5 +409,9 @@ doc: docs
 inputs: {}
 outputs: {}
 ```
+
+## Replace
+
+Configuration and templates files can be replaced from user using the right parameter.
 
 

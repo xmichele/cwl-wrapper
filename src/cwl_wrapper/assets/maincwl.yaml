@@ -2,9 +2,7 @@ class: Workflow
 doc: Main stage manager
 id: stage-manager
 label: theStage
-inputs:
-  - id: test
-    type: string
+inputs: {}
 outputs: {}
 
 requirements:
@@ -13,8 +11,7 @@ requirements:
 
 steps:
   node_stage_in:
-    in:
-      test: test
+    in: {}
     out: []
     run: ''
 ##
