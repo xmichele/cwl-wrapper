@@ -9,12 +9,11 @@ requirements:
   SubworkflowFeatureRequirement: {}
   ScatterFeatureRequirement: {}
 
-steps:
-  node_stage_in:
-    in:
-      robert: robert
-    out: []
-    run: ''
+#steps:
+#  node_stage_in:
+#    in:{}
+#    out: []
+#    run: ''
 ##
 #  on_stage:
 #    in: {}
