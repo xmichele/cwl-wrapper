@@ -308,7 +308,6 @@ ex:
 
 `cwl -> outputBindingResult -> stepOut` deprecated
 
-
 ## Templates
 
 ### stage in
@@ -363,9 +362,7 @@ inputs:
 
 ### main
 
-`maincwl.yaml`
-
-
+`maincwl.yaml` is the body of main CWL Workflow output. 
 
 ```yaml
 class: Workflow
@@ -395,6 +392,10 @@ requirements:
 #    out: []
 #    run: ''
 ```
+
+We can customize the file by adding the stage nodes, 
+you just have to remember: the Parser looks for the nodes defined in the rules file and preserve 
+all inputs and outputs
 
 ### stage out
 
