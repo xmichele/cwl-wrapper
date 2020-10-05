@@ -111,13 +111,17 @@ onstage:
     connection_node: node_stage_out
 ```
 
+The `onstage` configuration is applied to `maincwl.yaml` file 
+
 `onstage -> driver` defines the driver to use during the translation: The result must be a `CWL` format
 
-`onstage -> stage_in` encloses all the stage in configurations
+`onstage -> stage_in` 
 
-`onstage -> stage_in -> connection_node`
+`onstage -> stage_in -> connection_node` defines the anchor node name. If the node does not exist, the parser creates it.
 
-`onstage -> stage_in -> if_scatter`
+> `maincwl.yaml' may have a pre-create node, the application looks for the node defined in connection_node and creates a link
+
+`onstage -> stage_in -> if_scatter` defines 
 
 `onstage -> stage_in -> if_scatter -> scatterMethod`
 
