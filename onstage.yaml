@@ -3,9 +3,11 @@ $graph:
   doc: Main stage manager
   id: stage-manager
   inputs:
+  - id: test
+    type: string
   - id: csa
     type: string
-  - id: salame
+  - id: teststring
     type: string
   - doc: EO product for vegetation index
     id: input_reference
@@ -38,7 +40,7 @@ $graph:
     node_stage_in:
       in:
         input_reference: input_reference
-        robert: robert
+        test: test
       out:
       - input_reference_out
       run:
@@ -133,7 +135,7 @@ $graph:
         casale_me: node_stage_in_1/casale_me_out
         csa: csa
         input_reference: node_stage_in/input_reference_out
-        salame: salame
+        teststring: teststring
       out:
       - wf_outputs
       - wf_outputs3
@@ -172,7 +174,7 @@ $graph:
   inputs:
   - id: csa
     type: string
-  - id: salame
+  - id: teststring
     type: string
   - doc: EO product for vegetation index
     id: input_reference

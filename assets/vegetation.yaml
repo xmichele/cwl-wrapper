@@ -42,7 +42,7 @@ $graph:
       id: csa
 
     - type: string
-      id: salame
+      id: teststring
 
     - id: input_reference
       doc: EO product for vegetation index

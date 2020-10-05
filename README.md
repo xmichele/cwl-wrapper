@@ -133,8 +133,6 @@ The `stage_in`, `stage_out` and `on-stage` nodes can be customized by user.
 
 The Parser uses the node name as an anchor to start the phase.  
 
-example:
-
 Base template
 
 ```yaml
@@ -150,22 +148,86 @@ requirements:
   ScatterFeatureRequirement: {}
 ```
 
-or custom template
+Custom template
 
 ```yaml
-
 class: Workflow
 doc: Main stage manager
 id: stage-manager
 label: theStage
-inputs: []
+inputs:
+  - id: test
+    type: string
 outputs: {}
 
 requirements:
   SubworkflowFeatureRequirement: {}
   ScatterFeatureRequirement: {}
 
+steps:
+  node_stage_in:
+    in:
+      test: test
+    out: []
+    run: ''
+##
+#  on_stage:
+#    in: {}
+#    out: []
+#    run: ''
+#
+#  node_stage_out:
+#    in: []
+#    out: []
+#    run: ''
+```
 
+Custom template output:
+
+```yaml
+$graph:
+- class: Workflow
+  doc: Main stage manager
+  id: stage-manager
+  inputs:
+  
+  # template var
+  - id: test
+    type: string
+ 
+  # USER's CWL input
+  - doc: EO product for vegetation index  
+    id: input_reference
+    label: EO product for vegetation index
+    stac:catalog:
+      stac:collection: input_reference
+    type: Directory[]
+ ....
+ ....
+ ....
+ ....
+
+  label: theStage
+  outputs:
+
+ ....
+ ....
+ ....
+
+  requirements:
+    ScatterFeatureRequirement: {}
+    SubworkflowFeatureRequirement: {}
+  steps:
+    node_stage_in:
+      in:
+        
+        # USER's CWL input
+        input_reference: input_reference
+        
+        # template var
+        test: test
+      out:
+      - input_reference_out
 ```
 
 
