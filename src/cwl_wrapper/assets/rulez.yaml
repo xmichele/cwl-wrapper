@@ -28,12 +28,12 @@ output:
 
 cwl:
   Directory:
-    type: Directory
+    type: string
     inputBinding:
       position: 1
 
   Directory[]:
-    type: Directory[]
+    type: string[]
     inputBinding:
       position: 1
 

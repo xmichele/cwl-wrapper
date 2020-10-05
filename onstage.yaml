@@ -44,21 +44,24 @@ $graph:
       out:
       - input_reference_out
       run:
-        baseCommand: echo
+        baseCommand: stage-in
         class: CommandLineTool
-        doc: casale
+        id: stagein
         inputs:
           input_reference:
             inputBinding:
               position: 1
-            type: Directory[]
+            type: string[]
         outputs:
           input_reference_out:
             outputBinding:
               glob: .
             type: Directory
-        stderr: outerr.txt
-        stdout: output.txt
+        requirements:
+          EnvVarRequirement:
+            envDef:
+              PATH: /opt/anaconda/envs/env_stagein/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          ResourceRequirement: {}
       scatter: input_reference
       scatterMethod: dotproduct
     node_stage_in_1:
@@ -67,21 +70,24 @@ $graph:
       out:
       - casale_me_out
       run:
-        baseCommand: echo
+        baseCommand: stage-in
         class: CommandLineTool
-        doc: casale
+        id: stagein
         inputs:
           casale_me:
             inputBinding:
               position: 1
-            type: Directory[]
+            type: string[]
         outputs:
           casale_me_out:
             outputBinding:
               glob: .
             type: Directory
-        stderr: outerr.txt
-        stdout: output.txt
+        requirements:
+          EnvVarRequirement:
+            envDef:
+              PATH: /opt/anaconda/envs/env_stagein/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          ResourceRequirement: {}
       scatter: casale_me
       scatterMethod: dotproduct
     node_stage_out:
@@ -97,7 +103,7 @@ $graph:
           wf_outputs:
             inputBinding:
               position: 1
-            type: Directory[]
+            type: string[]
         outputs:
           wf_outputs_out:
             outputBinding:
@@ -120,7 +126,7 @@ $graph:
           wf_outputs3:
             inputBinding:
               position: 1
-            type: Directory[]
+            type: string[]
         outputs:
           wf_outputs3_out:
             outputBinding:

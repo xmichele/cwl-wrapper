@@ -1,9 +1,14 @@
+baseCommand: stage-in
 class: CommandLineTool
-baseCommand: echo
-stdout: output.txt
-stderr: outerr.txt
-doc: casale
-
+#hints:
+#  DockerRequirement:
+#    dockerPull: terradue/stars-t2:devlatest
+id: stagein
 inputs: {}
-
 outputs: {}
+
+requirements:
+  EnvVarRequirement:
+    envDef:
+      PATH: /opt/anaconda/envs/env_stagein/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  ResourceRequirement: {}
