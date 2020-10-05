@@ -88,12 +88,16 @@ rulez:
 
 `rulez -> version` defines the Rules version. Currently only version 1 is managed  
 
+---
+
 ```yaml
 parser:
   driver: cwl
 ```
 
 `parser -> driver` defines the type of objects to be parsed
+
+---
 
 ```yaml
 onstage:
@@ -230,6 +234,7 @@ $graph:
       - input_reference_out
 ```
 
+---
 
 ```yaml
 output:
@@ -238,11 +243,19 @@ output:
   type: $graph
 ```
 
-`output -> driver`
+`output -> driver` defines the output driver, currently is defined only 'CWL' driver
 
-`output -> name`
+`output -> name` this parameter is deprecated
 
-`output -> type`
+`output -> type` defines the type of output
+
+* `$graph` if driver is `CWL` the output will be in one file using 
+[`$graph` entry point](https://www.commonwl.org/v1.1/SchemaSalad.html#Document_graph)
+
+---
+
+
+
 
 ```yaml
 cwl:
