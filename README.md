@@ -254,8 +254,7 @@ output:
 
 ---
 
-
-
+Driver `CWL` needs the templates to define the types: 
 
 ```yaml
 cwl:
@@ -283,22 +282,38 @@ cwl:
 
 template
 
-`cwl -> Directory`
+`cwl -> Directory` is used to create the  type directory
 
-`cwl -> Directory[]`
+ex:
 
-`cwl -> outputBindingResult`
+```yaml
+        inputs:
+          input_reference:
+            inputBinding:
+              position: 1
+            type: Directory
+```
 
-`cwl -> outputBindingResult -> command`
+`cwl -> Directory[]` is used to create the  type directory[]
 
-`cwl -> outputBindingResult -> stepOut`
+```yaml
+        inputs:
+          input_reference:
+            inputBinding:
+              position: 1
+            type: Directory[]
+```
+
+`cwl -> outputBindingResult -> command` is the template added to command output.
+
+`cwl -> outputBindingResult -> stepOut` deprecated
 
 
 ## Templates
 
 ### stage in
 
-File: `stagein.yaml` 
+`stagein.yaml` is the `CommandLineTool` used to perform the `stage-in`
 
 ```yaml
 class: CommandLineTool
@@ -309,9 +324,48 @@ inputs: {}
 outputs: {}
 ```
 
+The Parser uses `inputs` and `outputs`  as anchor to add all inputs and `outputs`. 
+
+You can add parameters to `inputs and outputs` anchors,  these parameter will be preserved in the new
+workflow
+
+ex:
+
+```yaml
+class: CommandLineTool
+baseCommand: echo
+label:
+doc: docs
+inputs: 
+  newinput: myinput
+outputs: {}
+```
+
+output:
+
+```yaml
+...
+...
+inputs:
+      input_reference:
+        inputBinding:
+          position: 1
+        type: Directory[]
+
+      newinput: myinput
+
+    outputs:
+...
+...
+```
+
+---
+
 ### main
 
-File: `maincwl.yaml`
+`maincwl.yaml`
+
+
 
 ```yaml
 class: Workflow
