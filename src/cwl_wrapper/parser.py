@@ -47,8 +47,9 @@ class Parser:
 
                     if psa.is_graph():
                         graph_res = psa.get_graph_classes()
+                        the_graph = self.out['$graph']
                         for it in graph_res:
-                            self.out['$graph'].append(it)
+                            the_graph.append(it)
 
                         non_graph_res = psa.get_non_graph()
                         for it in non_graph_res:
