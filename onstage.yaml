@@ -31,6 +31,10 @@ $graph:
       out:
       - input_reference_out
       run:
+        arguments:
+        - position: 1
+          prefix: -t
+          valueFrom: ./
         baseCommand: stage-in
         class: CommandLineTool
         hints:
@@ -40,7 +44,7 @@ $graph:
         inputs:
           input_reference:
             inputBinding:
-              position: 1
+              position: 2
             type: string
         outputs:
           input_reference_out:

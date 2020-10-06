@@ -4,6 +4,11 @@ hints:
   DockerRequirement:
     dockerPull: terradue/eoepca-stage-in:0.1
 id: stagein
+arguments:
+  - prefix: -t
+    position: 1
+    valueFrom: "./"
+
 inputs: {}
 outputs: {}
 requirements:

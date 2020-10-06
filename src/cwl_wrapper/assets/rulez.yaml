@@ -35,12 +35,12 @@ cwl:
     Directory:
       type: string
       inputBinding:
-        position: 1
+        position: 2
 
     Directory[]:
       type: string[]
       inputBinding:
-        position: 1
+        position: 2
 
   stage_out:
     Directory:
