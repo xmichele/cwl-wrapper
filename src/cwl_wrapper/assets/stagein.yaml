@@ -1,12 +1,11 @@
 baseCommand: stage-in
 class: CommandLineTool
-#hints:
-#  DockerRequirement:
-#    dockerPull: terradue/stars-t2:devlatest
+hints:
+  DockerRequirement:
+    dockerPull: terradue/eoepca-stage-in:0.1
 id: stagein
 inputs: {}
 outputs: {}
-
 requirements:
   EnvVarRequirement:
     envDef:

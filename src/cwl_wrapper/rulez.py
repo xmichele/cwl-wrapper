@@ -21,7 +21,6 @@ class Rulez:
         return ''
 
     def get(self, item):
-
         if item in self.prop:
             return self.prop[item]
 

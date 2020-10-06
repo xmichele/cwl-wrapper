@@ -27,6 +27,10 @@ output:
 
 
 cwl:
+  GlobalInput:
+    Directory: string
+    Directory[]: string[]
+
   Directory:
     type: string
     inputBinding:

@@ -3,24 +3,16 @@ $graph:
   doc: Main stage manager
   id: stage-manager
   inputs:
-  - id: test
-    type: string
-  - id: csa
-    type: string
-  - id: teststring
-    type: string
-  - doc: EO product for vegetation index
-    id: input_reference
-    label: EO product for vegetation index
-    stac:catalog:
-      stac:collection: input_reference
-    type: Directory[]
-  - doc: EO product for vegetation index
-    id: casale_me
-    label: EO product for vegetation index
-    stac:catalog:
-      stac:collection: input_reference
-    type: Directory[]
+    aoi:
+      doc: Area of interest in WKT
+      id: aoi
+      label: Area of interest
+      type: string
+    input_reference:
+      doc: EO product for vegetation index
+      id: input_reference
+      label: EO product for vegetation index
+      type: string[]
   label: theStage
   outputs:
     wf_outputs:
@@ -29,10 +21,6 @@ $graph:
       type:
         items: Directory
         type: array
-    wf_outputs3:
-      outputSource:
-      - node_stage_out_1/wf_outputs3_out
-      type: Directory[]
   requirements:
     ScatterFeatureRequirement: {}
     SubworkflowFeatureRequirement: {}
@@ -40,12 +28,14 @@ $graph:
     node_stage_in:
       in:
         input_reference: input_reference
-        test: test
       out:
       - input_reference_out
       run:
         baseCommand: stage-in
         class: CommandLineTool
+        hints:
+          DockerRequirement:
+            dockerPull: terradue/eoepca-stage-in:0.1
         id: stagein
         inputs:
           input_reference:
@@ -64,32 +54,6 @@ $graph:
           ResourceRequirement: {}
       scatter: input_reference
       scatterMethod: dotproduct
-    node_stage_in_1:
-      in:
-        casale_me: casale_me
-      out:
-      - casale_me_out
-      run:
-        baseCommand: stage-in
-        class: CommandLineTool
-        id: stagein
-        inputs:
-          casale_me:
-            inputBinding:
-              position: 1
-            type: string[]
-        outputs:
-          casale_me_out:
-            outputBinding:
-              glob: .
-            type: Directory
-        requirements:
-          EnvVarRequirement:
-            envDef:
-              PATH: /opt/anaconda/envs/env_stagein/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-          ResourceRequirement: {}
-      scatter: casale_me
-      scatterMethod: dotproduct
     node_stage_out:
       in:
         wf_outputs: on_stage/wf_outputs
@@ -98,7 +62,6 @@ $graph:
       run:
         baseCommand: echo
         class: CommandLineTool
-        doc: casale
         inputs:
           wf_outputs:
             inputBinding:
@@ -109,48 +72,17 @@ $graph:
             outputBinding:
               glob: .
             type: Directory
-        stderr: outerr.txtcc
-        stdout: output.txtcc
       scatter: wf_outputs
-      scatterMethod: dotproduct
-    node_stage_out_1:
-      in:
-        wf_outputs3: on_stage/wf_outputs3
-      out:
-      - wf_outputs3_out
-      run:
-        baseCommand: echo
-        class: CommandLineTool
-        doc: casale
-        inputs:
-          wf_outputs3:
-            inputBinding:
-              position: 1
-            type: string[]
-        outputs:
-          wf_outputs3_out:
-            outputBinding:
-              glob: .
-            type: Directory
-        stderr: outerr.txtcc
-        stdout: output.txtcc
-      scatter: wf_outputs3
       scatterMethod: dotproduct
     on_stage:
       in:
-        casale_me: node_stage_in_1/casale_me_out
-        csa: csa
+        aoi: aoi
         input_reference: node_stage_in/input_reference_out
-        teststring: teststring
       out:
       - wf_outputs
-      - wf_outputs3
       run: '#vegetation-index'
 - baseCommand: vegetation-index
   class: CommandLineTool
-  hints:
-    DockerRequirement:
-      dockerPull: terradue/vegetation-index:1.0
   id: clt
   inputs:
     inp1:
@@ -171,29 +103,23 @@ $graph:
   requirements:
     EnvVarRequirement:
       envDef:
-        PATH: /opt/anaconda/envs/env_nbr/bin:/opt/anaconda/envs/env_nbr/bin:/opt/anaconda/envs/env_default/bin:/opt/anaconda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-        PREFIX: /opt/anaconda/envs/env_nbr
+        PATH: /opt/anaconda/envs/env_vi/bin:/opt/anaconda/envs/env_vi/bin:/home/fbrito/.nvm/versions/node/v10.21.0/bin:/opt/anaconda/envs/notebook/bin:/opt/anaconda/bin:/usr/share/java/maven/bin:/opt/anaconda/bin:/opt/anaconda/envs/notebook/bin:/opt/anaconda/bin:/usr/share/java/maven/bin:/opt/anaconda/bin:/opt/anaconda/condabin:/opt/anaconda/envs/notebook/bin:/opt/anaconda/bin:/usr/lib64/qt-3.3/bin:/usr/share/java/maven/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/fbrito/.local/bin:/home/fbrito/bin:/home/fbrito/.local/bin:/home/fbrito/bin
+        PREFIX: /opt/anaconda/envs/env_vi
     ResourceRequirement: {}
+  stderr: std.err
+  stdout: std.out
 - class: Workflow
-  doc: Vegetation index processor
+  doc: Vegetation index processor, the greatest
   id: vegetation-index
   inputs:
-  - id: csa
-    type: string
-  - id: teststring
-    type: string
-  - doc: EO product for vegetation index
-    id: input_reference
-    label: EO product for vegetation index
-    stac:catalog:
-      stac:collection: input_reference
-    type: Directory[]
-  - doc: EO product for vegetation index
-    id: casale_me
-    label: EO product for vegetation index
-    stac:catalog:
-      stac:collection: input_reference
-    type: Directory[]
+    aoi:
+      doc: Area of interest in WKT
+      label: Area of interest
+      type: string
+    input_reference:
+      doc: EO product for vegetation index
+      label: EO product for vegetation index
+      type: Directory[]
   label: Vegetation index
   outputs:
   - id: wf_outputs
@@ -202,10 +128,6 @@ $graph:
     type:
       items: Directory
       type: array
-  - id: wf_outputs3
-    outputSource:
-    - node_1/results
-    type: Directory[]
   requirements:
   - class: ScatterFeatureRequirement
   steps:
@@ -218,4 +140,4 @@ $graph:
       run: '#clt'
       scatter: inp1
       scatterMethod: dotproduct
-stac: http://www.me.net/stac/cwl/extension
+cwlVersion: v1.0

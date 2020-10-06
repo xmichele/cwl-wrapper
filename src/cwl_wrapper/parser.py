@@ -52,8 +52,11 @@ class Parser:
 
                         non_graph_res = psa.get_non_graph()
                         for it in non_graph_res:
-                            if type(it) is str:
-                                self.out[it] = non_graph_res[it]
+                            if type(it) is dict:
+                                for i in it:
+                                    self.out[i] = it[i]
+
+
                     else:
                         raise Exception('Cwl $graph type can\'t be parser')
                 else:

@@ -63,7 +63,13 @@ class Blender:
             raise Exception('on_stage -> in mast be a dict')
 
         for it in inp:
-            if 'id' in it:
+            if type(it) is str:
+                if it in directories_out:
+                    where[it] = directories_out[it]
+                else:
+                    where[it] = it
+
+            elif 'id' in it:
                 pid = it['id']
                 if pid in directories_out:
                     where[pid] = directories_out[pid]
@@ -105,6 +111,27 @@ class Blender:
                         else:
                             where.append(it)
 
+    def __find_in_inputs(self, what):
+        for it in self.inputs:
+            if it.id == what:
+                return copy.deepcopy(it)
+
+        return None
+
+    def __change_input_type(self, src: dict, name=''):
+        where = copy.deepcopy(src)
+        v = self.__find_in_inputs(name)
+        if v is None:
+            return where
+
+        if 'type' in where:
+            if v.is_array:
+                where['type'] = self.rulez.get('/cwl/GlobalInput/Directory[]')  # 'string[]'
+            else:
+                where['type'] = self.rulez.get('/cwl/GlobalInput/Directory')
+
+        return where
+
     def __create_global_cwl_inputs(self, where):
 
         inp = copy.deepcopy(self.user_wf.get_raw_all_inputs())
@@ -118,15 +145,15 @@ class Blender:
             for it in inp:
                 if type(it) is str:
                     if where_is_dict:
-                        where[it] = inp[it]
+                        where[it] = self.__change_input_type(inp[it], it)
                     else:
-                        where.append(self.__to_cwl_list(inp[it], it))
+                        where.append(self.__to_cwl_list(self.__change_input_type(inp[it], it), it))
                 else:
                     if where_is_dict:
-                        pid, psa = self.__to_cwl_dict(it)
+                        pid, psa = self.__to_cwl_dict(self.__change_input_type(it, it['id']))
                         where[pid] = psa
                     else:
-                        where.append(it)
+                        where.append(self.__change_input_type(it, it['id']))
 
     def __add_stage_in_graph_cwl(self, start):
 
@@ -308,7 +335,6 @@ class Blender:
         start = copy.deepcopy(self.main_wf)
 
         start = self.__add_stage_in_graph_cwl(start)
-
 
         # if self.rulez.get('/onstage/driver') == 'cwl':
         #     if self.rulez.get('/output/type') == '$graph':

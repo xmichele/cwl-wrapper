@@ -159,8 +159,10 @@ class CWLParserTool:
         if self.raw_workflow is not None:
             for it in self.raw_workflow:
                 if type(it) is str:
-                    if self.raw_workflow[it] != '$graph':
-                        out = copy.deepcopy(self.raw_workflow[it])
+                    if it != '$graph':
+                        out.append({it: self.raw_workflow[it]})
+                    # if self.raw_workflow[it] != '$graph':
+                    # out = copy.deepcopy(self.raw_workflow[it])
 
         return out
 
