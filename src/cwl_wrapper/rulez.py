@@ -8,11 +8,11 @@ class Rulez:
             self.rulez = load_yaml_file(f)
 
     def __get(self, val, name):
-        max = len(val)
+        _max = len(val)
         obj = self.rulez
-        for i in range(max):
+        for i in range(_max):
             if val[i] in obj:
-                if i == max - 1:
+                if i == _max - 1:
                     a = obj[val[i]]
                     self.prop[name] = a
                     return a

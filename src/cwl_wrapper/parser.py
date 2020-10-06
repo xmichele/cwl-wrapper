@@ -55,8 +55,6 @@ class Parser:
                             if type(it) is dict:
                                 for i in it:
                                     self.out[i] = it[i]
-
-
                     else:
                         raise Exception('Cwl $graph type can\'t be parser')
                 else:
