@@ -31,15 +31,28 @@ cwl:
     Directory: string
     Directory[]: string[]
 
-  Directory:
-    type: string
-    inputBinding:
-      position: 1
+  stage_in:
+    Directory:
+      type: string
+      inputBinding:
+        position: 1
 
-  Directory[]:
-    type: string[]
-    inputBinding:
-      position: 1
+    Directory[]:
+      type: string[]
+      inputBinding:
+        position: 1
+
+  stage_out:
+    Directory:
+      type: Directory
+      inputBinding:
+        position: 1
+
+    Directory[]:
+      type: Directory[]
+      inputBinding:
+        position: 1
+
 
   outputBindingResult:
     command:

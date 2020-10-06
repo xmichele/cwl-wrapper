@@ -1,6 +1,9 @@
 $graph:
   - baseCommand: vegetation-index
     class: CommandLineTool
+    hints:
+      DockerRequirement:
+        dockerPull: terradue/eoepca-vegetation-index:1.0
     id: clt
     inputs:
       inp1:

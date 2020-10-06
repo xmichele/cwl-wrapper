@@ -211,8 +211,12 @@ class Blender:
 
             # why am I using copy.deepcopy??
             # https://ttl255.com/yaml-anchors-and-aliases-and-how-to-disable-them/
-            the_val = copy.deepcopy(self.rulez.get('/cwl/Directory[]')) if it.is_array else copy.deepcopy(
-                self.rulez.get('/cwl/Directory'))
+            the_val = copy.deepcopy(self.rulez.get('/cwl/stage_in/Directory[]')) if it.is_array else copy.deepcopy(
+                self.rulez.get('/cwl/stage_in/Directory'))
+
+            # scatter feature
+            if it.is_array:
+                the_val = self.rulez.get('/cwl/stage_in/Directory')
 
             if type(the_command_inputs) is list:
                 the_val['id'] = it.id
@@ -280,8 +284,12 @@ class Blender:
             the_command_inputs = the_command['inputs']
             the_command_outputs = the_command['outputs']
 
-            the_val = copy.deepcopy(self.rulez.get('/cwl/Directory[]')) if it.is_array else copy.deepcopy(
-                self.rulez.get('/cwl/Directory'))
+            the_val = copy.deepcopy(self.rulez.get('/cwl/stage_out/Directory[]')) if it.is_array else copy.deepcopy(
+                self.rulez.get('/cwl/stage_out/Directory'))
+
+            # scatter feature
+            if it.is_array:
+                the_val = self.rulez.get('/cwl/stage_out/Directory')
 
             if type(the_command_inputs) is list:
                 the_val['id'] = it.id
