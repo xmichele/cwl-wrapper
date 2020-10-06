@@ -57,7 +57,7 @@ class Parser:
                                 for i in it:
                                     self.out[i] = it[i]
                     else:
-                        raise Exception('Cwl $graph type can\'t be parser')
+                        raise Exception('Cwl $graph type can\'t be parsed')
                 else:
                     raise Exception('Driver output: ' + self.rulez.get('/output/driver') + ' not found')
             else:
