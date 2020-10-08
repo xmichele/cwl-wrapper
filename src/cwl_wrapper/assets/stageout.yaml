@@ -1,5 +1,5 @@
 class: CommandLineTool
-baseCommand: echo
+baseCommand: stage-out
 inputs:
   job:
     inputBinding:

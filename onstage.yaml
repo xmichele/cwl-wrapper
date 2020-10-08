@@ -89,7 +89,7 @@ $graph:
       out:
       - wf_outputs_out
       run:
-        baseCommand: echo
+        baseCommand: stage-out
         class: CommandLineTool
         hints:
           DockerRequirement:
