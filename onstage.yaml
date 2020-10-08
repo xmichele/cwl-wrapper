@@ -66,18 +66,19 @@ $graph:
       run:
         baseCommand: echo
         class: CommandLineTool
+        hints:
+          DockerRequirement:
+            dockerPull: terradue/stage-out:0.1
         inputs:
           wf_outputs:
             inputBinding:
               position: 1
-            type: Directory
+            type: Directory[]
         outputs:
           wf_outputs_out:
             outputBinding:
               glob: .
-            type: Directory
-      scatter: wf_outputs
-      scatterMethod: dotproduct
+            type: Directory[]
     on_stage:
       in:
         aoi: aoi
@@ -89,7 +90,7 @@ $graph:
   class: CommandLineTool
   hints:
     DockerRequirement:
-      dockerPull: terradue/eoepca-vegetation-index:1.0
+      dockerPull: eoepca/vegetation-index:0.2
   id: clt
   inputs:
     inp1:

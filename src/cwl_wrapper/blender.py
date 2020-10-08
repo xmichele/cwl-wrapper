@@ -227,7 +227,7 @@ class Blender:
             steps[start_node_name]['run'] = the_command
 
             # add outputs to command
-            command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command'))
+            command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command/Directory'))
             command_id = '%s_out' % it.id
             nodes_out[it.id] = '%s/%s_out' % (start_node_name, it.id)
             if type(the_command_outputs) is list:
@@ -288,7 +288,7 @@ class Blender:
                 self.rulez.get('/cwl/stage_out/Directory'))
 
             # scatter feature
-            if it.is_array:
+            if it.is_array and self.rulez.get('/onstage/stage_out/scatter'):
                 the_val = self.rulez.get('/cwl/stage_out/Directory')
 
             if type(the_command_inputs) is list:
@@ -299,8 +299,10 @@ class Blender:
 
             steps[start_node_name]['run'] = the_command
 
-            # add outputs to command
-            command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command'))
+            # command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command'))
+            command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command/Directory[]')) if it.is_array else copy.deepcopy(
+                self.rulez.get('/cwl/outputBindingResult/command/Directory'))
+
             command_id = '%s_out' % it.id
             nodes_out[it.id] = '%s/%s_out' % (start_node_name, it.id)
             if type(the_command_outputs) is list:
@@ -312,9 +314,9 @@ class Blender:
             steps[start_node_name]['out'].append(command_id)
 
             # check scattering
-            if it.is_array:
+            if it.is_array and self.rulez.get('/onstage/stage_out/scatter'):
                 steps[start_node_name]['scatter'] = it.id
-                steps[start_node_name]['scatterMethod'] = self.rulez.get('/onstage/stage_in/if_scatter/scatterMethod')
+                steps[start_node_name]['scatterMethod'] = self.rulez.get('/onstage/stage_in/stage_out/scatterMethod')
 
             cursor = cursor + 1
             start_node_name = '%s_%d' % (start_node_name, cursor)

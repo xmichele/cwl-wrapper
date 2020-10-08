@@ -3,7 +3,7 @@ $graph:
     class: CommandLineTool
     hints:
       DockerRequirement:
-        dockerPull: terradue/eoepca-vegetation-index:1.0
+        dockerPull: eoepca/vegetation-index:0.2
     id: clt
     inputs:
       inp1:

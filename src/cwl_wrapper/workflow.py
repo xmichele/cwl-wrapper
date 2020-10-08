@@ -16,7 +16,7 @@ class Directory:
         return str({'id': self.id, 'is_array': self.is_array})
 
 
-def parse_cwl_param_directory(vals):
+def parse_cwl_param_directory(vals: dict):
     res = []
     for it in vals:
         cwl_param = vals[it]

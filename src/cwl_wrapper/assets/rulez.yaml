@@ -17,6 +17,9 @@ onstage:
     connection_node: on_stage
 
   stage_out:
+    scatter: False
+    if_scatter:
+      scatterMethod: dotproduct
     connection_node: node_stage_out
 
 
@@ -56,9 +59,16 @@ cwl:
 
   outputBindingResult:
     command:
-      outputBinding:
-        glob: .
-      type: Directory
+      Directory:
+        outputBinding:
+          glob: .
+        type: Directory
+      Directory[]:
+        outputBinding:
+          glob: .
+        type: Directory[]
+
+
     stepOut:
       type:
         items: Directory
