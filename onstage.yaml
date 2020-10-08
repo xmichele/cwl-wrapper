@@ -13,6 +13,26 @@ $graph:
       id: input_reference
       label: EO product for vegetation index
       type: string[]
+    job:
+      doc: ''
+      label: ''
+      type: string
+    outputfile:
+      doc: ''
+      label: ''
+      type: string
+    store_apikey:
+      doc: ''
+      label: ''
+      type: string
+    store_host:
+      doc: ''
+      label: ''
+      type: string
+    store_username:
+      doc: ''
+      label: ''
+      type: string
   label: theStage
   outputs:
     wf_outputs:
@@ -39,7 +59,7 @@ $graph:
         class: CommandLineTool
         hints:
           DockerRequirement:
-            dockerPull: terradue/eoepca-stage-in:0.1
+            dockerPull: eoepca/stage-in:0.2
         id: stagein
         inputs:
           input_reference:
@@ -60,6 +80,11 @@ $graph:
       scatterMethod: dotproduct
     node_stage_out:
       in:
+        job: job
+        outputfile: outputfile
+        store_apikey: store_apikey
+        store_host: store_host
+        store_username: store_username
         wf_outputs: on_stage/wf_outputs
       out:
       - wf_outputs_out
@@ -68,17 +93,47 @@ $graph:
         class: CommandLineTool
         hints:
           DockerRequirement:
-            dockerPull: terradue/stage-out:0.1
+            dockerPull: eoepca/stage-out:0.2
         inputs:
-          wf_outputs:
+          job:
             inputBinding:
               position: 1
+              prefix: --job
+            type: string
+          outputfile:
+            inputBinding:
+              position: 5
+              prefix: --outputfile
+            type: string
+          store_apikey:
+            inputBinding:
+              position: 4
+              prefix: --store-apikey
+            type: string
+          store_host:
+            inputBinding:
+              position: 2
+              prefix: --store-host
+            type: string
+          store_username:
+            inputBinding:
+              position: 3
+              prefix: --store-username
+            type: string
+          wf_outputs:
+            inputBinding:
+              position: 6
             type: Directory[]
         outputs:
           wf_outputs_out:
             outputBinding:
               glob: .
             type: Directory[]
+        requirements:
+          EnvVarRequirement:
+            envDef:
+              PATH: /opt/anaconda/envs/env_stageout/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          ResourceRequirement: {}
     on_stage:
       in:
         aoi: aoi

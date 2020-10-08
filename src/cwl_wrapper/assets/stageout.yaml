@@ -1,6 +1,31 @@
 class: CommandLineTool
 baseCommand: echo
-inputs: {}
+inputs:
+  job:
+    inputBinding:
+      position: 1
+      prefix: --job
+    type: string
+  store_host:
+    inputBinding:
+      position: 2
+      prefix: --store-host
+    type: string
+  store_username:
+    inputBinding:
+      position: 3
+      prefix: --store-username
+    type: string
+  store_apikey:
+    inputBinding:
+      position: 4
+      prefix: --store-apikey
+    type: string
+  outputfile:
+    inputBinding:
+      position: 5
+      prefix: --outputfile
+    type: string
 outputs: {}
 hints:
   DockerRequirement:
@@ -12,3 +37,8 @@ hints:
 
 
 #  stage-out --source ../application-chaining/data.txt --endpoint https://catalog.terradue.com/fbrito --username fbrito --apikey AKCp5fTQyru....QmFRGschMFx6pgkAos2qGzPbpMLjSTmfxJdJtFh --store-host https://nx10438.your-storageshare.de/ --store-username 'eoepca-demo-storage' --store-apikey U...U --job abdfghijkhl
+requirements:
+  EnvVarRequirement:
+    envDef:
+      PATH: /opt/anaconda/envs/env_stageout/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  ResourceRequirement: {}

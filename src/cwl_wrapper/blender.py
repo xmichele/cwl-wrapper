@@ -155,6 +155,22 @@ class Blender:
                     else:
                         where.append(self.__change_input_type(it, it['id']))
 
+        to_add = self.rulez.get("/cwl/stage_out/user_inputs")
+        for it in to_add:
+            if where_is_dict:
+                where[it] = to_add[it]
+            else:
+                where.append(copy.deepcopy(self.__to_cwl_list(to_add[it], it)))
+
+    def __add_inputs_store_to_stage_out(self, where: dict):
+        where_is_dict = self.__is_dict_or_list(where)
+        if where_is_dict is None:
+            raise Exception('__create_global_cwl_inputs where_is_dict is None')
+
+        to_add = self.rulez.get("/cwl/stage_out/user_inputs")
+        for it in to_add:
+            where[it] = it
+
     def __add_stage_in_graph_cwl(self, start):
 
         # driver = self.rulez.get('/onstage/driver')
@@ -280,6 +296,8 @@ class Blender:
             elif type(steps[start_node_name]['in']) is dict:
                 steps[start_node_name]['in'][it.id] = '%s/%s' % (on_stage_node, it.id)
 
+            self.__add_inputs_store_to_stage_out(steps[start_node_name]['in'])
+
             the_command = copy.deepcopy(self.main_stage_out)  # self.main_stage_in.copy()
             the_command_inputs = the_command['inputs']
             the_command_outputs = the_command['outputs']
@@ -300,7 +318,8 @@ class Blender:
             steps[start_node_name]['run'] = the_command
 
             # command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command'))
-            command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command/Directory[]')) if it.is_array else copy.deepcopy(
+            command_out = copy.deepcopy(
+                self.rulez.get('/cwl/outputBindingResult/command/Directory[]')) if it.is_array else copy.deepcopy(
                 self.rulez.get('/cwl/outputBindingResult/command/Directory'))
 
             command_id = '%s_out' % it.id
