@@ -1,5 +1,7 @@
 # CWL-WRAPPER
 
+[![Build Status](https://travis-ci.com/EOEPCA/cwl-wrapper.svg?branch=main)](https://travis-ci.com/EOEPCA/cwl-wrapper)
+
 - [Requirements](#requirements)
 - [requirements](#requirements.txt)
 - [Run](#run) 
