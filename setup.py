@@ -16,8 +16,10 @@ print(extra_files)
 
 console_scripts = []
 
-console_scripts.append('{0}={1}.app:main'.format(find_packages('src')[0].replace('_', '-'),
-                                                  find_packages('src')[0]))
+console_scripts.append('cwl-wrapper=cwl_wrapper.app:main')
+
+print(find_packages(where='src'))
+
 setup(entry_points={'console_scripts': console_scripts},
       packages=find_packages(where='src'),
       package_dir={'': 'src'},
