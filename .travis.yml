@@ -24,6 +24,9 @@ install:
   - conda config --add channels conda-forge
   - /home/travis/conda/bin/conda-build -q . --python=$TRAVIS_PYTHON_VERSION --output-folder bld-dir
 
+script:
+  - echo
+
 after_success:
   # Install the command line API for CONDA uploads
   - conda install -y anaconda-client
