@@ -10,11 +10,9 @@ from typing import (
     Optional
 )
 
-aaa
 
 
 from .parser import Parser
-    aa
 @click.command()
 @click.option('--output', 'output', default='-', help='.... maincwl.yaml')
 @click.option('--stagein', 'stagein', default=pkg_resources.resource_filename(__package__, "assets/stagein.yaml"),
