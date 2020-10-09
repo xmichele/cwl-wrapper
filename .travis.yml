@@ -20,6 +20,7 @@ before_install:
   - . /home/travis/conda/etc/profile.d/conda.sh
   
 install:
+  - export CONDA_PREFIX=/home/travis/conda
   - conda install -y conda-build
   # You can add any CONDA channels you may need here. CONDA supports
   # both the commands add and append. The only difference is that 
