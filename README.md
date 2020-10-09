@@ -14,7 +14,9 @@
 
 ### Via conda
 
-Coming soon
+```bash
+conda install -c eoepca cwl-wrapper
+```
 
 ### Development
 
