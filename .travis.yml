@@ -27,6 +27,7 @@ install:
   - conda config --add channels conda-forge
 
   # Build the conda recipe for this package
+  - env
   - cd /home/travis
   - /home/travis/conda/bin/conda-build -q . --python=$TRAVIS_PYTHON_VERSION --output-folder bld-dir
   # Add the built package as a channel with highest priority
