@@ -18,6 +18,7 @@ before_install:
   - conda update --yes conda  # Update CONDA without command line prompt
 
 install:
+  - conda update -y conda 
   - conda install -y conda-build
   # You can add any CONDA channels you may need here. CONDA supports
   # both the commands add and append. The only difference is that 
