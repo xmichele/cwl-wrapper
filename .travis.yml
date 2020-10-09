@@ -29,11 +29,14 @@ script:
 
 after_success:
   # Install the command line API for CONDA uploads
+  - PACKAGENAME=cwl-wrapper
   - conda install -y anaconda-client
-  - |
-    # Only upload builds from tags
-    if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == "org/pkgname"
-          && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' ]]; then
-      export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN
-      anaconda upload bld-dir/**/PACKAGENAME-*.tar.bz2
+  - export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN
+  - anaconda upload bld-dir/**/PACKAGENAME-*.tar.bz2|
+
+## Only upload builds from tags
+#    if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == "org/pkgname"
+#          && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' ]]; then
+#      export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN
+#      anaconda upload bld-dir/**/PACKAGENAME-*.tar.bz2
     fi
