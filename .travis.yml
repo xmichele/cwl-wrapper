@@ -11,15 +11,15 @@ matrix:
 before_install:
   # Install the latest version of Miniconda
   - cd /home/travis
-  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-  - chmod +x miniconda.sh
-  - ./miniconda.sh -b 
-  - export PATH=/home/travis/miniconda2/bin:$PATH
+  - export MINIFORGE_VERSION=4.8.2-1
+  - wget https://github.com/conda-forge/miniforge/releases/download/${MINIFORGE_VERSION}/Miniforge3-${MINIFORGE_VERSION}-Linux-x86_64.sh -O /tmp/miniforge-installer.sh
+  - chmod +x /tmp/miniforge-installer.sh
+  - bash /tmp/miniforge-installer.sh -b -p /srv/conda
+  - export PATH=/srv/conda/bin:$PATH
   - conda update --yes conda  # Update CONDA without command line prompt
   - echo $TRAVIS_PYTHON_VERSION
   
 install:
-  - conda update -y conda 
   - conda install -y conda-build
   # You can add any CONDA channels you may need here. CONDA supports
   # both the commands add and append. The only difference is that 
