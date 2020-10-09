@@ -17,6 +17,7 @@ before_install:
   - bash /tmp/miniforge-installer.sh -b -p /home/travis/conda
   - export PATH=/home/travis/conda/bin:$PATH
   - conda update --yes conda  # Update CONDA without command line prompt
+  - . /home/travis/conda/etc/profile.d/conda.sh
   
 install:
   - conda install -y conda-build
