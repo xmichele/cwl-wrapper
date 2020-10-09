@@ -1,0 +1,28 @@
+{% set name = "cwl-wrapper" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ load_setup_py_data().version }}'
+
+source:
+     path: .
+
+build:
+  number: 0
+  script: python setup.py install
+  noarch: python
+
+requirements:
+  host:
+    - setuptools
+
+  run:
+    - pyyaml
+    - jinja2
+    - click
+    - setuptools
+
+about:
+  home: https://github.com/eoepca/
+  license: Apache License
+  summary: "CWL wrapper for EOEPCA ADES"
