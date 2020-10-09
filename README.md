@@ -8,6 +8,33 @@
 - [Configuration file details](#configuration-file-details)
 - [Templates](#templates)
 
+## Installation
+
+### Via conda
+
+Coming soon
+
+### Development
+
+Clone this repo, then create the conda environment with:
+
+```bash
+cd cwl-wrapper
+conda env create -f environment.yml
+conda activate env_cwl_wrapper
+```
+
+Use setuptools to install the project:
+
+```bash
+python setup.py install
+```
+
+Check the installation with:
+
+```bash
+cwl-wrapper --help
+```
 
 ## Requirements
 
