@@ -16,7 +16,8 @@ before_install:
   - ./miniconda.sh -b 
   - export PATH=/home/travis/miniconda2/bin:$PATH
   - conda update --yes conda  # Update CONDA without command line prompt
-
+  - echo $TRAVIS_PYTHON_VERSION
+  
 install:
   - conda update -y conda 
   - conda install -y conda-build
