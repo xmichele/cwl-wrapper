@@ -10,7 +10,6 @@ matrix:
 
 before_install:
   # Install the latest version of Miniconda
-  - cd /home/travis
   - export MINIFORGE_VERSION=4.8.2-1
   - wget https://github.com/conda-forge/miniforge/releases/download/${MINIFORGE_VERSION}/Miniforge3-${MINIFORGE_VERSION}-Linux-x86_64.sh -O /tmp/miniforge-installer.sh
   - chmod +x /tmp/miniforge-installer.sh
@@ -29,8 +28,6 @@ install:
   - conda config --add channels conda-forge
 
   # Build the conda recipe for this package
-  - env
-  - cd /home/travis
   - /home/travis/conda/bin/conda-build -q . --python=$TRAVIS_PYTHON_VERSION --output-folder bld-dir
   # Add the built package as a channel with highest priority
   - conda config --add channels "file://`pwd`/bld-dir"
