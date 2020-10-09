@@ -18,8 +18,7 @@ before_install:
   - conda update --yes conda  # Update CONDA without command line prompt
 
 install:
-  - conda create -y -p /home/travis/env_build 
-  - conda install -y -p /home/travis/env_build conda conda-build
+  - conda install -y conda-build
   # You can add any CONDA channels you may need here. CONDA supports
   # both the commands add and append. The only difference is that 
   # the add command places the channel at the front of the priority 
