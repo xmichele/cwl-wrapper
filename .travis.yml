@@ -4,9 +4,9 @@ matrix:
   # This will launch a separate build for each Python version you add
   # Feel free to add extra environment variables as needed
   include:
-    - python: 3.6
+ #   - python: 3.6
     - python: 3.7
-    - python: 3.8
+ #   - python: 3.8
 
 before_install:
   # Install the latest version of Miniconda
@@ -18,7 +18,8 @@ before_install:
   - conda update --yes conda  # Update CONDA without command line prompt
 
 install:
-  - conda install -y conda-build
+  - conda create -p /home/travis/env_build 
+  - conda install -p /home/travis/env_build conda-build
   # You can add any CONDA channels you may need here. CONDA supports
   # both the commands add and append. The only difference is that 
   # the add command places the channel at the front of the priority 
@@ -26,7 +27,7 @@ install:
   - conda config --add channels conda-forge
 
   # Build the conda recipe for this package
-  - conda build -q . --python=$TRAVIS_PYTHON_VERSION --output-folder bld-dir
+  - /home/travis/env_build/bin/conda-build -q . --python=$TRAVIS_PYTHON_VERSION --output-folder bld-dir
   # Add the built package as a channel with highest priority
   - conda config --add channels "file://`pwd`/bld-dir"
 
