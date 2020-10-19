@@ -12,13 +12,13 @@ def package_files(where):
 
 
 extra_files = package_files(['src/cwl_wrapper/assets'])
-print(extra_files)
+#print(extra_files)
 
 console_scripts = []
 
 console_scripts.append('cwl-wrapper=cwl_wrapper.app:main')
 
-print(find_packages(where='src'))
+#print(find_packages(where='src'))
 
 setup(entry_points={'console_scripts': console_scripts},
       packages=find_packages(where='src'),
