@@ -59,22 +59,27 @@ cwl:
     # only dict
     user_inputs:
       job:
+        id: 'job'
         label: ''
         doc: ''
         type: string
       store_host:
+        id: 'store_host'
         label: ''
         doc: ''
         type: string
       store_username:
+        id: 'store_username'
         label: ''
         doc: ''
         type: string
       store_apikey:
+        id: 'store_apikey'
         label: ''
         doc: ''
         type: string
       outputfile:
+        id: 'outputfile'
         label: ''
         doc: ''
         type: string
