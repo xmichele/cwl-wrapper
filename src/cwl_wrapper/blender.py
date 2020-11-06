@@ -56,6 +56,13 @@ class Blender:
 
         return what_is_dict
 
+    @staticmethod
+    def __add_to_in(where, what):
+        if type(where) is list:
+            where.append('%s:%s' % (what, what))
+        elif type(where) is dict:
+            where[what] = what
+
     def __create_on_stage_inputs(self, where, directories_out: dict):
         inp = copy.deepcopy(self.user_wf.get_raw_all_inputs())
 
@@ -210,20 +217,27 @@ class Blender:
         steps = start['steps']
         cursor = 0
         start_node_name = connection_node_node_stage_in
+        overwrite_input = self.rulez.get('/onstage/stage_in/input/template/overwrite')
 
         # stage in
         for it in self.inputs:
             # print(str(it))
             self.__prepare_step_run(steps, start_node_name)
 
-            if type(steps[start_node_name]['in']) is list:
-                steps[start_node_name]['in'].append('%s:%s' % (it.id, it.id))
-            elif type(steps[start_node_name]['in']) is dict:
-                steps[start_node_name]['in'][it.id] = it.id
+            self.__add_to_in(steps[start_node_name]['in'], it.id)
 
             the_command = copy.deepcopy(self.main_stage_in)  # self.main_stage_in.copy()
-            the_command_inputs = the_command['inputs']
-            the_command_outputs = the_command['outputs']
+            the_command_inputs = copy.deepcopy(the_command['inputs'])
+            the_command_outputs = copy.deepcopy(the_command['outputs'])
+
+            if overwrite_input and len(the_command_inputs) > 0:
+                if type(the_command_inputs) is list:
+                    for i in the_command_inputs:
+                        print(i)
+                        self.__add_to_in(steps[start_node_name]['in'], i['id'])
+                elif type(the_command_inputs) is dict:
+                    for i in the_command_inputs:
+                        self.__add_to_in(steps[start_node_name]['in'], i)
 
             # why am I using copy.deepcopy??
             # https://ttl255.com/yaml-anchors-and-aliases-and-how-to-disable-them/

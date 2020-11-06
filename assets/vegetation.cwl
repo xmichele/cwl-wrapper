@@ -41,6 +41,11 @@ $graph:
         doc: EO product for vegetation index
         label: EO product for vegetation index
         type: Directory[]
+      input_reference2:
+        doc: EO product for vegetation index
+        label: EO product for vegetation index
+        type: Directory[]
+
     label: Vegetation index
     outputs:
       - id: wf_outputs

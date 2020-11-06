@@ -12,6 +12,9 @@ onstage:
     connection_node: node_stage_in
     if_scatter:
       scatterMethod: dotproduct
+    input:
+      template:
+        overwrite: True
 
   on_stage:
     connection_node: on_stage
