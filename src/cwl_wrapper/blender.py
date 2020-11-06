@@ -169,6 +169,17 @@ class Blender:
             else:
                 where.append(copy.deepcopy(self.__to_cwl_list(to_add[it], it)))
 
+        # the_command = copy.deepcopy(self.main_stage_in)  # self.main_stage_in.copy()
+        # the_command_inputs = copy.deepcopy(the_command['inputs'])
+        #
+        # if where_is_dict:
+        #     # if type(the_command_inputs) is list:
+        #     print("STOCAZZO")
+        #     pass
+
+
+
+
     def __add_inputs_store_to_stage_out(self, where: dict):
         where_is_dict = self.__is_dict_or_list(where)
         if where_is_dict is None:
@@ -233,7 +244,6 @@ class Blender:
             if overwrite_input and len(the_command_inputs) > 0:
                 if type(the_command_inputs) is list:
                     for i in the_command_inputs:
-                        print(i)
                         self.__add_to_in(steps[start_node_name]['in'], i['id'])
                 elif type(the_command_inputs) is dict:
                     for i in the_command_inputs:
