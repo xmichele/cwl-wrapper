@@ -245,6 +245,7 @@ class Blender:
                         where.append(self.__change_input_type(it, it['id']))
 
         self.__update_zone_with_template(where, self.main_stage_in)
+        self.__update_zone_with_template(where, self.main_stage_out)
 
         # print(the_i)
 
@@ -395,11 +396,19 @@ class Blender:
             elif type(steps[start_node_name]['in']) is dict:
                 steps[start_node_name]['in'][it.id] = '%s/%s' % (on_stage_node, it.id)
 
-            self.__add_inputs_store_to_stage_out(steps[start_node_name]['in'])
+            # self.__add_inputs_store_to_stage_out(steps[start_node_name]['in'])
 
             the_command = copy.deepcopy(self.main_stage_out)  # self.main_stage_in.copy()
             the_command_inputs = the_command['inputs']
             the_command_outputs = the_command['outputs']
+
+            if overwrite_input and len(the_command_inputs) > 0:
+                if type(the_command_inputs) is list:
+                    for i in the_command_inputs:
+                        self.__add_to_in(steps[start_node_name]['in'], i['id'])
+                elif type(the_command_inputs) is dict:
+                    for i in the_command_inputs:
+                        self.__add_to_in(steps[start_node_name]['in'], i)
 
             the_val = copy.deepcopy(self.rulez.get('/cwl/stage_out/Directory[]')) if it.is_array else copy.deepcopy(
                 self.rulez.get('/cwl/stage_out/Directory'))
