@@ -9,27 +9,27 @@ arguments:
     position: 1
     valueFrom: "./"
 
-inputs: {}
+#inputs: {}
 #    - doc: EO product for vegetation index
-#      id: pollo
+#      id: the_id_1
 #      label: EO product for vegetation index
 #      type: string[]
 #    - doc: EO product for vegetation index
-#      id: salle
+#      id: the_id_2
 #      label: EO product for vegetation index
 #      type: Direcoty[]
 #      sss:
 #        sdsd: aaaa
 #        sadsad: dsad
-#inputs:
-#    pollo:
-#      doc: EO product for vegetation index
-#      label: EO product for vegetation index
-#      type: string[]
-#    salle:
-#      doc: EO product for vegetation index
-#      label: EO product for vegetation index
-#      type: string[]
+inputs:
+    the_id_1:
+      doc: EO product for vegetation index
+      label: EO product for vegetation index
+      type: string[]
+    the_id_2:
+      doc: EO product for vegetation index
+      label: EO product for vegetation index
+      type: string[]
 outputs: {}
 requirements:
   EnvVarRequirement:
