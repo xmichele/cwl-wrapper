@@ -63,6 +63,37 @@ class Blender:
         elif type(where) is dict:
             where[what] = what
 
+    @staticmethod
+    def __exist_here(where, what):
+        if type(where) is dict:
+            return what in where.keys()
+
+        if type(where) is list:
+            for i in where:
+                if 'id' in i.keys() and i['id'] == what:
+                    return True
+
+        return False
+
+    @staticmethod
+    def __get_id(where):
+        if type(where) is str:
+            return where
+
+        what = 'id'
+        if type(where) is dict:
+            if what in where.keys():
+                return where['id']
+            else:
+                return None
+
+        if type(where) is list:
+            for i in where:
+                if 'id' in i.keys() and i['id'] == what:
+                    return i['id']
+
+        return None
+
     def __create_on_stage_inputs(self, where, directories_out: dict):
         inp = copy.deepcopy(self.user_wf.get_raw_all_inputs())
 
@@ -139,6 +170,57 @@ class Blender:
 
         return where
 
+    def __get_essential(self, where: dict, id: dict = None):
+        ret = dict()
+
+        if 'label' in where:
+            ret['label'] = where['label']
+
+        if 'doc' in where:
+            ret['doc'] = where['doc']
+
+        if id is not None and id in where:
+            ret[id] = where[id]
+
+        if 'type' in where:
+            ret['type'] = where['type']
+
+        return self.__change_input_type(ret)
+
+    def __update_zone_with_template(self, where, what):
+        if 'inputs' in self.main_stage_in:
+            the_i = copy.deepcopy(what['inputs'])
+
+            for it in the_i:
+                inner_id = self.__get_id(it)
+                obj = dict()
+                if not self.__exist_here(where, inner_id):
+                    if type(it) is str:  # the_i is a dict
+                        obj = copy.deepcopy(the_i[it])
+                        if 'id' not in obj:
+                            obj['id'] = inner_id
+                    else:
+                        obj = copy.deepcopy(it)
+
+                    if type(where) is dict:
+                        where[inner_id] = self.__get_essential(obj,inner_id)
+                    else:
+                        where.append(self.__get_essential(obj,inner_id))
+
+                    # if type(id) is str:
+                    #     inner_id = id
+                    # else:
+                    #     inner_id =
+                    #
+                    # if __exist_here(where,)
+                    #
+                    # if type(where) is dict:
+
+                    # if the_i_what:
+                    #     print(str(it))
+                    # else:
+                    #     print(str(it))
+
     def __create_global_cwl_inputs(self, where):
 
         inp = copy.deepcopy(self.user_wf.get_raw_all_inputs())
@@ -162,15 +244,17 @@ class Blender:
                     else:
                         where.append(self.__change_input_type(it, it['id']))
 
-        to_add = self.rulez.get("/cwl/stage_out/user_inputs")
-        for it in to_add:
-            if where_is_dict:
-                where[it] = to_add[it]
-            else:
-                where.append(copy.deepcopy(self.__to_cwl_list(to_add[it], it)))
+        self.__update_zone_with_template(where, self.main_stage_in)
+        self.__update_zone_with_template(where, self.main_stage_out)
 
+        # print(the_i)
 
-
+        # to_add = self.rulez.get("/cwl/stage_out/user_inputs")
+        # for it in to_add:
+        #     if where_is_dict:
+        #         where[it] = to_add[it]
+        #     else:
+        #         where.append(copy.deepcopy(self.__to_cwl_list(to_add[it], it)))
 
     def __add_inputs_store_to_stage_out(self, where: dict):
         where_is_dict = self.__is_dict_or_list(where)
@@ -230,8 +314,8 @@ class Blender:
             self.__add_to_in(steps[start_node_name]['in'], it.id)
 
             the_command = copy.deepcopy(self.main_stage_in)  # self.main_stage_in.copy()
-            the_command_inputs = copy.deepcopy(the_command['inputs'])
-            the_command_outputs = copy.deepcopy(the_command['outputs'])
+            the_command_inputs = the_command['inputs']
+            the_command_outputs = the_command['outputs']
 
             if overwrite_input and len(the_command_inputs) > 0:
                 if type(the_command_inputs) is list:
@@ -251,10 +335,10 @@ class Blender:
                 the_val = self.rulez.get('/cwl/stage_in/Directory')
 
             if type(the_command_inputs) is list:
-                the_val['id'] = it.id
+                the_val['id'] = copy.deepcopy(it.id)
                 the_command_inputs.append(the_val)
             elif type(the_command_inputs) is dict:
-                the_command_inputs[it.id] = the_val
+                the_command_inputs[it.id] = copy.deepcopy(the_val)
 
             steps[start_node_name]['run'] = the_command
 
@@ -312,11 +396,19 @@ class Blender:
             elif type(steps[start_node_name]['in']) is dict:
                 steps[start_node_name]['in'][it.id] = '%s/%s' % (on_stage_node, it.id)
 
-            self.__add_inputs_store_to_stage_out(steps[start_node_name]['in'])
+            # self.__add_inputs_store_to_stage_out(steps[start_node_name]['in'])
 
             the_command = copy.deepcopy(self.main_stage_out)  # self.main_stage_in.copy()
             the_command_inputs = the_command['inputs']
             the_command_outputs = the_command['outputs']
+
+            if overwrite_input and len(the_command_inputs) > 0:
+                if type(the_command_inputs) is list:
+                    for i in the_command_inputs:
+                        self.__add_to_in(steps[start_node_name]['in'], i['id'])
+                elif type(the_command_inputs) is dict:
+                    for i in the_command_inputs:
+                        self.__add_to_in(steps[start_node_name]['in'], i)
 
             the_val = copy.deepcopy(self.rulez.get('/cwl/stage_out/Directory[]')) if it.is_array else copy.deepcopy(
                 self.rulez.get('/cwl/stage_out/Directory'))

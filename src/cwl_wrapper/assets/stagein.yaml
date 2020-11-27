@@ -10,6 +10,26 @@ arguments:
     valueFrom: "./"
 
 inputs: {}
+#    - doc: EO product for vegetation index
+#      id: the_id_1
+#      label: EO product for vegetation index
+#      type: string[]
+#    - doc: EO product for vegetation index
+#      id: the_id_2
+#      label: EO product for vegetation index
+#      type: Direcoty[]
+#      sss:
+#        sdsd: aaaa
+#        sadsad: dsad
+#inputs:
+#    the_id_1:
+#      doc: EO product for vegetation index
+#      label: EO product for vegetation index
+#      type: string[]
+#    the_id_2:
+#      doc: EO product for vegetation index
+#      label: EO product for vegetation index
+#      type: string[]
 outputs: {}
 requirements:
   EnvVarRequirement:
