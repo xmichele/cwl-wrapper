@@ -46,8 +46,16 @@ $graph:
           DockerRequirement:
             dockerPull: eoepca/stage-in:0.2
         id: stagein
-        inputs: {}
-        outputs: {}
+        inputs:
+          input_reference:
+            inputBinding:
+              position: 2
+            type: string
+        outputs:
+          input_reference_out:
+            outputBinding:
+              glob: .
+            type: Directory
         requirements:
           EnvVarRequirement:
             envDef:
@@ -71,8 +79,16 @@ $graph:
           DockerRequirement:
             dockerPull: eoepca/stage-in:0.2
         id: stagein
-        inputs: {}
-        outputs: {}
+        inputs:
+          input_reference2:
+            inputBinding:
+              position: 2
+            type: string
+        outputs:
+          input_reference2_out:
+            outputBinding:
+              glob: .
+            type: Directory
         requirements:
           EnvVarRequirement:
             envDef:

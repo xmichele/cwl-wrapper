@@ -313,8 +313,8 @@ class Blender:
             self.__add_to_in(steps[start_node_name]['in'], it.id)
 
             the_command = copy.deepcopy(self.main_stage_in)  # self.main_stage_in.copy()
-            the_command_inputs = copy.deepcopy(the_command['inputs'])
-            the_command_outputs = copy.deepcopy(the_command['outputs'])
+            the_command_inputs = the_command['inputs']
+            the_command_outputs = the_command['outputs']
 
             if overwrite_input and len(the_command_inputs) > 0:
                 if type(the_command_inputs) is list:
@@ -334,10 +334,10 @@ class Blender:
                 the_val = self.rulez.get('/cwl/stage_in/Directory')
 
             if type(the_command_inputs) is list:
-                the_val['id'] = it.id
+                the_val['id'] = copy.deepcopy(it.id)
                 the_command_inputs.append(the_val)
             elif type(the_command_inputs) is dict:
-                the_command_inputs[it.id] = the_val
+                the_command_inputs[it.id] = copy.deepcopy(the_val)
 
             steps[start_node_name]['run'] = the_command
 
