@@ -229,8 +229,8 @@ example
         position: 6
 ```
 
-
- 
+defines the template of [stage-output](assets/vegetation.wf.yaml#L171-L174) 
+and depends from the user output type 
 
 ### Usage
 
