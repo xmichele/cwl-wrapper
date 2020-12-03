@@ -245,7 +245,7 @@ requirements:
 In the new run, we have to update the parameter `stagein`:
 
 ```shell script
-python cwl-wrapper assets/vegetation.cwl  --stagein assets/stagein-test.cwl --output  assets/vegetation.wf_new_stagein.yaml
+python cwl-wrapper assets/vegetation.cwl  --stagein assets/stagein-test.cwl --output  vegetation.wf_new_stagein.yaml
 ```
 
 In the new output file [vegetation.wf_new_stagein.yaml](assets/vegetation.wf_new_stagein.yaml) have been added: 
@@ -262,7 +262,7 @@ In the new output file [vegetation.wf_new_stagein.yaml](assets/vegetation.wf_new
 The Stage-out template responds at the same rules of stage-in template, we only need to change the run parameters
 
 ```shell script
-python cwl-wrapper assets/vegetation.cwl  --stageout assets/stagein-test.cwl --output  assets/vegetation.wf_new_stageout.yaml
+python cwl-wrapper assets/vegetation.cwl  --stageout assets/stagein-test.cwl --output  vegetation.wf_new_stageout.yaml
 ```
 
 ##### New [maincwl.yaml](src/cwl_wrapper/assets/rules.yaml)
@@ -272,6 +272,66 @@ all the user's templates creating a new cwl workflow
 
 maincwl.yaml works with the [rules file](src/cwl_wrapper/assets/rules.yaml) where are defined the connection rules
 
+In [rules file](src/cwl_wrapper/assets/rules.yaml) are defined three entry points which they'll created or will linked to
+new workflow:
+
+* [stage-in](src/cwl_wrapper/assets/rules.yaml#L11-L12)
+* [onstage](src/cwl_wrapper/assets/rules.yaml#L19-L20)
+* [stage-out](src/cwl_wrapper/assets/rules.yaml#L22-L23)
+  
+
+Now we can try to change the maincwl.yaml adding a new custom step before the stage-in
+
+```yaml
+class: Workflow
+doc: Main stage manager
+id: stage-manager
+label: theStage
+inputs:
+  myinputs:
+      doc: myinputs doc
+      label: myinputs label
+      type: string
+outputs: {}
+requirements:
+  SubworkflowFeatureRequirement: {}
+  ScatterFeatureRequirement: {}
+steps:
+    custom_node:
+      in:
+        myinputs: myinputs
+      out:
+      - example_out
+      run:
+        class: CommandLineTool
+        baseCommand: do_something
+        inputs:
+          myinputs:
+            type: string
+            inputBinding:
+              prefix: --file
+        outputs:
+          example_out:
+            type: File
+            outputBinding:
+              glob: hello.txt
+    node_stage_in:
+      in:
+        custom_input: custom_node/example_out
+      out: []
+      run: ''
+```
+
+Run
+
+```shell script
+python cwl-wrapper assets/vegetation.cwl  --maincwl  ../assets/custom_main.cwl --output  vegetation.wf.custom_maincwl.yaml
+```
+
+The output file [vegetation.wf.custom_maincwl.yaml](assets/vegetation.wf.custom_maincwl.yaml)
+
+* [General inputs](assets/vegetation.wf.custom_maincwl.yaml#L25-L28)
+* [node_stage_in](assets/vegetation.wf.custom_maincwl.yaml#L77) link
 
 
 <!-- ROADMAP -->

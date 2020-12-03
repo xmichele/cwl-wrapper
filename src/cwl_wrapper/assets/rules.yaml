@@ -20,10 +20,10 @@ onstage:
     connection_node: on_stage
 
   stage_out:
+    connection_node: node_stage_out
     scatter: False
     if_scatter:
       scatterMethod: dotproduct
-    connection_node: node_stage_out
 
 
 output:
