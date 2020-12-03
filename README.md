@@ -107,7 +107,7 @@ The cwl-wrapper requires
 
 ### Examples
 
-In questa sezione studieremo come creare e cambiare i template del cwl-wrapper:
+In this section we will study how to create and change cwl-wrapper templates:
 
 * src/cwl_wrapper/assets/stagein.yaml
 * src/cwl_wrapper/assets/stageout.yaml
