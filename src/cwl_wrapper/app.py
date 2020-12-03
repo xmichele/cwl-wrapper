@@ -15,15 +15,15 @@ from .parser import Parser
 @click.option('--output', 
               'output', 
               default='-', 
-              help='.... maincwl.yaml')
+              help='default main cel template maincwl.yaml')
 @click.option('--stagein', 
               'stagein', 
               default=None,
-              help='.... stagein.yaml')
+              help='default stagein template stagein.yaml')
 @click.option('--stageout', 
               'stageout',
               default=None,
-              help='.... stageout.yaml')
+              help='default "stageout" template stageout.yaml')
 @click.option('--maincwl', 
               'maincwl', 
               default=None,
@@ -31,10 +31,12 @@ from .parser import Parser
 @click.option('--rulez', 
               'rulez', 
               default=None,
-              help='.... maincwl.yaml')
+              help='.... rules.yaml')
 @click.argument('cwl')
 def main(**kwargs):
-
+    """
+    The cwl-parser
+    """
     wf = Parser(kwargs)
     wf.write_output()
 

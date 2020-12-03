@@ -17,7 +17,7 @@ class Parser:
 
     def __init__(self, kwargs):
         # print(str(kwargs))
-        self.rulez = Rulez(kwargs["rulez"] if kwargs["rulez"] is not None else pkg_resources.resource_filename(__package__, "assets/rulez.yaml"))
+        self.rulez = Rulez(kwargs["rulez"] if kwargs["rulez"] is not None else pkg_resources.resource_filename(__package__, "assets/rules.yaml"))
         self.blender = Blender(kwargs, self.rulez)
         self.workflow = Workflow(kwargs, self.rulez)
         self.output_name = kwargs['output']
