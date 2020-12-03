@@ -101,18 +101,107 @@ parser:
 
 ### Usage
 
+The cwl-wrapper requires
+* user's CWL
+* 
 
 ### Examples
 
+In questa sezione studieremo come creare e cambiare i template del cwl-wrapper:
 
-
+* src/cwl_wrapper/assets/stagein.yaml
+* src/cwl_wrapper/assets/stageout.yaml
+* src/cwl_wrapper/assets/maincwl.yaml
+ 
 #### [vegetation.cwl](assets/vegetation.cwl)
 
-```yaml
+Default run
 
+```yaml
+$graph:
+  - baseCommand: vegetation-index
+    class: CommandLineTool
+    hints:
+      DockerRequirement:
+        dockerPull: eoepca/vegetation-index:0.2
+    id: clt
+    inputs:
+      inp1:
+        inputBinding:
+          position: 1
+          prefix: --input_reference
+        type: Directory
+      inp2:
+        inputBinding:
+          position: 2
+          prefix: --aoi
+        type: string
+    outputs:
+      results:
+        outputBinding:
+          glob: .
+        type: Directory
+    requirements:
+      EnvVarRequirement:
+        envDef:
+          PATH: /opt/anaconda/envs/env_vi/bin:/opt/anaconda/envs/env_vi/bin:/home/fbrito/.nvm/versions/node/v10.21.0/bin:/opt/anaconda/envs/notebook/bin:/opt/anaconda/bin:/usr/share/java/maven/bin:/opt/anaconda/bin:/opt/anaconda/envs/notebook/bin:/opt/anaconda/bin:/usr/share/java/maven/bin:/opt/anaconda/bin:/opt/anaconda/condabin:/opt/anaconda/envs/notebook/bin:/opt/anaconda/bin:/usr/lib64/qt-3.3/bin:/usr/share/java/maven/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/fbrito/.local/bin:/home/fbrito/bin:/home/fbrito/.local/bin:/home/fbrito/bin
+          PREFIX: /opt/anaconda/envs/env_vi
+      ResourceRequirement: {}
+    stderr: std.err
+    stdout: std.out
+  - class: Workflow
+    doc: Vegetation index processor, the greatest
+    id: vegetation-index
+    inputs:
+      aoi:
+        doc: Area of interest in WKT
+        label: Area of interest
+        type: string
+      input_reference:
+        doc: EO product for vegetation index
+        label: EO product for vegetation index
+        type: Directory[]
+      input_reference2:
+        doc: EO product for vegetation index
+        label: EO product for vegetation index
+        type: Directory[]
+    label: Vegetation index
+    outputs:
+      - id: wf_outputs
+        outputSource:
+          - node_1/results
+        type:
+          items: Directory
+          type: array
+    requirements:
+      - class: ScatterFeatureRequirement
+    steps:
+      node_1:
+        in:
+          inp1: input_reference
+          inp2: aoi
+        out:
+          - results
+        run: '#clt'
+        scatter: inp1
+        scatterMethod: dotproduct
+cwlVersion: v1.0
 ```
 
+```shell script
+python cwl-wrapper assets/vegetation.cwl  --output  assets/vegetation.wf.yaml
+```
 
+expected result is the file [vegetation.wf.yaml](assets/vegetation.wf.yaml) 
+
+In the new file, have been added the elements:
+
+* [General workflow](assets/vegetation.wf.yaml#L1)
+    * [node_stage_in... node_stage_in_x](assets/vegetation.wf.yaml#L53-L118)
+    * [on_stage](assets/vegetation.wf.yaml#L185-192)
+    * [node_stage_out](assets/vegetation.wf.yaml#L119-184)
+* [User CommandLineTool/vegetation-index](assets/vegetation.wf.yaml#L193-222)
+* [User Workflow](assets/vegetation.wf.yaml#L223-L258)
 
 
 
