@@ -41,12 +41,12 @@ cwl:
     Directory:
       type: string
       inputBinding:
-        position: 2
+        position: 2aa
 
     Directory[]:
       type: string[]
       inputBinding:
-        position: 2
+        position: 2bb
 
   stage_out:
     Directory:
@@ -69,8 +69,6 @@ cwl:
         outputBinding:
           glob: .
         type: Directory[]
-
-
     stepOut:
       type:
         items: Directory

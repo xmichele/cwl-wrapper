@@ -87,10 +87,17 @@ cwl-wrapper --help
 
 ### Configuration
  
-The rules, that establish connections and conventions with the user's cwl, are defined in 
+The rules, that establish connections and conventions with the user cwl, are defined in 
 [the cwl-wrapper configuration file](src/cwl_wrapper/assets/rules.yaml). 
 
 #### Rules
+
+```yaml
+rulez:
+  version: 1
+```
+
+`rulez -> version` defines the Rules version. Currently only version 1 is managed  
 
 ```yaml
 parser:
@@ -99,10 +106,136 @@ parser:
 
 `parser -> driver` defines the type of objects to be parsed
 
+---
+
+```yaml
+onstage:
+  driver: cwl
+
+  stage_in:
+    connection_node: node_stage_in
+    if_scatter:
+      scatterMethod: dotproduct
+
+  on_stage:
+    connection_node: on_stage
+
+  stage_out:
+    connection_node: node_stage_out
+```
+
+The `onstage` configuration is applied to `maincwl.yaml` file 
+
+`onstage -> driver` defines the driver to use during the translation: The result must be a `CWL` format
+
+`onstage -> stage_in` 
+
+`onstage -> stage_in -> connection_node` defines the anchor node name for `stage-in` start. If the node does not exist, the parser creates it.
+
+`onstage -> stage_in -> if_scatter` defines the conditions for `scatter` methods
+
+`onstage -> stage_in -> if_scatter -> scatterMethod` is the method to use for scatter feature
+
+`onstage -> on_stage`
+
+`onstage -> on_stage -> connection_node`  defines the anchor node name for `user node`. If the node does not exist, the parser creates it.
+
+`onstage -> stage_out -> connection_node` defines the anchor node name for `stage-out` start. If the node does not exist, the parser creates it.
+
+The `stage_in`, `stage_out` and `on-stage` nodes can be customized by user. 
+
+The Parser uses the node name as an anchor to start the phase.  
+
+[Base template](src/cwl_wrapper/assets/maincwl.yaml) example
+
+```yaml
+class: Workflow
+doc: Main stage manager
+id: stage-manager
+label: theStage
+inputs: []
+outputs: {}
+
+requirements:
+  SubworkflowFeatureRequirement: {}
+  ScatterFeatureRequirement: {}
+```
+
+---
+
+```yaml
+output:
+  driver: cwl
+  name: '-'
+  type: $graph
+```
+
+`output -> driver` defines the output driver, currently is defined only 'CWL' driver
+
+`output -> name` this parameter is deprecated
+
+`output -> type` defines the type of output
+
+* `$graph` if driver is `CWL` the output will be in one file using 
+[`$graph` entry point](https://www.commonwl.org/v1.1/SchemaSalad.html#Document_graph)
+
+Driver `CWL` needs the [templates to define the types](src/cwl_wrapper/assets/rules.yaml#L35-L75): 
+
+```yaml
+  GlobalInput:
+    Directory: string
+    Directory[]: string[]
+```
+
+defines the rules to replace the elements from user type to WPS type.   
+example:
+[user workflow](assets/vegetation.cwl#L40-L47) changes in 
+
+* [workflow input](assets/vegetation.wf.yaml#L11-L16)
+* [on-stage-parameters-in](assets/vegetation.wf.yaml#L188-L189)
+
+---
+
+```yaml
+  stage_in:
+    Directory:
+      type: string
+      inputBinding:
+        position: 2
+
+    Directory[]:
+      type: string[]
+      inputBinding:
+        position: 2
+```
+
+are the templates to link the user inputs
+example
+* [node_stage_in->input_reference](assets/vegetation.wf.yaml#L70-L73)
+* [node_stage_in_1->input_reference2](assets/vegetation.wf.yaml#L103-L106)
+
+---
+
+```yaml
+  stage_out:
+    Directory:
+      type: Directory
+      inputBinding:
+        position: 6
+
+    Directory[]:
+      type: Directory[]
+      inputBinding:
+        position: 6
+```
+
+
+ 
+
 ### Usage
 
 The cwl-wrapper requires
-* user's CWL
+* user CWL
 * 
 
 ### Examples
@@ -250,7 +383,7 @@ python cwl-wrapper assets/vegetation.cwl  --stagein assets/stagein-test.cwl --ou
 
 In the new output file [vegetation.wf_new_stagein.yaml](assets/vegetation.wf_new_stagein.yaml) have been added: 
 
-* New user's template
+* New user template
 * In the general workflow:
     * [parameter_A](assets/vegetation.wf_new_stagein.yaml#L29-L32)
     * [parameter_B](assets/vegetation.wf_new_stagein.yaml#L33-L36)
@@ -268,7 +401,7 @@ python cwl-wrapper assets/vegetation.cwl  --stageout assets/stagein-test.cwl --o
 ##### New [maincwl.yaml](src/cwl_wrapper/assets/rules.yaml)
 
 The [maincwl.yaml](src/cwl_wrapper/assets/rules.yaml) is the workflow where the cwl-wrapper pastes 
-all the user's templates creating a new cwl workflow
+all the user templates creating a new cwl workflow
 
 maincwl.yaml works with the [rules file](src/cwl_wrapper/assets/rules.yaml) where are defined the connection rules
 
