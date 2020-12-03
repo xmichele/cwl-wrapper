@@ -9,7 +9,15 @@ arguments:
     position: 1
     valueFrom: "./"
 
-inputs: {}
+inputs:
+    parameter_A:
+      doc: EO product for vegetation index
+      label: EO product for vegetation index
+      type: string[]
+    parameter_B:
+      doc: EO product for vegetation index
+      label: EO product for vegetation index
+      type: string[]
 outputs: {}
 requirements:
   EnvVarRequirement:

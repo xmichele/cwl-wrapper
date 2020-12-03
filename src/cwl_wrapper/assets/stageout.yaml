@@ -41,11 +41,6 @@ hints:
   DockerRequirement:
     dockerPull: eoepca/stage-out:0.2
 
-
-
-
-
-
 #  stage-out --source ../application-chaining/data.txt --endpoint https://catalog.terradue.com/fbrito --username fbrito --apikey AKCp5fTQyru....QmFRGschMFx6pgkAos2qGzPbpMLjSTmfxJdJtFh --store-host https://nx10438.your-storageshare.de/ --store-username 'eoepca-demo-storage' --store-apikey U...U --job abdfghijkhl
 requirements:
   EnvVarRequirement:

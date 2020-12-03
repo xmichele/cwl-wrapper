@@ -204,14 +204,74 @@ In the new file, have been added the elements:
 * [User Workflow](assets/vegetation.wf.yaml#L223-L258)
 
 
-##### New Stagein
+##### New [Stage-in](src/cwl_wrapper/assets/stagein.yaml)
+
+In the new [stage-in](assets/stagein-test.cwl) we are going to add two new parameters
+
+* parameter_A
+* paraneter_B  
 
 ```yaml
+baseCommand: stage-in
+class: CommandLineTool
+hints:
+  DockerRequirement:
+    dockerPull: eoepca/stage-in:0.2
+id: stagein
+arguments:
+  - prefix: -t
+    position: 1
+    valueFrom: "./"
 
-
+inputs: 
+    parameter_A:
+      doc: EO product for vegetation index
+      label: EO product for vegetation index
+      type: string[]
+    parameter_B:
+      doc: EO product for vegetation index
+      label: EO product for vegetation index
+      type: string[]
+outputs: {}
+requirements:
+  EnvVarRequirement:
+    envDef:
+      PATH: /opt/anaconda/envs/env_stagein/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  ResourceRequirement: {}
 ```
 
+> the inputs can be written in Dict or List format 
  
+In the new run, we have to update the parameter `stagein`:
+
+```shell script
+python cwl-wrapper assets/vegetation.cwl  --stagein assets/stagein-test.cwl --output  assets/vegetation.wf_new_stagein.yaml
+```
+
+In the new output file [vegetation.wf_new_stagein.yaml](assets/vegetation.wf_new_stagein.yaml) have been added: 
+
+* New user's template
+* In the general workflow:
+    * [parameter_A](assets/vegetation.wf_new_stagein.yaml#L29-L32)
+    * [parameter_B](assets/vegetation.wf_new_stagein.yaml#L33-L36)
+* node_stage_in -> in -> [parameters](assets/vegetation.wf_new_stagein.yaml#L64-L65)
+* node_stage_in_1 -> in -> [parameters](assets/vegetation.wf_new_stagein.yaml#L107-L108)
+
+##### New [Stage-out](src/cwl_wrapper/assets/stageout.yaml)
+
+The Stage-out template responds at the same rules of stage-in template, we only need to change the run parameters
+
+```shell script
+python cwl-wrapper assets/vegetation.cwl  --stageout assets/stagein-test.cwl --output  assets/vegetation.wf_new_stageout.yaml
+```
+
+##### New [maincwl.yaml](src/cwl_wrapper/assets/rules.yaml)
+
+The [maincwl.yaml](src/cwl_wrapper/assets/rules.yaml) is the workflow where the cwl-wrapper pastes 
+all the user's templates creating a new cwl workflow
+
+maincwl.yaml works with the [rules file](src/cwl_wrapper/assets/rules.yaml) where are defined the connection rules
+
 
 
 <!-- ROADMAP -->
