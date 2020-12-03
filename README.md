@@ -204,7 +204,14 @@ In the new file, have been added the elements:
 * [User Workflow](assets/vegetation.wf.yaml#L223-L258)
 
 
+##### New Stagein
 
+```yaml
+
+
+```
+
+ 
 
 
 <!-- ROADMAP -->
