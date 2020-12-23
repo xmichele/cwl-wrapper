@@ -15,23 +15,27 @@ from .parser import Parser
 @click.option('--output', 
               'output', 
               default='-', 
-              help='default main cel template maincwl.yaml')
+              help='default main cel template assets/maincwl.yaml')
 @click.option('--stagein', 
               'stagein', 
               default=None,
-              help='default stagein template stagein.yaml')
+              help='default stagein template assets/stagein.yaml')
 @click.option('--stageout', 
               'stageout',
               default=None,
-              help='default "stageout" template stageout.yaml')
+              help='default "stageout" template assets/stageout.yaml')
 @click.option('--maincwl', 
               'maincwl', 
               default=None,
-              help='.... maincwl.yaml')
+              help='default maincwl assets/maincwl.yaml')
 @click.option('--rulez', 
               'rulez', 
               default=None,
-              help='.... rules.yaml')
+              help='rules default file assets/rules.yaml')
+@click.option('--assets',
+              'assets',
+              default=None,
+              help='use <value> as maincwl from assets/<values>')
 @click.argument('cwl')
 def main(**kwargs):
     """

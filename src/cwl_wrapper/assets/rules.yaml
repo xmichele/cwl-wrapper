@@ -24,6 +24,7 @@ onstage:
     scatter: False
     if_scatter:
       scatterMethod: dotproduct
+    follow_node: node_metrics_out
 
 
 output:

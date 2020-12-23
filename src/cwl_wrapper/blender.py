@@ -17,7 +17,7 @@ class Blender:
         self.outputs = []
 
     @staticmethod
-    def __prepare_step_run(step, name):
+    def __prepare_step_run(step, name, main_node_in=None):
         if name not in step:
             step[name] = {}
         if 'run' not in step[name]:
@@ -31,6 +31,8 @@ class Blender:
 
         if 'in' not in step[name]:
             step[name]['in'] = {}
+            if main_node_in is not None and 'in' in main_node_in:
+                step[name]['in'] = copy.deepcopy(main_node_in['in'])
 
     @staticmethod
     def __to_cwl_dict(param: dict):
@@ -113,6 +115,13 @@ class Blender:
                     where[pid] = directories_out[pid]
                 else:
                     where[pid] = pid
+
+    def __connect_to_stage_out(self, what: dict, steps):
+        follow_node = self.rulez.get('/onstage/stage_out/follow_node')
+
+        if follow_node != '' and follow_node in steps and 'in' in steps[follow_node]  and len(what) > 0:
+            for d in what:
+                steps[follow_node]['in'][d]=what[d]
 
     def __create_global_cwl_outputs(self, where, stage_out_dir):
 
@@ -203,9 +212,9 @@ class Blender:
                         obj = copy.deepcopy(it)
 
                     if type(where) is dict:
-                        where[inner_id] = self.__get_essential(obj,inner_id)
+                        where[inner_id] = self.__get_essential(obj, inner_id)
                     else:
-                        where.append(self.__get_essential(obj,inner_id))
+                        where.append(self.__get_essential(obj, inner_id))
 
                     # if type(id) is str:
                     #     inner_id = id
@@ -306,10 +315,16 @@ class Blender:
         start_node_name = connection_node_node_stage_in
         overwrite_input = self.rulez.get('/onstage/stage_in/input/template/overwrite')
 
+        in_main_template = None
+
+        if connection_node_node_stage_in in steps and 'in' in steps[connection_node_node_stage_in]:
+            in_main_template = copy.deepcopy(steps[connection_node_node_stage_in])
+
         # stage in
         for it in self.inputs:
             # print(str(it))
-            self.__prepare_step_run(steps, start_node_name)
+            # print(f'Nodo: {start_node_name}  ')
+            self.__prepare_step_run(steps, start_node_name, in_main_template)
 
             self.__add_to_in(steps[start_node_name]['in'], it.id)
 
@@ -449,6 +464,7 @@ class Blender:
             start_node_name = '%s_%d' % (start_node_name, cursor)
 
         self.__create_global_cwl_outputs(start['outputs'], nodes_out)
+        self.__connect_to_stage_out(nodes_out, steps)
 
         return start
 

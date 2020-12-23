@@ -26,6 +26,10 @@ class Parser:
             with open(kwargs["maincwl"] if kwargs["maincwl"] is not None else pkg_resources.resource_filename(__package__, "assets/maincwl.yaml")) as f:
                 self.blender.set_main_workflow(load_yaml_file(f))
 
+            if kwargs["assets"] is not None:
+                with open(pkg_resources.resource_filename(__package__, f'assets/{kwargs["assets"]}')) as f:
+                    self.blender.set_main_workflow(load_yaml_file(f))
+
             with open(kwargs["stagein"] if kwargs["stagein"] is not None else pkg_resources.resource_filename(__package__, "assets/stagein.yaml")) as f:
                 self.blender.set_stage_in(load_yaml_file(f))
 
