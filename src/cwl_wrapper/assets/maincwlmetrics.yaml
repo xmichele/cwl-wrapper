@@ -11,10 +11,6 @@ inputs:
     doc: process
     label: process
     type: string
-  event:
-    doc: event
-    label: event
-    type: string
 
 outputs: {}
 
@@ -28,7 +24,6 @@ steps:
     in:
       inp1: workflow
       inp2: process
-      inp3: event
     out:
       - results
     run:
@@ -38,6 +33,10 @@ steps:
           dockerPull: terradue/metrics:0.1
       class: CommandLineTool
       id: clt
+      arguments:
+        - prefix: --event
+          position: 3
+          valueFrom: "started"
       inputs:
         inp1:
           inputBinding:
@@ -46,13 +45,8 @@ steps:
           type: string
         inp2:
           inputBinding:
-            position: 1
+            position: 2
             prefix: --process
-          type: string
-        inp3:
-          inputBinding:
-            position: 1
-            prefix: --event
           type: string
       outputs:
         results:
@@ -83,7 +77,6 @@ steps:
     in:
       inp1: workflow
       inp2: process
-      inp3: event
 
     out:
       - results
@@ -94,6 +87,10 @@ steps:
           dockerPull: terradue/metrics:0.1
       class: CommandLineTool
       id: clt
+      arguments:
+        - prefix: --event
+          position: 3
+          valueFrom: "succeeded"
       inputs:
         inp1:
           inputBinding:
@@ -104,11 +101,6 @@ steps:
           inputBinding:
             position: 1
             prefix: --process
-          type: string
-        inp3:
-          inputBinding:
-            position: 1
-            prefix: --event
           type: string
       outputs:
         results:
