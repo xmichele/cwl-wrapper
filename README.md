@@ -502,3 +502,6 @@ Project Link: [https://github.com/EOEPCA/proc-ades](https://github.com/EOEPCA/pr
 * README.md is based on [this template](https://github.com/othneildrew/Best-README-Template) by 
 [Othneil Drew](https://github.com/othneildrew).
 
+## Try me on Binder
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/EOEPCA/cwl-wrapper/develop)
