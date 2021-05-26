@@ -175,12 +175,16 @@ class Blender:
         
             if v.is_array and "?" in where['type']:
                 where['type'] = self.rulez.get('/cwl/OptionalInput/Directory[]')  # 'string[]'
+                return where
             elif v.is_array:
                 where['type'] = self.rulez.get('/cwl/GlobalInput/Directory[]')  # 'string[]':
+                return where
             elif "?" in where['type']:
                 where['type'] = self.rulez.get('/cwl/OptionalInput/Directory')
+                return where
             else:
                 where['type'] = self.rulez.get('/cwl/GlobalInput/Directory')
+                return where
 
         return where
 

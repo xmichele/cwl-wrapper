@@ -39,8 +39,8 @@ cwl:
     Directory[]: string[]
   
   OptionalInput:
-    Directory?: string?
-    Directory[]?: string[]?
+    Directory: string?
+    Directory[]: string[]?
     
   stage_in:
     Directory:
