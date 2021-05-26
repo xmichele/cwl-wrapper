@@ -1,7 +1,7 @@
 class: Workflow
 doc: Main stage manager
-id: stage-manager
-label: theStage
+id: main
+label: macro-cwl
 inputs: {}
 outputs: {}
 

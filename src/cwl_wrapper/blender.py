@@ -27,7 +27,7 @@ class Blender:
             step[name]['out'] = []
         else:
             if type(step[name]['out']) is not list:
-                raise Exception('Step output can be only array')
+                raise Exception('Step output can be only an array')
 
         if 'in' not in step[name]:
             step[name]['in'] = {}
@@ -100,7 +100,7 @@ class Blender:
         inp = copy.deepcopy(self.user_wf.get_raw_all_inputs())
 
         if type(where) is not dict:
-            raise Exception('on_stage -> in mast be a dict')
+            raise Exception('on_stage -> in must be a dict')
 
         for it in inp:
             if type(it) is str:
