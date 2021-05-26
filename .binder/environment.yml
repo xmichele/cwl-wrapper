@@ -1,0 +1,7 @@
+channels:
+  - terradue
+  - conda-forge
+dependencies:
+  - jinja2
+  - pyyaml
+  - click
