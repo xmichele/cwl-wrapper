@@ -12,15 +12,19 @@ onstage:
     connection_node: node_stage_in
     if_scatter:
       scatterMethod: dotproduct
+    input:
+      template:
+        overwrite: True
 
   on_stage:
     connection_node: on_stage
 
   stage_out:
+    connection_node: node_stage_out
     scatter: False
     if_scatter:
       scatterMethod: dotproduct
-    connection_node: node_stage_out
+    follow_node: node_metrics_out
 
 
 output:
@@ -33,7 +37,11 @@ cwl:
   GlobalInput:
     Directory: string
     Directory[]: string[]
-
+  
+  OptionalInput:
+    Directory: string?
+    Directory[]: string[]?
+    
   stage_in:
     Directory:
       type: string
@@ -56,34 +64,6 @@ cwl:
       inputBinding:
         position: 6
 
-    # only dict
-    user_inputs:
-      job:
-        id: 'job'
-        label: ''
-        doc: ''
-        type: string
-      store_host:
-        id: 'store_host'
-        label: ''
-        doc: ''
-        type: string
-      store_username:
-        id: 'store_username'
-        label: ''
-        doc: ''
-        type: string
-      store_apikey:
-        id: 'store_apikey'
-        label: ''
-        doc: ''
-        type: string
-      outputfile:
-        id: 'outputfile'
-        label: ''
-        doc: ''
-        type: string
-
   outputBindingResult:
     command:
       Directory:
@@ -94,8 +74,6 @@ cwl:
         outputBinding:
           glob: .
         type: Directory[]
-
-
     stepOut:
       type:
         items: Directory

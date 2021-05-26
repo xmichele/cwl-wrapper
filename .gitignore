@@ -7,3 +7,7 @@ build
 .ipynb_checkpoints
 *.egg-info
 **/run.sh
+.idea
+.vscode
+*.pyc
+.DS_Store

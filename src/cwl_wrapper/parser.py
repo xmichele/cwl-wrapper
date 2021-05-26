@@ -17,7 +17,7 @@ class Parser:
 
     def __init__(self, kwargs):
         # print(str(kwargs))
-        self.rulez = Rulez(kwargs["rulez"] if kwargs["rulez"] is not None else pkg_resources.resource_filename(__package__, "assets/rulez.yaml"))
+        self.rulez = Rulez(kwargs["rulez"] if kwargs["rulez"] is not None else pkg_resources.resource_filename(__package__, "assets/rules.yaml"))
         self.blender = Blender(kwargs, self.rulez)
         self.workflow = Workflow(kwargs, self.rulez)
         self.output_name = kwargs['output']
@@ -25,6 +25,10 @@ class Parser:
         if self.rulez.get('/parser/driver') == "cwl":
             with open(kwargs["maincwl"] if kwargs["maincwl"] is not None else pkg_resources.resource_filename(__package__, "assets/maincwl.yaml")) as f:
                 self.blender.set_main_workflow(load_yaml_file(f))
+
+            if kwargs["assets"] is not None:
+                with open(pkg_resources.resource_filename(__package__, f'assets/{kwargs["assets"]}')) as f:
+                    self.blender.set_main_workflow(load_yaml_file(f))
 
             with open(kwargs["stagein"] if kwargs["stagein"] is not None else pkg_resources.resource_filename(__package__, "assets/stagein.yaml")) as f:
                 self.blender.set_stage_in(load_yaml_file(f))

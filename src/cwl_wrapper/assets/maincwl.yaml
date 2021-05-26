@@ -1,7 +1,7 @@
 class: Workflow
 doc: Main stage manager
-id: stage-manager
-label: theStage
+id: main
+label: macro-cwl
 inputs: {}
 outputs: {}
 
@@ -21,7 +21,7 @@ requirements:
 #    run: ''
 #
 #  node_stage_out:
-#    in: []
+#    in: {}
 #    out: []
 #    run: ''
 
