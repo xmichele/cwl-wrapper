@@ -37,7 +37,11 @@ cwl:
   GlobalInput:
     Directory: string
     Directory[]: string[]
-
+  
+  OptionalInput:
+    Directory: string?
+    Directory[]: string[]?
+    
   stage_in:
     Directory:
       type: string
