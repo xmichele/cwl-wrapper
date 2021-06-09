@@ -9,8 +9,8 @@ from typing import (
 )
 
 
+from cwl_wrapper.parser import Parser
 
-from .parser import Parser
 @click.command()
 @click.option('--output', 
               'output', 

@@ -66,6 +66,13 @@ class Blender:
             where[what] = what
 
     @staticmethod
+    def __add_input_to_in(where, what):
+        if type(where) is list:
+            where.append('%s:%s' % ("input", what))
+        elif type(where) is dict:
+            where["input"] = what
+
+    @staticmethod
     def __exist_here(where, what):
         if type(where) is dict:
             return what in where.keys()
@@ -335,7 +342,7 @@ class Blender:
             # print(f'Nodo: {start_node_name}  ')
             self.__prepare_step_run(steps, start_node_name, in_main_template)
 
-            self.__add_to_in(steps[start_node_name]['in'], it.id)
+            self.__add_input_to_in(steps[start_node_name]['in'], it.id)
 
             the_command = copy.deepcopy(self.main_stage_in)  # self.main_stage_in.copy()
             the_command_inputs = the_command['inputs']
@@ -362,7 +369,7 @@ class Blender:
                 the_val['id'] = copy.deepcopy(it.id)
                 the_command_inputs.append(the_val)
             elif type(the_command_inputs) is dict:
-                the_command_inputs[it.id] = copy.deepcopy(the_val)
+                the_command_inputs["input"] = copy.deepcopy(the_val)
 
             steps[start_node_name]['run'] = the_command
 
