@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: cwl-wrapper",
+            "type": "python",
+            "request": "launch",
+            "module": "cwl_wrapper.app",
+            "args": [
+                "--stagein",
+                "${workspaceFolder}/tests/in.cwl",
+                "--stageout",
+                "${workspaceFolder}/tests/in.cwl",
+                "${workspaceFolder}/tests/t.cwl"
+            ],
+            "cwd": "${workspaceFolder}/src"
+        }
+    ]
+}
