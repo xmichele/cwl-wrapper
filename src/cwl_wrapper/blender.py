@@ -388,7 +388,7 @@ class Blender:
 
             # check scattering
             if it.is_array:
-                steps[start_node_name]['scatter'] = it.id
+                steps[start_node_name]['scatter'] = "input"
                 steps[start_node_name]['scatterMethod'] = self.rulez.get('/onstage/stage_in/if_scatter/scatterMethod')
 
             cursor = cursor + 1
