@@ -31,22 +31,24 @@ pipeline {
         }
         stage('Deploy') {            
             steps { 
-                if (params.deployDest == "terradue"){
-                    withCredentials([string(credentialsId: 'terradue-conda', variable: 'ANACONDA_API_TOKEN')]) {
-                    sh '''#!/usr/bin/env bash
-                    export PACKAGENAME=cwl-wrapper
-                    label=main
-                    if [ "$GIT_BRANCH" = "develop" ]; then label=dev; fi
-                    anaconda upload --no-progress --force --user Terradue --label $label /srv/conda/envs/env_conda/conda-bld/*/$PACKAGENAME-*.tar.bz2
-                    '''}
-                } else {
-                  withCredentials([string(credentialsId: 'eoepca-conda', variable: 'ANACONDA_API_TOKEN')]) {
-                    sh '''#!/usr/bin/env bash
-                    export PACKAGENAME=cwl-wrapper
-                    label=main
-                    if [ "$GIT_BRANCH" = "develop" ]; then label=dev; fi
-                    anaconda upload --no-progress --force --user eoepca --label $label /srv/conda/envs/env_conda/conda-bld/*/$PACKAGENAME-*.tar.bz2
-                    '''}
+                script{
+                    if (params.deployDest == "terradue"){
+                        withCredentials([string(credentialsId: 'terradue-conda', variable: 'ANACONDA_API_TOKEN')]) {
+                        sh '''#!/usr/bin/env bash
+                        export PACKAGENAME=cwl-wrapper
+                        label=main
+                        if [ "$GIT_BRANCH" = "develop" ]; then label=dev; fi
+                        anaconda upload --no-progress --force --user Terradue --label $label /srv/conda/envs/env_conda/conda-bld/*/$PACKAGENAME-*.tar.bz2
+                        '''}
+                    } else {
+                    withCredentials([string(credentialsId: 'eoepca-conda', variable: 'ANACONDA_API_TOKEN')]) {
+                        sh '''#!/usr/bin/env bash
+                        export PACKAGENAME=cwl-wrapper
+                        label=main
+                        if [ "$GIT_BRANCH" = "develop" ]; then label=dev; fi
+                        anaconda upload --no-progress --force --user eoepca --label $label /srv/conda/envs/env_conda/conda-bld/*/$PACKAGENAME-*.tar.bz2
+                        '''}
+                    }
                 }
             }
         }
