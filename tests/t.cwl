@@ -34,7 +34,7 @@ $graph:
         input product (MSS + PAN)
       label: Path of the directory that contains the catalog.json of the calibrated
         input product (MSS + PAN)
-      type: Directory
+      type: Directory[]
     input_path_pan:
       doc: Path of the directory that contains the catalog.json of the PAN-calibrated
         input product (if not included in the input_path)
