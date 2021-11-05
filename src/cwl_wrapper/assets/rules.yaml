@@ -56,13 +56,9 @@ cwl:
   stage_out:
     Directory:
       type: Directory
-      inputBinding:
-        position: 6
 
     Directory[]:
       type: Directory[]
-      inputBinding:
-        position: 6
 
   outputBindingResult:
     command:
