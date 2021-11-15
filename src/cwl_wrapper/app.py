@@ -36,6 +36,11 @@ from cwl_wrapper.parser import Parser
               'assets',
               default=None,
               help='use <value> as maincwl from assets/<values>')
+@click.option('--startworkflowid',
+              'startworkflowid',
+              default=None,
+              help='Starting workflow')
+              
 @click.argument('cwl')
 def main(**kwargs):
     """
