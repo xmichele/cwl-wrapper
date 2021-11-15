@@ -4,7 +4,6 @@ import copy
 from yaml import full_load
 from collections import OrderedDict
 
-
 class InputBinding:
     def __init__(self, ib):
         self.position = ib.get('position', None)
@@ -81,12 +80,27 @@ class Workflow:
 
         return None
 
-    def __init__(self, file_cwl):
+
+    @staticmethod
+    def get_workflow_from_id(cwl, workflowid):
+        graph = cwl['$graph']
+        for it in graph:
+            if 'class' in it:
+                if it['class'] == "Workflow" and it['id']==workflowid :
+                    return it
+        return None
+
+    def __init__(self, file_cwl, startworkflowid=None):
 
         with open(file_cwl) as f:
             self.raw_workflow = full_load(f)
 
-        if '$graph' in self.raw_workflow:
+        if startworkflowid is not None: 
+            jworkflow= self.get_workflow_from_id(self.raw_workflow,startworkflowid)
+            if jworkflow is None:
+               raise ValueError('The provided workflow id is not present in the cwl.') 
+
+        elif '$graph' in self.raw_workflow:
             jworkflow = self.graph_parser(self.raw_workflow)
             if jworkflow is None:
                 raise ValueError('Wrong Workflow')
