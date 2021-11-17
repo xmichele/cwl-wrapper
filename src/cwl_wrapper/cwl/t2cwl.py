@@ -97,6 +97,8 @@ class Workflow:
         startworkflowid = None
         if "#" in file_cwl:
             startworkflowid = file_cwl.rsplit('#', 1)[1]
+            if startworkflowid == "":
+                raise ValueError('No value after the hashtag was found.')
             file_cwl = file_cwl.replace(f"#{startworkflowid}", '')
 
         with open(file_cwl) as f:
