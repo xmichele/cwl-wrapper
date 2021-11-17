@@ -86,20 +86,24 @@ class Workflow:
         graph = cwl['$graph']
         for it in graph:
             if 'class' in it:
-                if it['class'] == "Workflow" and it['id']==workflowid :
+                if it['class'] == "Workflow" and it['id'] == workflowid:
                     return it
         return None
 
-    def __init__(self, file_cwl, startworkflowid=None):
+    def __init__(self, file_cwl):
+
+        # retrieve starting workflow id if specified
+        # store to to startworkflowid variable and remove it from file path
+        startworkflowid = None
+        if "#" in file_cwl:
+            startworkflowid = file_cwl.rsplit('#', 1)[1]
+            file_cwl = file_cwl.replace(f"#{startworkflowid}", '')
 
         with open(file_cwl) as f:
             self.raw_workflow = full_load(f)
 
         if startworkflowid is not None: 
             jworkflow= self.get_workflow_from_id(self.raw_workflow,startworkflowid)
-            if jworkflow is None:
-               raise ValueError('The provided workflow id is not present in the cwl.') 
-
         elif '$graph' in self.raw_workflow:
             jworkflow = self.graph_parser(self.raw_workflow)
             if jworkflow is None:
@@ -165,7 +169,7 @@ class CWLParserTool:
     raw_workflow = None
 
     def __init__(self, file_cwl):
-        with open(file_cwl) as f:
+        with open(file_cwl.rsplit('#', 1)[0]) as f:
             self.raw_workflow = full_load(f)
 
     def get_non_graph(self):
