@@ -338,7 +338,6 @@ class Blender:
 
         # stage in
         for it in self.inputs:
-            # print(str(it))
             # print(f'Nodo: {start_node_name}  ')
             self.__prepare_step_run(steps, start_node_name, in_main_template)
 
@@ -423,9 +422,9 @@ class Blender:
             self.__prepare_step_run(steps, start_node_name)
 
             if type(steps[start_node_name]['in']) is list:
-                steps[start_node_name]['in'].append('%s:%s/%s' % (it.id, on_stage_node, it.id))
+                steps[start_node_name]['in'].append('%s:%s/%s' % ("wf_outputs", on_stage_node, it.id))
             elif type(steps[start_node_name]['in']) is dict:
-                steps[start_node_name]['in'][it.id] = '%s/%s' % (on_stage_node, it.id)
+                steps[start_node_name]['in']["wf_outputs"] = '%s/%s' % (on_stage_node, it.id)
 
             # self.__add_inputs_store_to_stage_out(steps[start_node_name]['in'])
 
@@ -449,11 +448,10 @@ class Blender:
                 the_val = self.rulez.get('/cwl/stage_out/Directory')
 
             if type(the_command_inputs) is list:
-                the_val['id'] = it.id
+                the_val['id'] = "wf_outputs"
                 the_command_inputs.append(the_val)
             elif type(the_command_inputs) is dict:
-                the_command_inputs[it.id] = the_val
-
+                the_command_inputs["wf_outputs"] = the_val
             steps[start_node_name]['run'] = the_command
 
             # command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command'))
@@ -473,7 +471,7 @@ class Blender:
 
             # check scattering
             if it.is_array and self.rulez.get('/onstage/stage_out/scatter'):
-                steps[start_node_name]['scatter'] = it.id
+                steps[start_node_name]['scatter'] = "wf_outputs"
                 steps[start_node_name]['scatterMethod'] = self.rulez.get('/onstage/stage_in/stage_out/scatterMethod')
 
             cursor = cursor + 1
