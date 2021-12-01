@@ -108,10 +108,11 @@ class Workflow:
             jworkflow= self.get_workflow_from_id(self.raw_workflow,startworkflowid)
         elif '$graph' in self.raw_workflow:
             jworkflow = self.graph_parser(self.raw_workflow)
-            if jworkflow is None:
-                raise ValueError('Wrong Workflow')
         else:
             jworkflow = self.raw_workflow
+
+        if jworkflow is None:
+            raise ValueError('Wrong Workflow')
 
         try:
             self.tool_class = jworkflow['class']
