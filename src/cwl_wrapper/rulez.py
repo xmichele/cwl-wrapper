@@ -18,13 +18,13 @@ class Rulez:
                     return a
                 else:
                     obj = obj[val[i]]
-        return ''
+        return ""
 
     def get(self, item):
         if item in self.prop:
             return self.prop[item]
 
-        val = item.split('/')
-        if len(val) == 1 and val[0] == '':
+        val = item.split("/")
+        if len(val) == 1 and val[0] == "":
             return self.rulez
-        return self.__get(val,item)
+        return self.__get(val, item)

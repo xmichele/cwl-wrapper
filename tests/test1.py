@@ -1,8 +1,11 @@
 import sys
+
 import click
 from click2cwl import dump
 
-# test1 -i a --dump cwl --requirement ramMax=1 --requirement ramMin=2 --docker aaa  --env a=1 --env b=2
+
+# test1 -i a --dump cwl --requirement ramMax=1
+# --requirement ramMin=2 --docker aaa  --env a=1 --env b=2
 @click.command(
     short_help="hello Im the label of Workflow class",
     help="hello Im the doc of Workflow class",
@@ -44,9 +47,7 @@ from click2cwl import dump
     help="help for the conf file",
     type=click.File(mode="w"),
 )
-@click.option(
-    "--mode", "-m", "mode", type=click.Choice(["local", "ftp"]), required=False
-)
+@click.option("--mode", "-m", "mode", type=click.Choice(["local", "ftp"]), required=False)
 @click.pass_context
 def main(ctx, **kwargs):
 
@@ -56,6 +57,7 @@ def main(ctx, **kwargs):
     print(kwargs)
 
     sys.exit(0)
-    
+
+
 if __name__ == "__main__":
     main()
