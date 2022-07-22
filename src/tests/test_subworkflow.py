@@ -77,7 +77,7 @@ class TestSubworkflowCwl(unittest.TestCase):
         cwl = f"{self.app_cwl_file}#{workflowId}"
         rulez = None
         output = self.temp_output_file.name
-        output = "ref.cwl"
+        # output = "ref.cwl"
         maincwl = None
         stagein = self.stagein_cwl_file
         stageout = self.stageout_cwl_file
@@ -130,7 +130,7 @@ class TestSubworkflowCwl(unittest.TestCase):
 
         rulez = None
         output = self.temp_output_file.name
-        output = "cwl.cwl"
+        # output = "cwl.cwl"
         maincwl = None
         stagein = self.stagein_cwl_file
         stageout = self.stageout_cwl_file
