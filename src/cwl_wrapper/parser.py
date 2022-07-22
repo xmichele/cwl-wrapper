@@ -16,41 +16,39 @@ class Parser:
     out = None
     output_name = "-"
 
-    def __init__(self, kwargs):
+    def __init__(self, cwl, output, stagein, stageout, maincwl, rulez, assets, workflow_id=None):
+
         # print(str(kwargs))
         self.rulez = Rulez(
-            kwargs["rulez"]
-            if kwargs["rulez"] is not None
+            rulez
+            if rulez is not None
             else pkg_resources.resource_filename(__package__, "assets/rules.yaml")
         )
-        self.blender = Blender(kwargs, self.rulez)
-        self.workflow = Workflow(kwargs, self.rulez)
-        self.output_name = kwargs["output"]
-
+        self.blender = Blender(self.rulez)
+        self.workflow = Workflow(cwl, self.rulez, workflow_id)
+        self.output_name = output
         if self.rulez.get("/parser/driver") == "cwl":
             with open(
-                kwargs["maincwl"]
-                if kwargs["maincwl"] is not None
+                maincwl
+                if maincwl is not None
                 else pkg_resources.resource_filename(__package__, "assets/maincwl.yaml")
             ) as f:
                 self.blender.set_main_workflow(load_yaml_file(f))
 
-            if kwargs["assets"] is not None:
-                with open(
-                    pkg_resources.resource_filename(__package__, f'assets/{kwargs["assets"]}')
-                ) as f:
+            if assets is not None:
+                with open(pkg_resources.resource_filename(__package__, f"assets/{assets}")) as f:
                     self.blender.set_main_workflow(load_yaml_file(f))
 
             with open(
-                kwargs["stagein"]
-                if kwargs["stagein"] is not None
+                stagein
+                if stagein is not None
                 else pkg_resources.resource_filename(__package__, "assets/stagein.yaml")
             ) as f:
                 self.blender.set_stage_in(load_yaml_file(f))
 
             with open(
-                kwargs["stageout"]
-                if kwargs["stageout"] is not None
+                stageout
+                if stageout is not None
                 else pkg_resources.resource_filename(__package__, "assets/stageout.yaml")
             ) as f:
                 self.blender.set_stage_out(load_yaml_file(f))
@@ -66,7 +64,7 @@ class Parser:
                 if self.rulez.get("/output/driver") == "cwl":
                     self.out = {"$graph": [self.out]}
 
-                    psa = CWLParserTool(kwargs["cwl"])
+                    psa = CWLParserTool(cwl)
 
                     if psa.is_graph():
                         graph_res = psa.get_graph_classes()

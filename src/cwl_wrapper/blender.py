@@ -5,14 +5,14 @@ from .workflow import Workflow
 
 
 class Blender:
-    def __init__(self, kwargs, rulez: Rulez):
+    def __init__(self, rulez: Rulez):
         self.rulez = rulez
         self.main_wf = None
         self.main_stage_in = None
         self.main_stage_out = None
 
         self.user_wf = None
-        self.user_raw_wf_path = kwargs["cwl"]
+        #    self.user_raw_wf_path = cwl
         self.inputs = []
         self.outputs = []
 
@@ -429,7 +429,10 @@ class Blender:
             if type(steps[start_node_name]["in"]) is list:
                 steps[start_node_name]["in"].append("%s:%s/%s" % ("wf_outputs", on_stage_node, it.id))
             elif type(steps[start_node_name]["in"]) is dict:
-                steps[start_node_name]["in"]["wf_outputs"] = "%s/%s" % (on_stage_node, it.id)
+                steps[start_node_name]["in"]["wf_outputs"] = "%s/%s" % (
+                    on_stage_node,
+                    it.id,
+                )
 
             # self.__add_inputs_store_to_stage_out(steps[start_node_name]['in'])
 

@@ -3,6 +3,7 @@ import os
 import tempfile
 import unittest
 
+import yaml
 from click.testing import CliRunner
 from cwl_wrapper import app
 from cwl_wrapper.parser import Parser
@@ -73,16 +74,24 @@ class TestSubworkflowCwl(unittest.TestCase):
     def test_programmatic_run(self):
 
         workflowId = "dnbr"
-        k = dict()
-        k["cwl"] = f"{self.app_cwl_file}#{workflowId}"
-        k["rulez"] = None
-        k["output"] = self.temp_output_file.name
-        k["maincwl"] = None
-        k["stagein"] = self.stagein_cwl_file
-        k["stageout"] = self.stageout_cwl_file
-        k["assets"] = None
+        cwl = f"{self.app_cwl_file}#{workflowId}"
+        rulez = None
+        output = self.temp_output_file.name
+        output = "ref.cwl"
+        maincwl = None
+        stagein = self.stagein_cwl_file
+        stageout = self.stageout_cwl_file
+        assets = None
 
-        wf = Parser(k)
+        wf = Parser(
+            cwl=cwl,
+            output=output,
+            stagein=stagein,
+            stageout=stageout,
+            maincwl=maincwl,
+            rulez=rulez,
+            assets=assets,
+        )
         wf.write_output()
 
         assert filecmp.cmp(self.temp_output_file.name, self.expected_wrapped_cwl)
@@ -90,17 +99,53 @@ class TestSubworkflowCwl(unittest.TestCase):
     def test_programmatic_run_invalid_workflow_id(self):
 
         workflowId = "invalidId"
-        k = dict()
-        k["cwl"] = f"{self.app_cwl_file}#{workflowId}"
-        k["rulez"] = None
-        k["output"] = self.temp_output_file.name
-        k["maincwl"] = None
-        k["stagein"] = self.stagein_cwl_file
-        k["stageout"] = self.stageout_cwl_file
-        k["assets"] = None
+        cwl = f"{self.app_cwl_file}#{workflowId}"
+        rulez = None
+        output = self.temp_output_file.name
+        maincwl = None
+        stagein = self.stagein_cwl_file
+        stageout = self.stageout_cwl_file
+        assets = None
 
         try:
-            wf = Parser(k)
+            wf = Parser(
+                cwl=cwl,
+                output=output,
+                stagein=stagein,
+                stageout=stageout,
+                maincwl=maincwl,
+                rulez=rulez,
+                assets=assets,
+            )
             wf.write_output()
         except ValueError as ve:
             assert str(ve) == "Wrong Workflow"
+
+    def test_cwl_as_dict(self):
+
+        workflowId = "dnbr"
+
+        with open(self.app_cwl_file, "r") as stream:
+            cwl = yaml.safe_load(stream)
+
+        rulez = None
+        output = self.temp_output_file.name
+        output = "cwl.cwl"
+        maincwl = None
+        stagein = self.stagein_cwl_file
+        stageout = self.stageout_cwl_file
+        assets = None
+
+        wf = Parser(
+            cwl=cwl,
+            output=output,
+            stagein=stagein,
+            stageout=stageout,
+            maincwl=maincwl,
+            rulez=rulez,
+            assets=assets,
+            workflow_id=workflowId,
+        )
+        wf.write_output()
+
+        assert filecmp.cmp(self.temp_output_file.name, self.expected_wrapped_cwl)

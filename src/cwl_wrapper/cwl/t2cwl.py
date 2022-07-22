@@ -71,38 +71,24 @@ class Workflow:
     inputs = None
     raw_workflow = None
 
-    @staticmethod
-    def graph_parser(cwl):
-        graph = cwl["$graph"]
-        for it in graph:
-            if "class" in it:
-                if it["class"] == "Workflow":
-                    return it
-
-        return None
-
-    @staticmethod
-    def get_workflow_from_id(cwl, workflowid):
-        graph = cwl["$graph"]
-        for it in graph:
-            if "class" in it:
-                if it["class"] == "Workflow" and it["id"] == workflowid:
-                    return it
-        return None
-
-    def __init__(self, file_cwl):
+    def __init__(self, cwl, startworkflowid=None):
 
         # retrieve starting workflow id if specified
         # store to to startworkflowid variable and remove it from file path
-        startworkflowid = None
-        if "#" in file_cwl:
-            startworkflowid = file_cwl.rsplit("#", 1)[1]
-            if startworkflowid == "":
-                raise ValueError("No value after the hashtag was found.")
-            file_cwl = file_cwl.replace(f"#{startworkflowid}", "")
+        try:
+            file_cwl = cwl
+            if hasattr(cwl, "rsplit") and startworkflowid is None and "#" in cwl:
+                startworkflowid = cwl.rsplit("#", 1)[1]
+                if startworkflowid == "":
+                    raise ValueError("No value after the hashtag was found.")
+                file_cwl = cwl.replace(f"#{startworkflowid}", "")
 
-        with open(file_cwl) as f:
-            self.raw_workflow = full_load(f)
+            with open(file_cwl) as f:
+                self.raw_workflow = full_load(f)
+        except AttributeError:
+            self.raw_workflow = cwl
+        except TypeError:
+            self.raw_workflow = cwl
 
         if startworkflowid is not None:
             jworkflow = self.get_workflow_from_id(self.raw_workflow, startworkflowid)
@@ -167,13 +153,35 @@ class Workflow:
     def get_raw_workflow(self):
         return self.raw_workflow
 
+    @staticmethod
+    def graph_parser(cwl):
+        graph = cwl["$graph"]
+        for it in graph:
+            if "class" in it:
+                if it["class"] == "Workflow":
+                    return it
+
+        return None
+
+    @staticmethod
+    def get_workflow_from_id(cwl, workflowid):
+        graph = cwl["$graph"]
+        for it in graph:
+            if "class" in it:
+                if it["class"] == "Workflow" and it["id"] == workflowid:
+                    return it
+        return None
+
 
 class CWLParserTool:
     raw_workflow = None
 
-    def __init__(self, file_cwl):
-        with open(file_cwl.rsplit("#", 1)[0]) as f:
-            self.raw_workflow = full_load(f)
+    def __init__(self, cwl):
+        try:
+            with open(cwl.rsplit("#", 1)[0]) as f:
+                self.raw_workflow = full_load(f)
+        except AttributeError:
+            self.raw_workflow = cwl
 
     def get_non_graph(self):
         out = []

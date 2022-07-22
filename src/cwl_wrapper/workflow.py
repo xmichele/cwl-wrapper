@@ -35,10 +35,10 @@ class Workflow:
     wf = None
     driver = None
 
-    def __init__(self, args, rulez: Rulez):
+    def __init__(self, cwl, rulez: Rulez, startworkflowid: str = None):
         # print(args)
         if rulez.get("/parser/driver") == "cwl":
-            self.wf = CWLWorkflow(args["cwl"])
+            self.wf = CWLWorkflow(cwl, startworkflowid)
             self.driver = "cwl"
         else:
             raise ValueError("Rules driver not found or unknown")
