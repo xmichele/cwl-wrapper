@@ -3,10 +3,11 @@ Usage: main [OPTIONS] CWL
   The cwl-parser
 
 Options:
-  --output TEXT    default main cel template assets/maincwl.yaml
-  --stagein TEXT   default stagein template assets/stagein.yaml
-  --stageout TEXT  default "stageout" template assets/stageout.yaml
-  --maincwl TEXT   default maincwl assets/maincwl.yaml
-  --rulez TEXT     rules default file assets/rules.yaml
-  --assets TEXT    use <value> as maincwl from assets/<values>
-  --help           Show this message and exit.
+  --output TEXT       default main cel template assets/maincwl.yaml
+  --stagein TEXT      default stagein template assets/stagein.yaml
+  --stageout TEXT     default "stageout" template assets/stageout.yaml
+  --maincwl TEXT      default maincwl assets/maincwl.yaml
+  --rulez TEXT        rules default file assets/rules.yaml
+  --assets TEXT       use <value> as maincwl from assets/<values>
+  --workflow-id TEXT  workflow id
+  --help              Show this message and exit.

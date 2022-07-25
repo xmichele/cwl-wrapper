@@ -1,57 +1,74 @@
+import sys
+
+import pkg_resources
 from yaml import full_load as load_yaml_file
 from yaml import safe_dump as write_yaml_file
-import pkg_resources
-from .rulez import Rulez
-from .workflow import Workflow
+
 from .blender import Blender
 from .cwl.t2cwl import CWLParserTool
-
-import sys
+from .rulez import Rulez
+from .workflow import Workflow
 
 
 class Parser:
     rulez = None
     workflow = None
     out = None
-    output_name = '-'
+    output_name = "-"
 
-    def __init__(self, kwargs):
-        #print(str(kwargs))
-        self.rulez = Rulez(kwargs["rulez"] if kwargs["rulez"] is not None else pkg_resources.resource_filename(__package__, "assets/rules.yaml"))
-        self.blender = Blender(kwargs, self.rulez)
-        self.workflow = Workflow(kwargs, self.rulez)
-        self.output_name = kwargs['output']
+    def __init__(self, cwl, output, stagein, stageout, maincwl, rulez, assets, workflow_id=None):
 
-        if self.rulez.get('/parser/driver') == "cwl":
-            with open(kwargs["maincwl"] if kwargs["maincwl"] is not None else pkg_resources.resource_filename(__package__, "assets/maincwl.yaml")) as f:
+        # print(str(kwargs))
+        self.rulez = Rulez(
+            rulez
+            if rulez is not None
+            else pkg_resources.resource_filename(__package__, "assets/rules.yaml")
+        )
+        self.blender = Blender(self.rulez)
+        self.workflow = Workflow(cwl, self.rulez, workflow_id)
+        self.output_name = output
+        if self.rulez.get("/parser/driver") == "cwl":
+            with open(
+                maincwl
+                if maincwl is not None
+                else pkg_resources.resource_filename(__package__, "assets/maincwl.yaml")
+            ) as f:
                 self.blender.set_main_workflow(load_yaml_file(f))
 
-            if kwargs["assets"] is not None:
-                with open(pkg_resources.resource_filename(__package__, f'assets/{kwargs["assets"]}')) as f:
+            if assets is not None:
+                with open(pkg_resources.resource_filename(__package__, f"assets/{assets}")) as f:
                     self.blender.set_main_workflow(load_yaml_file(f))
 
-            with open(kwargs["stagein"] if kwargs["stagein"] is not None else pkg_resources.resource_filename(__package__, "assets/stagein.yaml")) as f:
+            with open(
+                stagein
+                if stagein is not None
+                else pkg_resources.resource_filename(__package__, "assets/stagein.yaml")
+            ) as f:
                 self.blender.set_stage_in(load_yaml_file(f))
 
-            with open(kwargs["stageout"] if kwargs["stageout"] is not None else pkg_resources.resource_filename(__package__, "assets/stageout.yaml")) as f:
+            with open(
+                stageout
+                if stageout is not None
+                else pkg_resources.resource_filename(__package__, "assets/stageout.yaml")
+            ) as f:
                 self.blender.set_stage_out(load_yaml_file(f))
 
         else:
-            raise Exception('Driver parser: ' + self.rulez.get('/parser/driver') + ' not found')
+            raise Exception("Driver parser: " + self.rulez.get("/parser/driver") + " not found")
 
         self.blender.set_user_workflow(self.workflow)
         self.out = self.blender.get_output()
 
         if type(self.out) is dict:
-            if self.rulez.get('/output/type') == '$graph':
-                if self.rulez.get('/output/driver') == "cwl":
-                    self.out = {'$graph': [self.out]}
+            if self.rulez.get("/output/type") == "$graph":
+                if self.rulez.get("/output/driver") == "cwl":
+                    self.out = {"$graph": [self.out]}
 
-                    psa = CWLParserTool(kwargs["cwl"])
+                    psa = CWLParserTool(cwl)
 
                     if psa.is_graph():
                         graph_res = psa.get_graph_classes()
-                        the_graph = self.out['$graph']
+                        the_graph = self.out["$graph"]
                         for it in graph_res:
                             the_graph.append(it)
 
@@ -61,20 +78,19 @@ class Parser:
                                 for i in it:
                                     self.out[i] = it[i]
                     else:
-                        raise Exception('Cwl $graph type can\'t be parsed')
+                        raise Exception("Cwl $graph type can't be parsed")
                 else:
-                    raise Exception('Driver output: ' + self.rulez.get('/output/driver') + ' not found')
+                    raise Exception("Driver output: " + self.rulez.get("/output/driver") + " not found")
             else:
-                raise Exception('Driver output: ' + self.rulez.get('/output/type') + ' not found')
+                raise Exception("Driver output: " + self.rulez.get("/output/type") + " not found")
 
     def write_output(self):
-        if self.rulez.get('/output/driver') == "cwl":
+        if self.rulez.get("/output/driver") == "cwl":
             # self.output_name = self.rulez.get('output/name')
-            if self.output_name == '-':
+            if self.output_name == "-":
                 write_yaml_file(self.out, sys.stdout, allow_unicode=True)
-                pass
             else:
-                with open(self.output_name, 'w+') as ff:
+                with open(self.output_name, "w+") as ff:
                     write_yaml_file(self.out, ff, allow_unicode=True)
 
     # def get_output(self):

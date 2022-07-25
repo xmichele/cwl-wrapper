@@ -1,0 +1,17 @@
+name: env_cwl_wrapper
+channels:
+  - terradue
+  - conda-forge
+dependencies:
+  - jinja2
+  - pyyaml
+  - click
+  - click2cwl
+  - black
+  - pre-commit
+  - isort
+  - flake8
+  - autoflake
+  - pylint
+  - nose2
+  - cwltool

@@ -1,18 +1,18 @@
+import copy
+
 from .rulez import Rulez
 from .workflow import Workflow
 
-import copy
-
 
 class Blender:
-    def __init__(self, kwargs, rulez: Rulez):
+    def __init__(self, rulez: Rulez):
         self.rulez = rulez
         self.main_wf = None
         self.main_stage_in = None
         self.main_stage_out = None
 
         self.user_wf = None
-        self.user_raw_wf_path = kwargs['cwl']
+        #    self.user_raw_wf_path = cwl
         self.inputs = []
         self.outputs = []
 
@@ -20,32 +20,32 @@ class Blender:
     def __prepare_step_run(step, name, main_node_in=None):
         if name not in step:
             step[name] = {}
-        if 'run' not in step[name]:
-            step[name]['run'] = {}
+        if "run" not in step[name]:
+            step[name]["run"] = {}
 
-        if 'out' not in step[name]:
-            step[name]['out'] = []
+        if "out" not in step[name]:
+            step[name]["out"] = []
         else:
-            if type(step[name]['out']) is not list:
-                raise Exception('Step output can be only an array')
+            if type(step[name]["out"]) is not list:
+                raise Exception("Step output can be only an array")
 
-        if 'in' not in step[name]:
-            step[name]['in'] = {}
-            if main_node_in is not None and 'in' in main_node_in:
-                step[name]['in'] = copy.deepcopy(main_node_in['in'])
+        if "in" not in step[name]:
+            step[name]["in"] = {}
+            if main_node_in is not None and "in" in main_node_in:
+                step[name]["in"] = copy.deepcopy(main_node_in["in"])
 
     @staticmethod
     def __to_cwl_dict(param: dict):
         new_p = dict(param)
-        if 'id' in new_p:
-            pid = new_p['id']
-            del new_p['id']
+        if "id" in new_p:
+            pid = new_p["id"]
+            del new_p["id"]
             return pid, new_p
 
     @staticmethod
     def __to_cwl_list(param: dict, name: str):
         new_p = dict(param)
-        new_p['id'] = name
+        new_p["id"] = name
         return new_p
 
     @staticmethod
@@ -61,14 +61,14 @@ class Blender:
     @staticmethod
     def __add_to_in(where, what):
         if type(where) is list:
-            where.append('%s:%s' % (what, what))
+            where.append("%s:%s" % (what, what))
         elif type(where) is dict:
             where[what] = what
 
     @staticmethod
     def __add_input_to_in(where, what):
         if type(where) is list:
-            where.append('%s:%s' % ("input", what))
+            where.append("%s:%s" % ("input", what))
         elif type(where) is dict:
             where["input"] = what
 
@@ -79,7 +79,7 @@ class Blender:
 
         if type(where) is list:
             for i in where:
-                if 'id' in i.keys() and i['id'] == what:
+                if "id" in i.keys() and i["id"] == what:
                     return True
 
         return False
@@ -89,17 +89,17 @@ class Blender:
         if type(where) is str:
             return where
 
-        what = 'id'
+        what = "id"
         if type(where) is dict:
             if what in where.keys():
-                return where['id']
+                return where["id"]
             else:
                 return None
 
         if type(where) is list:
             for i in where:
-                if 'id' in i.keys() and i['id'] == what:
-                    return i['id']
+                if "id" in i.keys() and i["id"] == what:
+                    return i["id"]
 
         return None
 
@@ -107,7 +107,7 @@ class Blender:
         inp = copy.deepcopy(self.user_wf.get_raw_all_inputs())
 
         if type(where) is not dict:
-            raise Exception('on_stage -> in must be a dict')
+            raise Exception("on_stage -> in must be a dict")
 
         for it in inp:
             if type(it) is str:
@@ -116,19 +116,19 @@ class Blender:
                 else:
                     where[it] = it
 
-            elif 'id' in it:
-                pid = it['id']
+            elif "id" in it:
+                pid = it["id"]
                 if pid in directories_out:
                     where[pid] = directories_out[pid]
                 else:
                     where[pid] = pid
 
     def __connect_to_stage_out(self, what: dict, steps):
-        follow_node = self.rulez.get('/onstage/stage_out/follow_node')
+        follow_node = self.rulez.get("/onstage/stage_out/follow_node")
 
-        if follow_node != '' and follow_node in steps and 'in' in steps[follow_node]  and len(what) > 0:
+        if follow_node != "" and follow_node in steps and "in" in steps[follow_node] and len(what) > 0:
             for d in what:
-                steps[follow_node]['in'][d]=what[d]
+                steps[follow_node]["in"][d] = what[d]
 
     def __create_global_cwl_outputs(self, where, stage_out_dir):
 
@@ -136,16 +136,16 @@ class Blender:
 
         where_is_dict = self.__is_dict_or_list(where)
         if where_is_dict is None:
-            raise Exception('__create_global_cwl_outputs where_is_dict is None')
+            raise Exception("__create_global_cwl_outputs where_is_dict is None")
 
         if inp:
             for it in inp:
                 if type(it) is str:
 
                     if it in stage_out_dir:
-                        if 'outputSource' in inp[it]:
-                            inp[it]['outputSource'] = []
-                            inp[it]['outputSource'].append(stage_out_dir[it])
+                        if "outputSource" in inp[it]:
+                            inp[it]["outputSource"] = []
+                            inp[it]["outputSource"].append(stage_out_dir[it])
 
                     if where_is_dict:
                         where[it] = inp[it]
@@ -153,11 +153,11 @@ class Blender:
                         where.append(self.__to_cwl_list(inp[it], it))
                 else:
 
-                    if 'id' in it:
-                        if it['id'] in stage_out_dir:
-                            if 'outputSource' in it:
-                                it['outputSource'] = []
-                                it['outputSource'].append(stage_out_dir[it['id']])
+                    if "id" in it:
+                        if it["id"] in stage_out_dir:
+                            if "outputSource" in it:
+                                it["outputSource"] = []
+                                it["outputSource"].append(stage_out_dir[it["id"]])
 
                         if where_is_dict:
                             pid, psa = self.__to_cwl_dict(it)
@@ -172,25 +172,25 @@ class Blender:
 
         return None
 
-    def __change_input_type(self, src: dict, name=''):
+    def __change_input_type(self, src: dict, name=""):
         where = copy.deepcopy(src)
         v = self.__find_in_inputs(name)
         if v is None:
             return where
 
-        if 'type' in where:
-        
-            if v.is_array and "?" in where['type']:
-                where['type'] = self.rulez.get('/cwl/OptionalInput/Directory[]')  # 'string[]'
+        if "type" in where:
+
+            if v.is_array and "?" in where["type"]:
+                where["type"] = self.rulez.get("/cwl/OptionalInput/Directory[]")  # 'string[]'
                 return where
             elif v.is_array:
-                where['type'] = self.rulez.get('/cwl/GlobalInput/Directory[]')  # 'string[]':
+                where["type"] = self.rulez.get("/cwl/GlobalInput/Directory[]")  # 'string[]':
                 return where
-            elif "?" in where['type']:
-                where['type'] = self.rulez.get('/cwl/OptionalInput/Directory')
+            elif "?" in where["type"]:
+                where["type"] = self.rulez.get("/cwl/OptionalInput/Directory")
                 return where
             else:
-                where['type'] = self.rulez.get('/cwl/GlobalInput/Directory')
+                where["type"] = self.rulez.get("/cwl/GlobalInput/Directory")
                 return where
 
         return where
@@ -198,23 +198,23 @@ class Blender:
     def __get_essential(self, where: dict, id: dict = None):
         ret = dict()
 
-        if 'label' in where:
-            ret['label'] = where['label']
+        if "label" in where:
+            ret["label"] = where["label"]
 
-        if 'doc' in where:
-            ret['doc'] = where['doc']
+        if "doc" in where:
+            ret["doc"] = where["doc"]
 
         if id is not None and id in where:
             ret[id] = where[id]
 
-        if 'type' in where:
-            ret['type'] = where['type']
+        if "type" in where:
+            ret["type"] = where["type"]
 
         return self.__change_input_type(ret)
 
     def __update_zone_with_template(self, where, what):
-        if 'inputs' in self.main_stage_in:
-            the_i = copy.deepcopy(what['inputs'])
+        if "inputs" in self.main_stage_in:
+            the_i = copy.deepcopy(what["inputs"])
 
             for it in the_i:
                 inner_id = self.__get_id(it)
@@ -222,8 +222,8 @@ class Blender:
                 if not self.__exist_here(where, inner_id):
                     if type(it) is str:  # the_i is a dict
                         obj = copy.deepcopy(the_i[it])
-                        if 'id' not in obj:
-                            obj['id'] = inner_id
+                        if "id" not in obj:
+                            obj["id"] = inner_id
                     else:
                         obj = copy.deepcopy(it)
 
@@ -252,7 +252,7 @@ class Blender:
 
         where_is_dict = self.__is_dict_or_list(where)
         if where_is_dict is None:
-            raise Exception('__create_global_cwl_inputs where_is_dict is None')
+            raise Exception("__create_global_cwl_inputs where_is_dict is None")
 
         # if where_is_dict is not None:
         if inp:
@@ -264,10 +264,10 @@ class Blender:
                         where.append(self.__to_cwl_list(self.__change_input_type(inp[it], it), it))
                 else:
                     if where_is_dict:
-                        pid, psa = self.__to_cwl_dict(self.__change_input_type(it, it['id']))
+                        pid, psa = self.__to_cwl_dict(self.__change_input_type(it, it["id"]))
                         where[pid] = psa
                     else:
-                        where.append(self.__change_input_type(it, it['id']))
+                        where.append(self.__change_input_type(it, it["id"]))
 
         self.__update_zone_with_template(where, self.main_stage_in)
         self.__update_zone_with_template(where, self.main_stage_out)
@@ -284,7 +284,7 @@ class Blender:
     def __add_inputs_store_to_stage_out(self, where: dict):
         where_is_dict = self.__is_dict_or_list(where)
         if where_is_dict is None:
-            raise Exception('__create_global_cwl_inputs where_is_dict is None')
+            raise Exception("__create_global_cwl_inputs where_is_dict is None")
 
         to_add = self.rulez.get("/cwl/stage_out/user_inputs")
         for it in to_add:
@@ -294,46 +294,46 @@ class Blender:
 
         # driver = self.rulez.get('/onstage/driver')
 
-        if 'inputs' not in self.main_stage_in:
-            self.main_stage_in['inputs'] = {}
+        if "inputs" not in self.main_stage_in:
+            self.main_stage_in["inputs"] = {}
 
-        if 'outputs' not in self.main_stage_in:
-            self.main_stage_in['outputs'] = {}
+        if "outputs" not in self.main_stage_in:
+            self.main_stage_in["outputs"] = {}
 
-        if 'inputs' not in self.main_stage_out:
-            self.main_stage_out['inputs'] = {}
+        if "inputs" not in self.main_stage_out:
+            self.main_stage_out["inputs"] = {}
 
-        if 'outputs' not in self.main_stage_out:
-            self.main_stage_out['outputs'] = {}
+        if "outputs" not in self.main_stage_out:
+            self.main_stage_out["outputs"] = {}
 
-        if 'inputs' not in start:
-            start['inputs'] = {}
+        if "inputs" not in start:
+            start["inputs"] = {}
 
-        if 'outputs' not in start:
-            start['outputs'] = {}
+        if "outputs" not in start:
+            start["outputs"] = {}
 
-        self.__create_global_cwl_inputs(start['inputs'])
+        self.__create_global_cwl_inputs(start["inputs"])
 
-        connection_node_node_stage_in = self.rulez.get('/onstage/stage_in/connection_node')
-        if connection_node_node_stage_in == '':
-            connection_node_node_stage_in = 'node_stage_in'
+        connection_node_node_stage_in = self.rulez.get("/onstage/stage_in/connection_node")
+        if connection_node_node_stage_in == "":
+            connection_node_node_stage_in = "node_stage_in"
 
         if start is None:
-            raise Exception('maincwl.yaml not defined')
+            raise Exception("maincwl.yaml not defined")
 
-        if 'steps' not in start:
+        if "steps" not in start:
             # steps does not exist
-            start['steps'] = {}
+            start["steps"] = {}
 
         nodes_out = {}
-        steps = start['steps']
+        steps = start["steps"]
         cursor = 0
         start_node_name = connection_node_node_stage_in
-        overwrite_input = self.rulez.get('/onstage/stage_in/input/template/overwrite')
+        overwrite_input = self.rulez.get("/onstage/stage_in/input/template/overwrite")
 
         in_main_template = None
 
-        if connection_node_node_stage_in in steps and 'in' in steps[connection_node_node_stage_in]:
+        if connection_node_node_stage_in in steps and "in" in steps[connection_node_node_stage_in]:
             in_main_template = copy.deepcopy(steps[connection_node_node_stage_in])
 
         # stage in
@@ -341,143 +341,157 @@ class Blender:
             # print(f'Nodo: {start_node_name}  ')
             self.__prepare_step_run(steps, start_node_name, in_main_template)
 
-            self.__add_input_to_in(steps[start_node_name]['in'], it.id)
+            self.__add_input_to_in(steps[start_node_name]["in"], it.id)
 
             the_command = copy.deepcopy(self.main_stage_in)  # self.main_stage_in.copy()
-            the_command_inputs = the_command['inputs']
-            the_command_outputs = the_command['outputs']
+            the_command_inputs = the_command["inputs"]
+            the_command_outputs = the_command["outputs"]
 
             if overwrite_input and len(the_command_inputs) > 0:
                 if type(the_command_inputs) is list:
                     for i in the_command_inputs:
-                        self.__add_to_in(steps[start_node_name]['in'], i['id'])
+                        self.__add_to_in(steps[start_node_name]["in"], i["id"])
                 elif type(the_command_inputs) is dict:
                     for i in the_command_inputs:
-                        self.__add_to_in(steps[start_node_name]['in'], i)
+                        self.__add_to_in(steps[start_node_name]["in"], i)
 
             # why am I using copy.deepcopy??
             # https://ttl255.com/yaml-anchors-and-aliases-and-how-to-disable-them/
-            the_val = copy.deepcopy(self.rulez.get('/cwl/stage_in/Directory[]')) if it.is_array else copy.deepcopy(
-                self.rulez.get('/cwl/stage_in/Directory'))
+            the_val = (
+                copy.deepcopy(self.rulez.get("/cwl/stage_in/Directory[]"))
+                if it.is_array
+                else copy.deepcopy(self.rulez.get("/cwl/stage_in/Directory"))
+            )
 
             # scatter feature
             if it.is_array:
-                the_val = self.rulez.get('/cwl/stage_in/Directory')
+                the_val = self.rulez.get("/cwl/stage_in/Directory")
 
             if type(the_command_inputs) is list:
-                the_val['id'] = copy.deepcopy(it.id)
+                the_val["id"] = copy.deepcopy(it.id)
                 the_command_inputs.append(the_val)
             elif type(the_command_inputs) is dict:
                 the_command_inputs["input"] = copy.deepcopy(the_val)
 
-            steps[start_node_name]['run'] = the_command
+            steps[start_node_name]["run"] = the_command
 
             # add outputs to command
-            command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command/Directory'))
-            command_id = '%s_out' % it.id
-            nodes_out[it.id] = '%s/%s_out' % (start_node_name, it.id)
+            command_out = copy.deepcopy(self.rulez.get("/cwl/outputBindingResult/command/Directory"))
+            command_id = "%s_out" % it.id
+            nodes_out[it.id] = "%s/%s_out" % (start_node_name, it.id)
             if type(the_command_outputs) is list:
-                command_out['id'] = command_id
+                command_out["id"] = command_id
                 the_command_outputs.append(command_out)
             elif type(the_command_outputs) is dict:
                 the_command_outputs[command_id] = command_out
 
             # add step output
-            steps[start_node_name]['out'].append(command_id)
+            steps[start_node_name]["out"].append(command_id)
 
             # check scattering
             if it.is_array:
-                steps[start_node_name]['scatter'] = "input"
-                steps[start_node_name]['scatterMethod'] = self.rulez.get('/onstage/stage_in/if_scatter/scatterMethod')
+                steps[start_node_name]["scatter"] = "input"
+                steps[start_node_name]["scatterMethod"] = self.rulez.get(
+                    "/onstage/stage_in/if_scatter/scatterMethod"
+                )
 
             cursor = cursor + 1
-            start_node_name = '%s_%d' % (start_node_name, cursor)
+            start_node_name = "%s_%d" % (start_node_name, cursor)
 
         # ON_STAGE!
-        on_stage_node = self.rulez.get('/onstage/on_stage/connection_node')
-        if on_stage_node == '':
-            on_stage_node = 'on_stage'
+        on_stage_node = self.rulez.get("/onstage/on_stage/connection_node")
+        if on_stage_node == "":
+            on_stage_node = "on_stage"
 
         self.__prepare_step_run(steps, on_stage_node)
 
-        steps[on_stage_node]['run'] = '#%s' % self.user_wf.get_id()
+        steps[on_stage_node]["run"] = "#%s" % self.user_wf.get_id()
 
-        if steps[on_stage_node]['run'] == '':
+        if steps[on_stage_node]["run"] == "":
             raise Exception('Workflow without "id"')
 
-        self.__create_on_stage_inputs(steps[on_stage_node]['in'], nodes_out)
+        self.__create_on_stage_inputs(steps[on_stage_node]["in"], nodes_out)
 
         # stage out
-        connection_node_node_stage_out = self.rulez.get('/onstage/stage_out/connection_node')
-        if connection_node_node_stage_out == '':
-            connection_node_node_stage_out = 'node_stage_out'
+        connection_node_node_stage_out = self.rulez.get("/onstage/stage_out/connection_node")
+        if connection_node_node_stage_out == "":
+            connection_node_node_stage_out = "node_stage_out"
 
         cursor = 0
         start_node_name = connection_node_node_stage_out
 
         nodes_out.clear()
         for it in self.outputs:
-            steps[on_stage_node]['out'].append(it.id)
+            steps[on_stage_node]["out"].append(it.id)
 
             self.__prepare_step_run(steps, start_node_name)
 
-            if type(steps[start_node_name]['in']) is list:
-                steps[start_node_name]['in'].append('%s:%s/%s' % ("wf_outputs", on_stage_node, it.id))
-            elif type(steps[start_node_name]['in']) is dict:
-                steps[start_node_name]['in']["wf_outputs"] = '%s/%s' % (on_stage_node, it.id)
+            if type(steps[start_node_name]["in"]) is list:
+                steps[start_node_name]["in"].append("%s:%s/%s" % ("wf_outputs", on_stage_node, it.id))
+            elif type(steps[start_node_name]["in"]) is dict:
+                steps[start_node_name]["in"]["wf_outputs"] = "%s/%s" % (
+                    on_stage_node,
+                    it.id,
+                )
 
             # self.__add_inputs_store_to_stage_out(steps[start_node_name]['in'])
 
             the_command = copy.deepcopy(self.main_stage_out)  # self.main_stage_in.copy()
-            the_command_inputs = the_command['inputs']
-            the_command_outputs = the_command['outputs']
+            the_command_inputs = the_command["inputs"]
+            the_command_outputs = the_command["outputs"]
 
             if overwrite_input and len(the_command_inputs) > 0:
                 if type(the_command_inputs) is list:
                     for i in the_command_inputs:
-                        self.__add_to_in(steps[start_node_name]['in'], i['id'])
+                        self.__add_to_in(steps[start_node_name]["in"], i["id"])
                 elif type(the_command_inputs) is dict:
                     for i in the_command_inputs:
-                        self.__add_to_in(steps[start_node_name]['in'], i)
+                        self.__add_to_in(steps[start_node_name]["in"], i)
 
-            the_val = copy.deepcopy(self.rulez.get('/cwl/stage_out/Directory[]')) if it.is_array else copy.deepcopy(
-                self.rulez.get('/cwl/stage_out/Directory'))
+            the_val = (
+                copy.deepcopy(self.rulez.get("/cwl/stage_out/Directory[]"))
+                if it.is_array
+                else copy.deepcopy(self.rulez.get("/cwl/stage_out/Directory"))
+            )
 
             # scatter feature
-            if it.is_array and self.rulez.get('/onstage/stage_out/scatter'):
-                the_val = self.rulez.get('/cwl/stage_out/Directory')
+            if it.is_array and self.rulez.get("/onstage/stage_out/scatter"):
+                the_val = self.rulez.get("/cwl/stage_out/Directory")
 
             if type(the_command_inputs) is list:
-                the_val['id'] = "wf_outputs"
+                the_val["id"] = "wf_outputs"
                 the_command_inputs.append(the_val)
             elif type(the_command_inputs) is dict:
                 the_command_inputs["wf_outputs"] = the_val
-            steps[start_node_name]['run'] = the_command
+            steps[start_node_name]["run"] = the_command
 
-            # command_out = copy.deepcopy(self.rulez.get('/cwl/outputBindingResult/command'))
-            command_out = copy.deepcopy(
-                self.rulez.get('/cwl/outputBindingResult/command/Directory[]')) if it.is_array else copy.deepcopy(
-                self.rulez.get('/cwl/outputBindingResult/command/Directory'))
+            command_out = (
+                copy.deepcopy(self.rulez.get("/cwl/outputBindingResult/command/Directory[]"))
+                if it.is_array
+                else copy.deepcopy(self.rulez.get("/cwl/outputBindingResult/command/Directory"))
+            )
 
-            command_id = '%s_out' % it.id
-            nodes_out[it.id] = '%s/%s_out' % (start_node_name, it.id)
+            command_id = "%s_out" % it.id
+            nodes_out[it.id] = "%s/%s_out" % (start_node_name, it.id)
             if type(the_command_outputs) is list:
-                command_out['id'] = command_id
+                command_out["id"] = command_id
                 the_command_outputs.append(command_out)
             elif type(the_command_outputs) is dict:
                 the_command_outputs[command_id] = command_out
             # add step output
-            steps[start_node_name]['out'].append(command_id)
+            steps[start_node_name]["out"].append(command_id)
 
             # check scattering
-            if it.is_array and self.rulez.get('/onstage/stage_out/scatter'):
-                steps[start_node_name]['scatter'] = "wf_outputs"
-                steps[start_node_name]['scatterMethod'] = self.rulez.get('/onstage/stage_in/stage_out/scatterMethod')
+            if it.is_array and self.rulez.get("/onstage/stage_out/scatter"):
+                steps[start_node_name]["scatter"] = "wf_outputs"
+                steps[start_node_name]["scatterMethod"] = self.rulez.get(
+                    "/onstage/stage_in/stage_out/scatterMethod"
+                )
 
             cursor = cursor + 1
-            start_node_name = '%s_%d' % (start_node_name, cursor)
+            start_node_name = "%s_%d" % (start_node_name, cursor)
 
-        self.__create_global_cwl_outputs(start['outputs'], nodes_out)
+        self.__create_global_cwl_outputs(start["outputs"], nodes_out)
         self.__connect_to_stage_out(nodes_out, steps)
 
         return start
@@ -502,14 +516,5 @@ class Blender:
         start = copy.deepcopy(self.main_wf)
 
         start = self.__add_stage_in_graph_cwl(start)
-
-        # if self.rulez.get('/onstage/driver') == 'cwl':
-        #     if self.rulez.get('/output/type') == '$graph':
-        #         self.__add_stage_in_graph_cwl( )
-        #
-        #     else:
-        #         raise Exception("Non $graph request")
-        # else:
-        #     raise Exception('Driver onstage: ' + self.rulez.get('/output/driver') + ' not found')
 
         return start
