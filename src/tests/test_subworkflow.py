@@ -25,7 +25,7 @@ class TestSubworkflowCwl(unittest.TestCase):
         result = runner.invoke(app.main, ["--help"])
         with open(self.expected_usage_test) as f:
             contents = f.read()
-            assert result.output.strip() == contents
+            assert result.output.strip() == contents.strip()
 
     def test_dNBR(self):
         runner = CliRunner()
