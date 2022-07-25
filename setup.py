@@ -26,5 +26,5 @@ setup(
     packages=(find_packages(where="src")),
     package_dir={"": "src"},
     package_data={"": extra_files},
-    test_suite="tests.subworkflow_test_suite",
+    test_suite="src.tests",
 )
