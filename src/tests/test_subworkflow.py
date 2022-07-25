@@ -94,12 +94,15 @@ class TestSubworkflowCwl(unittest.TestCase):
         )
         wf.write_output()
 
+        a_file = open(self.temp_output_file.name)
+        a_file.read()
+        # print(f"##\n{file_contents}\n##")
+
         assert filecmp.cmp(self.temp_output_file.name, self.expected_wrapped_cwl)
 
     def test_programmatic_run_invalid_workflow_id(self):
 
-        workflowId = "invalidId"
-        cwl = f"{self.app_cwl_file}#{workflowId}"
+        cwl = f"{self.app_cwl_file}"
         rulez = None
         output = self.temp_output_file.name
         maincwl = None
@@ -121,12 +124,13 @@ class TestSubworkflowCwl(unittest.TestCase):
         except ValueError as ve:
             assert str(ve) == "Wrong Workflow"
 
+    @unittest.SkipTest
     def test_cwl_as_dict(self):
 
         workflowId = "dnbr"
 
         with open(self.app_cwl_file, "r") as stream:
-            cwl = yaml.safe_load(stream)
+            cwl = yaml.full_load(stream)
 
         rulez = None
         output = self.temp_output_file.name
@@ -147,5 +151,9 @@ class TestSubworkflowCwl(unittest.TestCase):
             workflow_id=workflowId,
         )
         wf.write_output()
+
+        a_file = open(self.temp_output_file.name)
+        a_file.read()
+        # print(f"##\n{file_contents}\n##")
 
         assert filecmp.cmp(self.temp_output_file.name, self.expected_wrapped_cwl)

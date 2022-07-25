@@ -1,4 +1,4 @@
-Usage: cwl-wrapper [OPTIONS] CWL
+Usage: main [OPTIONS] CWL
 
   The cwl-parser
 
