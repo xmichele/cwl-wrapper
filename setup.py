@@ -27,4 +27,5 @@ setup(
     package_dir={"": "src"},
     package_data={"": extra_files},
     test_suite="src.tests",
+    zip_safe=False,
 )
