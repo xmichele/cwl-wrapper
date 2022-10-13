@@ -21,6 +21,7 @@ requirements:
     - jinja2
     - click
     - setuptools
+    - loguru
 
 test:
   commands:
