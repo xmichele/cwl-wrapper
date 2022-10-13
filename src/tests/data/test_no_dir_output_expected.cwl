@@ -98,7 +98,6 @@ $graph:
       out:
       - reference_out
       run:
-        id: stars
         arguments:
         - copy
         - -v
@@ -115,7 +114,7 @@ $graph:
         hints:
           DockerRequirement:
             dockerPull: terradue/stars:1.0.0-beta.11
-
+        id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
             type: string?
@@ -377,9 +376,26 @@ $graph:
 
           -XX:-UseGCOverheadLimit'
         entryname: custom.vmoptions
-      - entry: "#!/bin/bash\nreference=$1\n\nmkdir -p /tmp/work \ncd /tmp/work\n\n\
-          graphista run \"$@\" \n\ncd - \n\nStars copy -r 4 -rel -xa False -o ./ file:///tmp/work/catalog.json\n\
-          \nrm -fr .cache .config .install4j"
+      - entry: '#!/bin/bash
+
+          reference=$1
+
+
+          mkdir -p /tmp/work
+
+          cd /tmp/work
+
+
+          graphista run "$@"
+
+
+          cd -
+
+
+          Stars copy -r 4 -rel -xa False -o ./ file:///tmp/work/catalog.json
+
+
+          rm -fr .cache .config .install4j'
         entryname: run_me.sh
     InlineJavascriptRequirement: {}
     ResourceRequirement:

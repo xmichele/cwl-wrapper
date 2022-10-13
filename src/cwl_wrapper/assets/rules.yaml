@@ -37,21 +37,21 @@ cwl:
   GlobalInput:
     Directory: string
     Directory[]: string[]
-  
+
   OptionalInput:
     Directory: string?
     Directory[]: string[]?
-    
+
   stage_in:
     Directory:
       type: string
-      inputBinding:
-        position: 2
+      #  inputBinding:
+      #    position: 2
 
     Directory[]:
       type: string[]
-      inputBinding:
-        position: 2
+      #  inputBinding:
+      #    position: 2
 
   stage_out:
     Directory:
@@ -74,6 +74,3 @@ cwl:
       type:
         items: Directory
         type: array
-
-
-
