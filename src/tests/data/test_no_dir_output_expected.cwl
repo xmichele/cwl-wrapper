@@ -86,6 +86,7 @@ $graph:
       - on_stage/s3_catalog_output
       type: string
   requirements:
+    InlineJavascriptRequirement: {}
     ScatterFeatureRequirement: {}
     SubworkflowFeatureRequirement: {}
   steps:
@@ -98,7 +99,6 @@ $graph:
       out:
       - reference_out
       run:
-        id: stars
         arguments:
         - copy
         - -v
@@ -115,7 +115,7 @@ $graph:
         hints:
           DockerRequirement:
             dockerPull: terradue/stars:1.0.0-beta.11
-
+        id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
             type: string?
@@ -137,6 +137,7 @@ $graph:
               AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEIN_AWS_SECRET_ACCESS_KEY)
               AWS__ServiceURL: $(inputs.ADES_STAGEIN_AWS_SERVICEURL)
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          ResourceRequirement: {}
       scatter: input
       scatterMethod: dotproduct
     node_stage_in_1:
@@ -186,6 +187,7 @@ $graph:
               AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEIN_AWS_SECRET_ACCESS_KEY)
               AWS__ServiceURL: $(inputs.ADES_STAGEIN_AWS_SERVICEURL)
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          ResourceRequirement: {}
       scatter: input
       scatterMethod: dotproduct
     on_stage:
@@ -377,9 +379,26 @@ $graph:
 
           -XX:-UseGCOverheadLimit'
         entryname: custom.vmoptions
-      - entry: "#!/bin/bash\nreference=$1\n\nmkdir -p /tmp/work \ncd /tmp/work\n\n\
-          graphista run \"$@\" \n\ncd - \n\nStars copy -r 4 -rel -xa False -o ./ file:///tmp/work/catalog.json\n\
-          \nrm -fr .cache .config .install4j"
+      - entry: '#!/bin/bash
+
+          reference=$1
+
+
+          mkdir -p /tmp/work
+
+          cd /tmp/work
+
+
+          graphista run "$@"
+
+
+          cd -
+
+
+          Stars copy -r 4 -rel -xa False -o ./ file:///tmp/work/catalog.json
+
+
+          rm -fr .cache .config .install4j'
         entryname: run_me.sh
     InlineJavascriptRequirement: {}
     ResourceRequirement:

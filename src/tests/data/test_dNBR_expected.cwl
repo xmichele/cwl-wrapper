@@ -52,6 +52,7 @@ $graph:
       - node_stage_out/stac_out
       type: Directory
   requirements:
+    InlineJavascriptRequirement: {}
     ScatterFeatureRequirement: {}
     SubworkflowFeatureRequirement: {}
   steps:

@@ -1,5 +1,7 @@
 import copy
 
+from loguru import logger
+
 from .rulez import Rulez
 from .workflow import Workflow
 
@@ -104,6 +106,9 @@ class Blender:
         return None
 
     def __create_on_stage_inputs(self, where, directories_out: dict):
+        logger.info(where)
+        logger.info(directories_out.__str__())
+
         inp = copy.deepcopy(self.user_wf.get_raw_all_inputs())
 
         if type(where) is not dict:
@@ -123,23 +128,28 @@ class Blender:
                 else:
                     where[pid] = pid
 
-    def __connect_to_stage_out(self, what: dict, steps):
+    def __connect_to_stage_out(self, what: dict, steps: dict):
+        logger.info(what)
+        logger.info(steps.keys())
         follow_node = self.rulez.get("/onstage/stage_out/follow_node")
-
+        logger.info(follow_node)
         if follow_node != "" and follow_node in steps and "in" in steps[follow_node] and len(what) > 0:
             for d in what:
                 steps[follow_node]["in"][d] = what[d]
 
     def __create_global_cwl_outputs(self, where, stage_out_dir):
 
+        logger.info(where)
+        logger.info(f"stage_out_dir {stage_out_dir}")
         inp = copy.deepcopy(self.user_wf.get_raw_all_outputs())
-
+        logger.info(inp)
         where_is_dict = self.__is_dict_or_list(where)
         if where_is_dict is None:
             raise Exception("__create_global_cwl_outputs where_is_dict is None")
 
         if inp:
             for it in inp:
+                logger.info(it)
                 if type(it) is str:
 
                     if it in stage_out_dir:
@@ -164,6 +174,16 @@ class Blender:
                             where[pid] = psa
                         else:
                             where.append(it)
+
+                if not stage_out_dir:
+                    # there's no stage out step, the result comes from the on_stage step
+                    logger.info(f"add {it['id']}")
+                    it["outputSource"] = [f"on_stage/{it['id']}"]
+                    if where_is_dict:
+                        pid, psa = self.__to_cwl_dict(it)
+                        where[pid] = psa
+                    else:
+                        where.append(it)
 
     def __find_in_inputs(self, what):
         for it in self.inputs:
@@ -405,7 +425,7 @@ class Blender:
 
         self.__prepare_step_run(steps, on_stage_node)
 
-        steps[on_stage_node]["run"] = "#%s" % self.user_wf.get_id()
+        steps[on_stage_node]["run"] = f"#{self.user_wf.get_id()}"
 
         if steps[on_stage_node]["run"] == "":
             raise Exception('Workflow without "id"')
@@ -421,6 +441,15 @@ class Blender:
         start_node_name = connection_node_node_stage_out
 
         nodes_out.clear()
+        logger.info(f"outputs: {self.outputs}")
+
+        if len(self.outputs) == 0:
+            # no stage-out node(s) so the on_stage step lists the user workflow outputs
+            outputs = self.user_wf.get_raw_all_outputs()
+            logger.info(outputs)
+            for it in outputs:
+                steps[on_stage_node]["out"].append(it["id"])
+
         for it in self.outputs:
             steps[on_stage_node]["out"].append(it.id)
 

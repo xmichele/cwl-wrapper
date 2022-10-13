@@ -8,6 +8,8 @@ outputs: {}
 requirements:
   SubworkflowFeatureRequirement: {}
   ScatterFeatureRequirement: {}
+  InlineJavascriptRequirement: {}
+
 
 #steps:
 #  node_stage_in:
@@ -24,4 +26,3 @@ requirements:
 #    in: {}
 #    out: []
 #    run: ''
-
