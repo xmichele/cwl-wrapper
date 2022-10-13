@@ -7,3 +7,5 @@ dependencies:
   - pyyaml
   - click
   - click2cwl
+  - pip:
+    - loguru
