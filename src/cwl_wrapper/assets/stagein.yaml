@@ -30,6 +30,7 @@ inputs:
     type: string?
 outputs: {}
 requirements:
+  ResourceRequirement: {}
   EnvVarRequirement:
     envDef:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -46,5 +47,3 @@ requirements:
       "Credentials__StacCatalog__Password" : "89126578214hr87fh8g2389"
       # STARS_URL_FIND: "https?://supervisor.charter.uat.esaportal.eu/catalog"
       # STARS_URL_REPLACE: "http://acceptance-supervisor-catalog-stac.cpe/catalog"
-  ResourceRequirement: {}
-  InlineJavascriptRequirement: {}

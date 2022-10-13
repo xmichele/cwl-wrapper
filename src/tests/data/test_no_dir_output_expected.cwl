@@ -86,6 +86,7 @@ $graph:
       - on_stage/s3_catalog_output
       type: string
   requirements:
+    InlineJavascriptRequirement: {}
     ScatterFeatureRequirement: {}
     SubworkflowFeatureRequirement: {}
   steps:
@@ -136,6 +137,7 @@ $graph:
               AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEIN_AWS_SECRET_ACCESS_KEY)
               AWS__ServiceURL: $(inputs.ADES_STAGEIN_AWS_SERVICEURL)
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          ResourceRequirement: {}
       scatter: input
       scatterMethod: dotproduct
     node_stage_in_1:
@@ -185,6 +187,7 @@ $graph:
               AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEIN_AWS_SECRET_ACCESS_KEY)
               AWS__ServiceURL: $(inputs.ADES_STAGEIN_AWS_SERVICEURL)
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          ResourceRequirement: {}
       scatter: input
       scatterMethod: dotproduct
     on_stage:

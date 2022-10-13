@@ -178,7 +178,7 @@ class Blender:
                 if not stage_out_dir:
                     # there's no stage out step, the result comes from the on_stage step
                     logger.info(f"add {it['id']}")
-                    it["outputSource"] = f"on_stage/{it['id']}"
+                    it["outputSource"] = [f"on_stage/{it['id']}"]
                     if where_is_dict:
                         pid, psa = self.__to_cwl_dict(it)
                         where[pid] = psa
@@ -425,7 +425,7 @@ class Blender:
 
         self.__prepare_step_run(steps, on_stage_node)
 
-        steps[on_stage_node]["run"] = "#%s" % self.user_wf.get_id()
+        steps[on_stage_node]["run"] = f"#{self.user_wf.get_id()}"
 
         if steps[on_stage_node]["run"] == "":
             raise Exception('Workflow without "id"')
@@ -444,7 +444,7 @@ class Blender:
         logger.info(f"outputs: {self.outputs}")
 
         if len(self.outputs) == 0:
-
+            # no stage-out node(s) so the on_stage step lists the user workflow outputs
             outputs = self.user_wf.get_raw_all_outputs()
             logger.info(outputs)
             for it in outputs:
