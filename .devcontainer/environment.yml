@@ -15,3 +15,5 @@ dependencies:
   - pylint
   - nose2
   - cwltool
+  - pip:
+    - loguru

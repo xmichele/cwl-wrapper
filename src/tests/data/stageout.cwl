@@ -47,18 +47,18 @@ inputs:
       type: string?
 outputs: {}
 requirements:
-    InlineJavascriptRequirement: {}
-    EnvVarRequirement:
-      envDef:
-        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-        AWS__ServiceURL: $(inputs.ADES_STAGEOUT_AWS_SERVICEURL)
-        AWS__SignatureVersion: "2"
-        AWS_ACCESS_KEY_ID: $(inputs.ADES_STAGEOUT_AWS_ACCESS_KEY_ID)
-        AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY)
-        # uncomment if you need the S3 region
-        #AWS__Region: $(inputs.ADES_STAGEOUT_AWS_REGION)
-        #AWS__AuthenticationRegion: $(inputs.ADES_STAGEOUT_AWS_REGION)
-        # uncomment if you need profiles
-        # AWS__Profile: $(inputs.ADES_STAGEOUT_AWS_PROFILE)
-        # AWS__ProfilesLocation: $(inputs.aws_profiles_location.path)
-    ResourceRequirement: {}
+  InlineJavascriptRequirement: {}
+  EnvVarRequirement:
+    envDef:
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      AWS__ServiceURL: $(inputs.ADES_STAGEOUT_AWS_SERVICEURL)
+      AWS__SignatureVersion: "2"
+      AWS_ACCESS_KEY_ID: $(inputs.ADES_STAGEOUT_AWS_ACCESS_KEY_ID)
+      AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY)
+      # uncomment if you need the S3 region
+      #AWS__Region: $(inputs.ADES_STAGEOUT_AWS_REGION)
+      #AWS__AuthenticationRegion: $(inputs.ADES_STAGEOUT_AWS_REGION)
+      # uncomment if you need profiles
+      # AWS__Profile: $(inputs.ADES_STAGEOUT_AWS_PROFILE)
+      # AWS__ProfilesLocation: $(inputs.aws_profiles_location.path)
+  ResourceRequirement: {}
