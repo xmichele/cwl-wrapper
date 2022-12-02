@@ -10,6 +10,8 @@ class TestNoDirOutputCwl(unittest.TestCase):
     def setUp(self):
         self.stagein_cwl_file = os.path.join(os.path.dirname(__file__), "data/stagein.cwl")
         self.stageout_cwl_file = os.path.join(os.path.dirname(__file__), "data/stageout.cwl")
+        self.main_cwl_file = os.path.join(os.path.dirname(__file__), "data/main.cwl")
+
         self.app_cwl_file = os.path.join(os.path.dirname(__file__), "data/no_dir_output.cwl")
         self.expected_wrapped_cwl = os.path.join(
             os.path.dirname(__file__), "data/test_no_dir_output_expected.cwl"
@@ -22,6 +24,8 @@ class TestNoDirOutputCwl(unittest.TestCase):
         result = runner.invoke(
             app.main,
             [
+                "--maincwl",
+                self.main_cwl_file,
                 "--stagein",
                 self.stagein_cwl_file,
                 "--stageout",
@@ -29,6 +33,10 @@ class TestNoDirOutputCwl(unittest.TestCase):
                 self.app_cwl_file + "#s1-snapping-ifg",
             ],
         )
+
+        with open(r"res.cwl", "w") as file:
+            file.write(result.output)
+
         with open(self.expected_wrapped_cwl) as f:
             contents = f.read()
             assert result.output == contents
