@@ -507,8 +507,10 @@ class Blender:
                 the_command_outputs.append(command_out)
             elif type(the_command_outputs) is dict:
                 the_command_outputs[command_id] = command_out
-            # add step output
-            steps[start_node_name]["out"].append(command_id)
+
+            # add step output, including the stageout outputs
+            for id in the_command_outputs:
+                steps[start_node_name]["out"].append(id)
 
             # check scattering
             if it.is_array and self.rulez.get("/onstage/stage_out/scatter"):
