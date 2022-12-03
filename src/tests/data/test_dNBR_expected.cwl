@@ -43,7 +43,7 @@ $graph:
       id: pre_stac_item
       type: string
     process:
-      type: string?
+      type: string
   label: macro-cwl
   outputs:
     stac:
@@ -68,6 +68,7 @@ $graph:
         process: process
         wf_outputs: on_stage/stac
       out:
+      - s3_catalog_output
       - stac_out
       run:
         arguments:
@@ -77,8 +78,6 @@ $graph:
         - '4'
         - -o
         - $( inputs.ADES_STAGEOUT_OUTPUT + "/" + inputs.process )
-        - -res
-        - $( inputs.process + ".res" )
         - valueFrom: "${\n    if( !Array.isArray(inputs.wf_outputs) )\n    {\n   \
             \     return inputs.wf_outputs.path + \"/catalog.json\";\n    }\n    var\
             \ args=[];\n    for (var i = 0; i < inputs.wf_outputs.length; i++)\n \
@@ -90,7 +89,7 @@ $graph:
         doc: Run Stars for staging results
         hints:
           DockerRequirement:
-            dockerPull: terradue/stars:1.0.0-beta.11
+            dockerPull: terradue/stars:2.3.0
         id: stars
         inputs:
           ADES_STAGEOUT_AWS_ACCESS_KEY_ID:
@@ -108,10 +107,15 @@ $graph:
           aws_profiles_location:
             type: File?
           process:
-            type: string?
+            type: string
           wf_outputs:
             type: Directory
         outputs:
+          s3_catalog_output:
+            outputBinding:
+              outputEval: ${ return inputs.ADES_STAGEOUT_OUTPUT + "/" + inputs.process
+                + "/catalog.json"; }
+            type: string
           stac_out:
             outputBinding:
               glob: .
@@ -121,8 +125,9 @@ $graph:
             envDef:
               AWS_ACCESS_KEY_ID: $(inputs.ADES_STAGEOUT_AWS_ACCESS_KEY_ID)
               AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY)
+              AWS__AuthenticationRegion: $(inputs.ADES_STAGEOUT_AWS_REGION)
+              AWS__Region: $(inputs.ADES_STAGEOUT_AWS_REGION)
               AWS__ServiceURL: $(inputs.ADES_STAGEOUT_AWS_SERVICEURL)
-              AWS__SignatureVersion: '2'
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
           InlineJavascriptRequirement: {}
           ResourceRequirement: {}

@@ -66,7 +66,7 @@ $graph:
       label: selected polarisation
       type: string
     process:
-      type: string?
+      type: string
     reference:
       id: reference
       label: Reference SLC dataset
