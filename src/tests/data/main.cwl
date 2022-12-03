@@ -3,16 +3,26 @@ doc: Main stage manager
 id: main
 label: macro-cwl
 inputs: {}
-outputs:
-StacCatalogUri:
-    outputSource:
-    - node_stage_out/s3_catalog_output
-    type: string
+outputs: {}
+
 requirements:
-SubworkflowFeatureRequirement: {}
-ScatterFeatureRequirement: {}
-steps:
-node_stage_out:
-    in: {}
-    out: [s3_catalog_output]
-    run: ''
+  SubworkflowFeatureRequirement: {}
+  ScatterFeatureRequirement: {}
+  InlineJavascriptRequirement: {}
+
+
+#steps:
+#  node_stage_in:
+#    in: {}
+#    out: []
+#    run: ''
+##
+#  on_stage:
+#    in: {}
+#    out: []
+#    run: ''
+#
+#  node_stage_out:
+#    in: {}
+#    out: []
+#    run: ''
