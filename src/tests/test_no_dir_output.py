@@ -34,9 +34,6 @@ class TestNoDirOutputCwl(unittest.TestCase):
             ],
         )
 
-        with open(r"res.cwl", "w") as file:
-            file.write(result.output)
-
         with open(self.expected_wrapped_cwl) as f:
             contents = f.read()
             assert result.output == contents
