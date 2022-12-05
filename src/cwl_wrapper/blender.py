@@ -469,6 +469,19 @@ class Blender:
             the_command_inputs = the_command["inputs"]
             the_command_outputs = the_command["outputs"]
 
+            # appending the stageout template outputs to the macro cwl outputs
+            for stage_out_output_id in the_command_outputs:
+                nodes_out[stage_out_output_id] = "%s/%s" % (start_node_name, stage_out_output_id)
+                start["outputs"][stage_out_output_id] = dict()
+                start["outputs"][stage_out_output_id]["id"] = stage_out_output_id
+                start["outputs"][stage_out_output_id]["outputSource"] = []
+                start["outputs"][stage_out_output_id]["outputSource"].append(
+                    nodes_out[stage_out_output_id]
+                )
+                start["outputs"][stage_out_output_id]["type"] = the_command_outputs[stage_out_output_id][
+                    "type"
+                ]
+
             if overwrite_input and len(the_command_inputs) > 0:
                 if type(the_command_inputs) is list:
                     for i in the_command_inputs:
