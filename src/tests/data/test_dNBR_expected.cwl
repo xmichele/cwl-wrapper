@@ -46,11 +46,6 @@ $graph:
       type: string
   label: macro-cwl
   outputs:
-    s3_catalog_output:
-      id: s3_catalog_output
-      outputSource:
-      - node_stage_out/s3_catalog_output
-      type: string
     stac:
       id: stac
       outputSource:
