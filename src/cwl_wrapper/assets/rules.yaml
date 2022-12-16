@@ -44,14 +44,10 @@ cwl:
 
   stage_in:
     Directory:
-      type: string
-      #  inputBinding:
-      #    position: 2
+      type: string?
 
     Directory[]:
       type: string[]
-      #  inputBinding:
-      #    position: 2
 
   stage_out:
     Directory:
