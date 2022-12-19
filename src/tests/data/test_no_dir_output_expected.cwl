@@ -124,7 +124,7 @@ $graph:
           ADES_STAGEIN_AWS_SERVICEURL:
             type: string?
           input:
-            type: string
+            type: string?
         outputs:
           reference_out:
             outputBinding:
@@ -174,7 +174,7 @@ $graph:
           ADES_STAGEIN_AWS_SERVICEURL:
             type: string?
           input:
-            type: string
+            type: string?
         outputs:
           secondary_out:
             outputBinding:
