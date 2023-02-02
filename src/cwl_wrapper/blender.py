@@ -377,15 +377,26 @@ class Blender:
 
             # why am I using copy.deepcopy??
             # https://ttl255.com/yaml-anchors-and-aliases-and-how-to-disable-them/
-            the_val = (
-                copy.deepcopy(self.rulez.get("/cwl/stage_in/Directory[]"))
-                if it.is_array
-                else copy.deepcopy(self.rulez.get("/cwl/stage_in/Directory"))
-            )
+            logger.info(it)
+
+            if it.is_array:
+                the_val = copy.deepcopy(self.rulez.get("/cwl/stage_in/Directory[]"))
+            elif it.is_optional:
+                the_val = copy.deepcopy(self.rulez.get("/cwl/stage_in/Directory?"))
+            else:
+                the_val = copy.deepcopy(self.rulez.get("/cwl/stage_in/Directory"))
+
+            # the_val = (
+            #     copy.deepcopy(self.rulez.get("/cwl/stage_in/Directory[]"))
+            #     if it.is_array
+            #     else copy.deepcopy(self.rulez.get("/cwl/stage_in/Directory"))
+            # )
 
             # scatter feature
             if it.is_array:
                 the_val = self.rulez.get("/cwl/stage_in/Directory")
+
+            logger.info(the_val)
 
             if type(the_command_inputs) is list:
                 the_val["id"] = copy.deepcopy(it.id)
@@ -396,7 +407,14 @@ class Blender:
             steps[start_node_name]["run"] = the_command
 
             # add outputs to command
-            command_out = copy.deepcopy(self.rulez.get("/cwl/outputBindingResult/command/Directory"))
+
+            if it.is_optional:
+                command_out = copy.deepcopy(
+                    self.rulez.get("/cwl/outputBindingResult/command/Directory?")
+                )
+            else:
+                command_out = copy.deepcopy(self.rulez.get("/cwl/outputBindingResult/command/Directory"))
+
             command_id = "%s_out" % it.id
             nodes_out[it.id] = "%s/%s_out" % (start_node_name, it.id)
             if type(the_command_outputs) is list:
