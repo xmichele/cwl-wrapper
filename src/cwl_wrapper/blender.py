@@ -19,7 +19,8 @@ class Blender:
         self.outputs = []
 
     @staticmethod
-    def __prepare_step_run(step, name, main_node_in=None):
+    def __prepare_step_run(step: dict, name: str, main_node_in=None):
+
         if name not in step:
             step[name] = {}
         if "run" not in step[name]:
@@ -61,21 +62,24 @@ class Blender:
         return what_is_dict
 
     @staticmethod
-    def __add_to_in(where, what):
-        if type(where) is list:
-            where.append("%s:%s" % (what, what))
-        elif type(where) is dict:
-            where[what] = what
+    def __add_to_in(wf_outputs, what: str):
+
+        if type(wf_outputs) is list:
+            wf_outputs.append(f"{what}:{what}")
+        elif type(wf_outputs) is dict:
+            wf_outputs[what] = what
 
     @staticmethod
-    def __add_input_to_in(where, what):
+    def __add_input_to_in(where, what: str):
+
         if type(where) is list:
-            where.append("%s:%s" % ("input", what))
+            where.append(f"input:{what}")
         elif type(where) is dict:
             where["input"] = what
 
     @staticmethod
-    def __exist_here(where, what):
+    def __exist_here(where, what: str):
+
         if type(where) is dict:
             return what in where.keys()
 
@@ -310,9 +314,7 @@ class Blender:
         for it in to_add:
             where[it] = it
 
-    def __add_stage_in_graph_cwl(self, start):
-
-        # driver = self.rulez.get('/onstage/driver')
+    def __add_stage_in_graph_cwl(self, start: dict):
 
         if "inputs" not in self.main_stage_in:
             self.main_stage_in["inputs"] = {}
@@ -558,20 +560,19 @@ class Blender:
 
         return start
 
-    def set_main_workflow(self, wf_main):
+    def set_main_workflow(self, wf_main: dict):
         self.main_wf = wf_main
 
-    def set_stage_in(self, wf_in):
+    def set_stage_in(self, wf_in: dict):
         self.main_stage_in = wf_in
 
-    def set_stage_out(self, wf_out):
+    def set_stage_out(self, wf_out: dict):
         self.main_stage_out = wf_out
 
     def set_user_workflow(self, wf: Workflow):
         self.user_wf = wf
         self.inputs = self.user_wf.get_inputs_directory()
         self.outputs = self.user_wf.get_outputs_directory()
-        # a = self.user_wf.get_raw_all_inputs()
 
     def get_output(self):
 

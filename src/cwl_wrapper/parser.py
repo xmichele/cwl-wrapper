@@ -16,17 +16,27 @@ class Parser:
     out = None
     output_name = "-"
 
-    def __init__(self, cwl, output, stagein, stageout, maincwl, rulez, assets, workflow_id=None):
+    def __init__(
+        self,
+        cwl: str,
+        output: str,
+        stagein: str,
+        stageout: str,
+        maincwl: str,
+        rulez: str,
+        assets,
+        workflow_id=None,
+    ):
 
-        # print(str(kwargs))
         self.rulez = Rulez(
             rulez
             if rulez is not None
             else pkg_resources.resource_filename(__package__, "assets/rules.yaml")
         )
-        self.blender = Blender(self.rulez)
-        self.workflow = Workflow(cwl, self.rulez, workflow_id)
+        self.blender = Blender(rulez=self.rulez)
+        self.workflow = Workflow(cwl=cwl, rulez=self.rulez, workflow_id=workflow_id)
         self.output_name = output
+
         if self.rulez.get("/parser/driver") == "cwl":
             with open(
                 maincwl

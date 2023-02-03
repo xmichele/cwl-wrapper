@@ -1,3 +1,7 @@
+import typing
+from typing import Dict
+
+from cwl_wrapper.cwl.t2cwl import InputParam
 from loguru import logger
 
 from .cwl.t2cwl import Workflow as CWLWorkflow
@@ -19,23 +23,28 @@ class Directory:
         return str({"id": self.id, "is_array": self.is_array, "is_optional": self.is_optional})
 
 
-def parse_cwl_param_directory(vals: dict):
+def parse_cwl_param_directory(input_params: Dict[str, InputParam]) -> typing.List[Directory]:
     res = []
-    for it in vals:
-        cwl_param = vals[it]  # cwl_param is of type InputParam
-        logger.info(f"{type(cwl_param)} {it} - {cwl_param.type}")
+    for key, input_param in input_params.items():
 
-        if cwl_param.type in ["Directory"]:
+        logger.info(f"{key} - {input_param.type}")
+
+        if input_param.type in ["Directory"]:
             res.append(
-                Directory(id=cwl_param.id, is_array=False, is_optional=cwl_param.optional, raw=cwl_param)
+                Directory(
+                    id=input_param.id, is_array=False, is_optional=input_param.optional, raw=input_param
+                )
             )
 
-        elif cwl_param.type == "array":
-            for it in cwl_param.items:
+        elif input_param.type == "array":
+            for it in input_param.items:
                 if type(it) == str and it in ["Directory"]:
                     res.append(
                         Directory(
-                            id=cwl_param.id, is_array=True, is_optional=cwl_param.optional, raw=cwl_param
+                            id=input_param.id,
+                            is_array=True,
+                            is_optional=input_param.optional,
+                            raw=input_param,
                         )
                     )
                     break
@@ -47,10 +56,10 @@ class Workflow:
     wf = None
     driver = None
 
-    def __init__(self, cwl, rulez: Rulez, startworkflowid: str = None):
+    def __init__(self, cwl, rulez: Rulez, workflow_id: str = None):
         # print(args)
         if rulez.get("/parser/driver") == "cwl":
-            self.wf = CWLWorkflow(cwl, startworkflowid)
+            self.wf = CWLWorkflow(cwl, workflow_id)
             self.driver = "cwl"
         else:
             raise ValueError("Rules driver not found or unknown")
