@@ -1,31 +1,43 @@
+from loguru import logger
+
 from .cwl.t2cwl import Workflow as CWLWorkflow
 from .rulez import Rulez
 
 
 class Directory:
     is_array = False
+    is_optional = False
     id: str = None
 
-    def __init__(self, id: str, is_array, raw=None):
+    def __init__(self, id: str, is_array, is_optional=False, raw=None):
         self.id = id
         self.is_array = is_array
+        self.is_optional = is_optional
         self.raw = raw
 
     def __str__(self):
-        return str({"id": self.id, "is_array": self.is_array})
+        return str({"id": self.id, "is_array": self.is_array, "is_optional": self.is_optional})
 
 
 def parse_cwl_param_directory(vals: dict):
     res = []
     for it in vals:
-        cwl_param = vals[it]
-        if cwl_param.type == "Directory":
-            res.append(Directory(cwl_param.id, False, cwl_param))
+        cwl_param = vals[it]  # cwl_param is of type InputParam
+        logger.info(f"{type(cwl_param)} {it} - {cwl_param.type}")
+
+        if cwl_param.type in ["Directory"]:
+            res.append(
+                Directory(id=cwl_param.id, is_array=False, is_optional=cwl_param.optional, raw=cwl_param)
+            )
 
         elif cwl_param.type == "array":
             for it in cwl_param.items:
-                if type(it) == str and it == "Directory":
-                    res.append(Directory(cwl_param.id, True, cwl_param))
+                if type(it) == str and it in ["Directory"]:
+                    res.append(
+                        Directory(
+                            id=cwl_param.id, is_array=True, is_optional=cwl_param.optional, raw=cwl_param
+                        )
+                    )
                     break
 
     return res
