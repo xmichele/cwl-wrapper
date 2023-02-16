@@ -5,6 +5,8 @@ $graph:
   inputs:
     ADES_STAGEIN_AWS_ACCESS_KEY_ID:
       type: string?
+    ADES_STAGEIN_AWS_REGION:
+      type: string?
     ADES_STAGEIN_AWS_SECRET_ACCESS_KEY:
       type: string?
     ADES_STAGEIN_AWS_SERVICEURL:

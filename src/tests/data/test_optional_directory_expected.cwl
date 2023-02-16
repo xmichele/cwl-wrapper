@@ -5,6 +5,8 @@ $graph:
   inputs:
     ADES_STAGEIN_AWS_ACCESS_KEY_ID:
       type: string?
+    ADES_STAGEIN_AWS_REGION:
+      type: string?
     ADES_STAGEIN_AWS_SECRET_ACCESS_KEY:
       type: string?
     ADES_STAGEIN_AWS_SERVICEURL:
@@ -34,7 +36,7 @@ $graph:
       id: coreg_type
       label: Coregistration type
       type:
-        symbols:
+      - symbols:
         - None
         - Rigid
         - Elastic
@@ -45,14 +47,14 @@ $graph:
       label: Optional mask
       type: string?
     post_event:
-      doc: Optical calibrated post-event single band asset path
+      doc: Post-event calibrated single band asset path
       id: post_event
-      label: Optical calibrated post-event single band asset path
+      label: Post-event calibrated single band asset path
       type: string
     pre_event:
-      doc: Optical calibrated pre-event single band asset path
+      doc: Pre-event calibrated single band asset path
       id: pre_event
-      label: Optical calibrated pre-event single band asset path
+      label: Pre-event calibrated single band asset path
       type: string
     process:
       type: string
@@ -89,31 +91,27 @@ $graph:
     node_stage_in:
       in:
         ADES_STAGEIN_AWS_ACCESS_KEY_ID: ADES_STAGEIN_AWS_ACCESS_KEY_ID
+        ADES_STAGEIN_AWS_REGION: ADES_STAGEIN_AWS_REGION
         ADES_STAGEIN_AWS_SECRET_ACCESS_KEY: ADES_STAGEIN_AWS_SECRET_ACCESS_KEY
         ADES_STAGEIN_AWS_SERVICEURL: ADES_STAGEIN_AWS_SERVICEURL
         input: pre_event
       out:
       - pre_event_out
       run:
-        arguments:
-        - copy
-        - -v
-        - -rel
-        - -r
-        - '4'
-        - -o
-        - ./
-        - --harvest
-        baseCommand: Stars
+        baseCommand:
+        - /bin/bash
+        - stagein.sh
         class: CommandLineTool
         cwlVersion: v1.0
         doc: Run Stars for staging input data
         hints:
           DockerRequirement:
-            dockerPull: terradue/stars:1.0.0-beta.11
+            dockerPull: terradue/stars:2.3.0
         id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
+            type: string?
+          ADES_STAGEIN_AWS_REGION:
             type: string?
           ADES_STAGEIN_AWS_SECRET_ACCESS_KEY:
             type: string?
@@ -131,37 +129,48 @@ $graph:
             envDef:
               AWS_ACCESS_KEY_ID: $(inputs.ADES_STAGEIN_AWS_ACCESS_KEY_ID)
               AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEIN_AWS_SECRET_ACCESS_KEY)
+              AWS__AuthenticationRegion: $(inputs.ADES_STAGEIN_AWS_REGION)
+              AWS__Region: $(inputs.ADES_STAGEIN_AWS_REGION)
               AWS__ServiceURL: $(inputs.ADES_STAGEIN_AWS_SERVICEURL)
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          InitialWorkDirRequirement:
+            listing:
+            - entry: "#!/bin/bash\n  set -x \n  res=0\n  input='$( inputs.input )'\n\
+                \n  [ \"\\${input}\" != \"null\" ] && {\n\n    IFS='#' read -r -a\
+                \ reference <<< '$( inputs.input )'\n    input_len=\\${#reference[@]}\n\
+                \n    [[ \\${input_len} == 2 ]] && {\n\n        IFS=',' read -r -a\
+                \ assets <<< \\${reference[1]}\n        af=\" \"\n        for asset\
+                \ in \\${assets[@]}\n        do \n          af=\"\\${af} -af \\${asset}\"\
+                \n        done\n    } || {\n      af=\"--empty\"\n    }\n    Stars\
+                \ copy -v -rel -r '4' \\${af} -o ./ \\${reference[0]}\n    res=$?\n\
+                \  }\n  rm -fr stagein.sh\n  exit \\${res}"
+              entryname: stagein.sh
+          InlineJavascriptRequirement: {}
           ResourceRequirement: {}
     node_stage_in_1:
       in:
         ADES_STAGEIN_AWS_ACCESS_KEY_ID: ADES_STAGEIN_AWS_ACCESS_KEY_ID
+        ADES_STAGEIN_AWS_REGION: ADES_STAGEIN_AWS_REGION
         ADES_STAGEIN_AWS_SECRET_ACCESS_KEY: ADES_STAGEIN_AWS_SECRET_ACCESS_KEY
         ADES_STAGEIN_AWS_SERVICEURL: ADES_STAGEIN_AWS_SERVICEURL
         input: post_event
       out:
       - post_event_out
       run:
-        arguments:
-        - copy
-        - -v
-        - -rel
-        - -r
-        - '4'
-        - -o
-        - ./
-        - --harvest
-        baseCommand: Stars
+        baseCommand:
+        - /bin/bash
+        - stagein.sh
         class: CommandLineTool
         cwlVersion: v1.0
         doc: Run Stars for staging input data
         hints:
           DockerRequirement:
-            dockerPull: terradue/stars:1.0.0-beta.11
+            dockerPull: terradue/stars:2.3.0
         id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
+            type: string?
+          ADES_STAGEIN_AWS_REGION:
             type: string?
           ADES_STAGEIN_AWS_SECRET_ACCESS_KEY:
             type: string?
@@ -179,37 +188,48 @@ $graph:
             envDef:
               AWS_ACCESS_KEY_ID: $(inputs.ADES_STAGEIN_AWS_ACCESS_KEY_ID)
               AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEIN_AWS_SECRET_ACCESS_KEY)
+              AWS__AuthenticationRegion: $(inputs.ADES_STAGEIN_AWS_REGION)
+              AWS__Region: $(inputs.ADES_STAGEIN_AWS_REGION)
               AWS__ServiceURL: $(inputs.ADES_STAGEIN_AWS_SERVICEURL)
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          InitialWorkDirRequirement:
+            listing:
+            - entry: "#!/bin/bash\n  set -x \n  res=0\n  input='$( inputs.input )'\n\
+                \n  [ \"\\${input}\" != \"null\" ] && {\n\n    IFS='#' read -r -a\
+                \ reference <<< '$( inputs.input )'\n    input_len=\\${#reference[@]}\n\
+                \n    [[ \\${input_len} == 2 ]] && {\n\n        IFS=',' read -r -a\
+                \ assets <<< \\${reference[1]}\n        af=\" \"\n        for asset\
+                \ in \\${assets[@]}\n        do \n          af=\"\\${af} -af \\${asset}\"\
+                \n        done\n    } || {\n      af=\"--empty\"\n    }\n    Stars\
+                \ copy -v -rel -r '4' \\${af} -o ./ \\${reference[0]}\n    res=$?\n\
+                \  }\n  rm -fr stagein.sh\n  exit \\${res}"
+              entryname: stagein.sh
+          InlineJavascriptRequirement: {}
           ResourceRequirement: {}
     node_stage_in_1_2:
       in:
         ADES_STAGEIN_AWS_ACCESS_KEY_ID: ADES_STAGEIN_AWS_ACCESS_KEY_ID
+        ADES_STAGEIN_AWS_REGION: ADES_STAGEIN_AWS_REGION
         ADES_STAGEIN_AWS_SECRET_ACCESS_KEY: ADES_STAGEIN_AWS_SECRET_ACCESS_KEY
         ADES_STAGEIN_AWS_SERVICEURL: ADES_STAGEIN_AWS_SERVICEURL
         input: mask
       out:
       - mask_out
       run:
-        arguments:
-        - copy
-        - -v
-        - -rel
-        - -r
-        - '4'
-        - -o
-        - ./
-        - --harvest
-        baseCommand: Stars
+        baseCommand:
+        - /bin/bash
+        - stagein.sh
         class: CommandLineTool
         cwlVersion: v1.0
         doc: Run Stars for staging input data
         hints:
           DockerRequirement:
-            dockerPull: terradue/stars:1.0.0-beta.11
+            dockerPull: terradue/stars:2.3.0
         id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
+            type: string?
+          ADES_STAGEIN_AWS_REGION:
             type: string?
           ADES_STAGEIN_AWS_SECRET_ACCESS_KEY:
             type: string?
@@ -220,18 +240,31 @@ $graph:
         outputs:
           mask_out:
             outputBinding:
-              glob: ${ if (inputs.input == "null") {return null } else {return ".";}
+              glob: ${ if (inputs.input == null) {return null } else {return ".";}
                 }
-            type:
-            - null
-            - Directory
+            type: Directory?
         requirements:
           EnvVarRequirement:
             envDef:
               AWS_ACCESS_KEY_ID: $(inputs.ADES_STAGEIN_AWS_ACCESS_KEY_ID)
               AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEIN_AWS_SECRET_ACCESS_KEY)
+              AWS__AuthenticationRegion: $(inputs.ADES_STAGEIN_AWS_REGION)
+              AWS__Region: $(inputs.ADES_STAGEIN_AWS_REGION)
               AWS__ServiceURL: $(inputs.ADES_STAGEIN_AWS_SERVICEURL)
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          InitialWorkDirRequirement:
+            listing:
+            - entry: "#!/bin/bash\n  set -x \n  res=0\n  input='$( inputs.input )'\n\
+                \n  [ \"\\${input}\" != \"null\" ] && {\n\n    IFS='#' read -r -a\
+                \ reference <<< '$( inputs.input )'\n    input_len=\\${#reference[@]}\n\
+                \n    [[ \\${input_len} == 2 ]] && {\n\n        IFS=',' read -r -a\
+                \ assets <<< \\${reference[1]}\n        af=\" \"\n        for asset\
+                \ in \\${assets[@]}\n        do \n          af=\"\\${af} -af \\${asset}\"\
+                \n        done\n    } || {\n      af=\"--empty\"\n    }\n    Stars\
+                \ copy -v -rel -r '4' \\${af} -o ./ \\${reference[0]}\n    res=$?\n\
+                \  }\n  rm -fr stagein.sh\n  exit \\${res}"
+              entryname: stagein.sh
+          InlineJavascriptRequirement: {}
           ResourceRequirement: {}
     node_stage_out:
       in:
@@ -324,7 +357,7 @@ $graph:
   class: CommandLineTool
   hints:
     DockerRequirement:
-      dockerPull: docker.terradue.com/iris-change-detection:dev0.5.6
+      dockerPull: docker.terradue.com/iris-change-detection:dev0.5.9
   id: clt
   inputs:
     aoi:
@@ -337,7 +370,7 @@ $graph:
         position: 6
         prefix: --coregistration
       type:
-        symbols:
+      - symbols:
         - None
         - Rigid
         - Elastic
@@ -375,11 +408,10 @@ $graph:
   requirements:
     EnvVarRequirement:
       envDef:
-        APP_DOCKER_IMAGE: docker.terradue.com/iris-change-detection:dev0.5.6
-        APP_LOGGING: https://faas-ope.terradue.com/function/metrics-collect-on-demand-services-uat
+        APP_DOCKER_IMAGE: docker.terradue.com/iris-change-detection:dev0.5.9
         APP_NAME: iris-change-detection
-        APP_PACKAGE: app-iris-change-detection.dev.0.5.6
-        APP_VERSION: 0.5.6
+        APP_PACKAGE: app-iris-change-detection.dev.0.5.9
+        APP_VERSION: 0.5.9
         PATH: /srv/conda/envs/env_iris_change_detection/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/srv/conda/envs/env_iris_change_detection/bin
         _PROJECT: CPE
     ResourceRequirement: {}
@@ -387,9 +419,10 @@ $graph:
   stdout: std.out
 - class: Workflow
   doc: This service performs a Change Detection using a pair of calibrated optical
-    single band assets acquired from the same sensor. The output is represented by
-    Structural Similarity Index maps that show the intensity of the detected changes
-    in the region of interest.
+    or SAR single band assets acquired from the same sensor. The output consists of
+    multiple change detection products derived from the Structural Similarity Index
+    that show intensity, extent, and contours of the detected changes in the region
+    of interest
   id: iris-change-detection
   inputs:
     aoi:
@@ -401,7 +434,7 @@ $graph:
       doc: Coregistration type
       label: Coregistration type
       type:
-        symbols:
+      - symbols:
         - None
         - Rigid
         - Elastic
@@ -411,12 +444,12 @@ $graph:
       label: Optional mask
       type: Directory?
     post_event:
-      doc: Optical calibrated post-event single band asset path
-      label: Optical calibrated post-event single band asset path
+      doc: Post-event calibrated single band asset path
+      label: Post-event calibrated single band asset path
       type: Directory
     pre_event:
-      doc: Optical calibrated pre-event single band asset path
-      label: Optical calibrated pre-event single band asset path
+      doc: Pre-event calibrated single band asset path
+      label: Pre-event calibrated single band asset path
       type: Directory
     threshold:
       default: '0.4'
@@ -452,6 +485,6 @@ $graph:
 $namespaces:
   s: https://schema.org/
 cwlVersion: v1.0
-s:softwareVersion: 0.5.6
+s:softwareVersion: 0.5.9
 schemas:
 - http://schema.org/version/9.0/schemaorg-current-http.rdf
