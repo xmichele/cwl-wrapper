@@ -71,8 +71,8 @@ cwl:
         type: Directory[]
       Directory?:
         outputBinding:
-          glob: ${ if (inputs.input == "null") {return null } else {return ".";} }
-        type: [null, Directory]
+          glob: ${ if (inputs.input == null) {return null } else {return ".";} }
+        type: Directory?
     stepOut:
       type:
         items: Directory

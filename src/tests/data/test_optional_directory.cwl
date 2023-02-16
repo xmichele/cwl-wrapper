@@ -3,7 +3,7 @@ $graph:
   class: CommandLineTool
   hints:
     DockerRequirement:
-      dockerPull: docker.terradue.com/iris-change-detection:dev0.5.6
+      dockerPull: docker.terradue.com/iris-change-detection:dev0.5.9
   id: clt
   inputs:
     pre_event:
@@ -36,7 +36,7 @@ $graph:
         position: 6
         prefix: --coregistration
       type:
-        symbols: &id001
+      - symbols:
         - None
         - Rigid
         - Elastic
@@ -54,11 +54,10 @@ $graph:
   requirements:
     EnvVarRequirement:
       envDef:
-        APP_DOCKER_IMAGE: docker.terradue.com/iris-change-detection:dev0.5.6
-        APP_LOGGING: https://faas-ope.terradue.com/function/metrics-collect-on-demand-services-uat
+        APP_DOCKER_IMAGE: docker.terradue.com/iris-change-detection:dev0.5.9
         APP_NAME: iris-change-detection
-        APP_PACKAGE: app-iris-change-detection.dev.0.5.6
-        APP_VERSION: 0.5.6
+        APP_PACKAGE: app-iris-change-detection.dev.0.5.9
+        APP_VERSION: 0.5.9
         PATH: /srv/conda/envs/env_iris_change_detection/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/srv/conda/envs/env_iris_change_detection/bin
         _PROJECT: CPE
     ResourceRequirement: {}
@@ -66,18 +65,19 @@ $graph:
   stdout: std.out
 - class: Workflow
   doc: This service performs a Change Detection using a pair of calibrated optical
-    single band assets acquired from the same sensor. The output is represented by
-    Structural Similarity Index maps that show the intensity of the detected changes
-    in the region of interest.
+    or SAR single band assets acquired from the same sensor. The output consists of
+    multiple change detection products derived from the Structural Similarity Index
+    that show intensity, extent, and contours of the detected changes in the region
+    of interest
   id: iris-change-detection
   inputs:
     pre_event:
-      doc: Optical calibrated pre-event single band asset path
-      label: Optical calibrated pre-event single band asset path
+      doc: Pre-event calibrated single band asset path
+      label: Pre-event calibrated single band asset path
       type: Directory
     post_event:
-      doc: Optical calibrated post-event single band asset path
-      label: Optical calibrated post-event single band asset path
+      doc: Post-event calibrated single band asset path
+      label: Post-event calibrated single band asset path
       type: Directory
     mask:
       doc: Optional mask
@@ -100,7 +100,10 @@ $graph:
       doc: Coregistration type
       label: Coregistration type
       type:
-        symbols: *id001
+      - symbols:
+        - None
+        - Rigid
+        - Elastic
         type: enum
     aoi:
       doc: Area of interest in Well-known Text (WKT)
@@ -128,6 +131,6 @@ $graph:
 $namespaces:
   s: https://schema.org/
 cwlVersion: v1.0
-s:softwareVersion: 0.5.6
+s:softwareVersion: 0.5.9
 schemas:
 - http://schema.org/version/9.0/schemaorg-current-http.rdf

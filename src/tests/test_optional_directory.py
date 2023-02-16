@@ -37,4 +37,5 @@ class TestOptionalDirectory(unittest.TestCase):
 
         with open(self.expected_wrapped_cwl) as f:
             contents = f.read()
+            print(result.output)
             assert result.output == contents

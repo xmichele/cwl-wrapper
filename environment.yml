@@ -6,6 +6,6 @@ dependencies:
   - jinja2
   - pyyaml
   - click
-  - click2cwl
+  - click2cwl>=0.3.3
   - pip:
     - loguru
