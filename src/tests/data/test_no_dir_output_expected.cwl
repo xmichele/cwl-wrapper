@@ -139,12 +139,12 @@ $graph:
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
           InitialWorkDirRequirement:
             listing:
-            - entry: "#!/bin/bash\n  set -x \n  res=0\n  input='$( inputs.input )'\n\
+            - entry: "#!/bin/bash\n  set -x\n  res=0\n  input='$( inputs.input )'\n\
                 \n  [ \"\\${input}\" != \"null\" ] && {\n\n    IFS='#' read -r -a\
                 \ reference <<< '$( inputs.input )'\n    input_len=\\${#reference[@]}\n\
                 \n    [[ \\${input_len} == 2 ]] && {\n\n        IFS=',' read -r -a\
                 \ assets <<< \\${reference[1]}\n        af=\" \"\n        for asset\
-                \ in \\${assets[@]}\n        do \n          af=\"\\${af} -af \\${asset}\"\
+                \ in \\${assets[@]}\n        do\n          af=\"\\${af} -af \\${asset}\"\
                 \n        done\n    } || {\n      af=\"--empty\"\n    }\n    Stars\
                 \ copy -v -rel -r '4' \\${af} -o ./ \\${reference[0]}\n    res=$?\n\
                 \  }\n  rm -fr stagein.sh\n  exit \\${res}"
@@ -200,12 +200,12 @@ $graph:
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
           InitialWorkDirRequirement:
             listing:
-            - entry: "#!/bin/bash\n  set -x \n  res=0\n  input='$( inputs.input )'\n\
+            - entry: "#!/bin/bash\n  set -x\n  res=0\n  input='$( inputs.input )'\n\
                 \n  [ \"\\${input}\" != \"null\" ] && {\n\n    IFS='#' read -r -a\
                 \ reference <<< '$( inputs.input )'\n    input_len=\\${#reference[@]}\n\
                 \n    [[ \\${input_len} == 2 ]] && {\n\n        IFS=',' read -r -a\
                 \ assets <<< \\${reference[1]}\n        af=\" \"\n        for asset\
-                \ in \\${assets[@]}\n        do \n          af=\"\\${af} -af \\${asset}\"\
+                \ in \\${assets[@]}\n        do\n          af=\"\\${af} -af \\${asset}\"\
                 \n        done\n    } || {\n      af=\"--empty\"\n    }\n    Stars\
                 \ copy -v -rel -r '4' \\${af} -o ./ \\${reference[0]}\n    res=$?\n\
                 \  }\n  rm -fr stagein.sh\n  exit \\${res}"
