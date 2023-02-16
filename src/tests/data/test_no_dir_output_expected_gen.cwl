@@ -5,6 +5,8 @@ $graph:
   inputs:
     ADES_STAGEIN_AWS_ACCESS_KEY_ID:
       type: string?
+    ADES_STAGEIN_AWS_REGION:
+      type: string?
     ADES_STAGEIN_AWS_SECRET_ACCESS_KEY:
       type: string?
     ADES_STAGEIN_AWS_SERVICEURL:
@@ -66,7 +68,7 @@ $graph:
       label: selected polarisation
       type: string
     process:
-      type: string?
+      type: string
     reference:
       id: reference
       label: Reference SLC dataset
@@ -83,48 +85,44 @@ $graph:
   outputs:
     s3_catalog_output:
       outputSource:
-      - node_post_processing/s3_catalog_output
+      - on_stage/s3_catalog_output
       type: string
   requirements:
+    InlineJavascriptRequirement: {}
     ScatterFeatureRequirement: {}
     SubworkflowFeatureRequirement: {}
   steps:
     node_stage_in:
       in:
         ADES_STAGEIN_AWS_ACCESS_KEY_ID: ADES_STAGEIN_AWS_ACCESS_KEY_ID
+        ADES_STAGEIN_AWS_REGION: ADES_STAGEIN_AWS_REGION
         ADES_STAGEIN_AWS_SECRET_ACCESS_KEY: ADES_STAGEIN_AWS_SECRET_ACCESS_KEY
         ADES_STAGEIN_AWS_SERVICEURL: ADES_STAGEIN_AWS_SERVICEURL
         input: reference
       out:
       - reference_out
       run:
-        ResourceRequirement: {}
-        arguments:
-        - copy
-        - -v
-        - -rel
-        - -r
-        - '4'
-        - -o
-        - ./
-        - --harvest
-        baseCommand: Stars
+        baseCommand:
+        - /bin/bash
+        - stagein.sh
         class: CommandLineTool
         cwlVersion: v1.0
         doc: Run Stars for staging input data
         hints:
           DockerRequirement:
-            dockerPull: terradue/stars:1.0.0-beta.11
+            dockerPull: terradue/stars:2.3.0
         id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
+            type: string?
+          ADES_STAGEIN_AWS_REGION:
             type: string?
           ADES_STAGEIN_AWS_SECRET_ACCESS_KEY:
             type: string?
           ADES_STAGEIN_AWS_SERVICEURL:
             type: string?
           input:
-            type: string
+            type: string?
         outputs:
           reference_out:
             outputBinding:
@@ -135,46 +133,57 @@ $graph:
             envDef:
               AWS_ACCESS_KEY_ID: $(inputs.ADES_STAGEIN_AWS_ACCESS_KEY_ID)
               AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEIN_AWS_SECRET_ACCESS_KEY)
+              AWS__AuthenticationRegion: $(inputs.ADES_STAGEIN_AWS_REGION)
+              AWS__Region: $(inputs.ADES_STAGEIN_AWS_REGION)
               AWS__ServiceURL: $(inputs.ADES_STAGEIN_AWS_SERVICEURL)
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          InitialWorkDirRequirement:
+            listing:
+            - entry: "#!/bin/bash\n  set -x\n  res=0\n  input='$( inputs.input )'\n\
+                \n  [ \"\\${input}\" != \"null\" ] && {\n\n    IFS='#' read -r -a\
+                \ reference <<< '$( inputs.input )'\n    input_len=\\${#reference[@]}\n\
+                \n    [[ \\${input_len} == 2 ]] && {\n\n        IFS=',' read -r -a\
+                \ assets <<< \\${reference[1]}\n        af=\" \"\n        for asset\
+                \ in \\${assets[@]}\n        do\n          af=\"\\${af} -af \\${asset}\"\
+                \n        done\n    } || {\n      af=\"--empty\"\n    }\n    Stars\
+                \ copy -v -rel -r '4' \\${af} -o ./ \\${reference[0]}\n    res=$?\n\
+                \  }\n  rm -fr stagein.sh\n  exit \\${res}"
+              entryname: stagein.sh
+          InlineJavascriptRequirement: {}
+          ResourceRequirement: {}
       scatter: input
       scatterMethod: dotproduct
     node_stage_in_1:
       in:
         ADES_STAGEIN_AWS_ACCESS_KEY_ID: ADES_STAGEIN_AWS_ACCESS_KEY_ID
+        ADES_STAGEIN_AWS_REGION: ADES_STAGEIN_AWS_REGION
         ADES_STAGEIN_AWS_SECRET_ACCESS_KEY: ADES_STAGEIN_AWS_SECRET_ACCESS_KEY
         ADES_STAGEIN_AWS_SERVICEURL: ADES_STAGEIN_AWS_SERVICEURL
         input: secondary
       out:
       - secondary_out
       run:
-        ResourceRequirement: {}
-        arguments:
-        - copy
-        - -v
-        - -rel
-        - -r
-        - '4'
-        - -o
-        - ./
-        - --harvest
-        baseCommand: Stars
+        baseCommand:
+        - /bin/bash
+        - stagein.sh
         class: CommandLineTool
         cwlVersion: v1.0
         doc: Run Stars for staging input data
         hints:
           DockerRequirement:
-            dockerPull: terradue/stars:1.0.0-beta.11
+            dockerPull: terradue/stars:2.3.0
         id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
+            type: string?
+          ADES_STAGEIN_AWS_REGION:
             type: string?
           ADES_STAGEIN_AWS_SECRET_ACCESS_KEY:
             type: string?
           ADES_STAGEIN_AWS_SERVICEURL:
             type: string?
           input:
-            type: string
+            type: string?
         outputs:
           secondary_out:
             outputBinding:
@@ -185,8 +194,24 @@ $graph:
             envDef:
               AWS_ACCESS_KEY_ID: $(inputs.ADES_STAGEIN_AWS_ACCESS_KEY_ID)
               AWS_SECRET_ACCESS_KEY: $(inputs.ADES_STAGEIN_AWS_SECRET_ACCESS_KEY)
+              AWS__AuthenticationRegion: $(inputs.ADES_STAGEIN_AWS_REGION)
+              AWS__Region: $(inputs.ADES_STAGEIN_AWS_REGION)
               AWS__ServiceURL: $(inputs.ADES_STAGEIN_AWS_SERVICEURL)
               PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          InitialWorkDirRequirement:
+            listing:
+            - entry: "#!/bin/bash\n  set -x\n  res=0\n  input='$( inputs.input )'\n\
+                \n  [ \"\\${input}\" != \"null\" ] && {\n\n    IFS='#' read -r -a\
+                \ reference <<< '$( inputs.input )'\n    input_len=\\${#reference[@]}\n\
+                \n    [[ \\${input_len} == 2 ]] && {\n\n        IFS=',' read -r -a\
+                \ assets <<< \\${reference[1]}\n        af=\" \"\n        for asset\
+                \ in \\${assets[@]}\n        do\n          af=\"\\${af} -af \\${asset}\"\
+                \n        done\n    } || {\n      af=\"--empty\"\n    }\n    Stars\
+                \ copy -v -rel -r '4' \\${af} -o ./ \\${reference[0]}\n    res=$?\n\
+                \  }\n  rm -fr stagein.sh\n  exit \\${res}"
+              entryname: stagein.sh
+          InlineJavascriptRequirement: {}
+          ResourceRequirement: {}
       scatter: input
       scatterMethod: dotproduct
     on_stage:
@@ -202,7 +227,8 @@ $graph:
         reference: node_stage_in/reference_out
         secondary: node_stage_in_1/secondary_out
         stack_uuid: stack_uuid
-      out: []
+      out:
+      - s3_catalog_output
       run: '#s1-snapping-ifg'
 - class: Workflow
   doc: This service computes Interferograms for SNAPPING
