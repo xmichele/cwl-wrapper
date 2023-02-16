@@ -3,7 +3,7 @@ doc: "Run Stars for staging input data"
 class: CommandLineTool
 hints:
   DockerRequirement:
-    dockerPull: terradue/stars:2.3.0
+    dockerPull: terradue/stars:2.9.2
 id: stars
 requirements:
   EnvVarRequirement:

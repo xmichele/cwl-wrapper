@@ -106,7 +106,7 @@ $graph:
         doc: Run Stars for staging input data
         hints:
           DockerRequirement:
-            dockerPull: terradue/stars:2.3.0
+            dockerPull: terradue/stars:2.9.2
         id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
@@ -165,7 +165,7 @@ $graph:
         doc: Run Stars for staging input data
         hints:
           DockerRequirement:
-            dockerPull: terradue/stars:2.3.0
+            dockerPull: terradue/stars:2.9.2
         id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
@@ -224,7 +224,7 @@ $graph:
         doc: Run Stars for staging input data
         hints:
           DockerRequirement:
-            dockerPull: terradue/stars:2.3.0
+            dockerPull: terradue/stars:2.9.2
         id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
