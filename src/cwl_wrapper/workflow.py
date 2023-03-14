@@ -27,7 +27,12 @@ def parse_cwl_param_directory(vals: dict):
 
         if cwl_param.type in ["Directory"]:
             res.append(
-                Directory(id=cwl_param.id, is_array=False, is_optional=cwl_param.optional, raw=cwl_param)
+                Directory(
+                    id=cwl_param.id,
+                    is_array=False,
+                    is_optional=cwl_param.optional,
+                    raw=cwl_param,
+                )
             )
 
         elif cwl_param.type == "array":
@@ -35,7 +40,10 @@ def parse_cwl_param_directory(vals: dict):
                 if type(it) == str and it in ["Directory"]:
                     res.append(
                         Directory(
-                            id=cwl_param.id, is_array=True, is_optional=cwl_param.optional, raw=cwl_param
+                            id=cwl_param.id,
+                            is_array=True,
+                            is_optional=cwl_param.optional,
+                            raw=cwl_param,
                         )
                     )
                     break
