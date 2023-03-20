@@ -1,6 +1,23 @@
 $graph:
-- class: Workflow
+- $namespaces:
+    cwltool: http://commonwl.org/cwltool#
+  class: Workflow
   doc: Main stage manager
+  hints:
+    cwltool:Secrets:
+      secrets:
+      - ADES_STAGEIN_AWS_SERVICEURL
+      - ADES_STAGEIN_AWS_REGION
+      - ADES_STAGEIN_AWS_ACCESS_KEY_ID
+      - ADES_STAGEIN_AWS_SECRET_ACCESS_KEY
+      - ADES_STAGEOUT_AWS_PROFILE
+      - ADES_STAGEOUT_AWS_SERVICEURL
+      - ADES_STAGEOUT_AWS_ACCESS_KEY_ID
+      - ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY
+      - aws_profiles_location
+      - ADES_STAGEOUT_OUTPUT
+      - ADES_STAGEOUT_AWS_REGION
+      - process
   id: main
   inputs:
     ADES_STAGEIN_AWS_ACCESS_KEY_ID:
