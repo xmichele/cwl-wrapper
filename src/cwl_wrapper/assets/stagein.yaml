@@ -4,13 +4,17 @@ class: CommandLineTool
 hints:
   DockerRequirement:
     dockerPull: terradue/stars:2.9.2
+  "cwltool:Secrets":
+    secrets:
+    - ADES_STAGEIN_AWS_SERVICEURL
+    - ADES_STAGEIN_AWS_REGION
+    - ADES_STAGEIN_AWS_ACCESS_KEY_ID
+    - ADES_STAGEIN_AWS_SECRET_ACCESS_KEY
 id: stars
 requirements:
   EnvVarRequirement:
     envDef:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      # AWS__Profile: $(inputs.aws_profile)
-      # AWS__ProfilesLocation: $(inputs.aws_profiles_location.path)
       AWS__ServiceURL: $(inputs.ADES_STAGEIN_AWS_SERVICEURL)
       AWS__Region: $(inputs.ADES_STAGEIN_AWS_REGION)
       AWS__AuthenticationRegion: $(inputs.ADES_STAGEIN_AWS_REGION)

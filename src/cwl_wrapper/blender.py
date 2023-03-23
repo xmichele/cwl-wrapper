@@ -12,7 +12,7 @@ class Blender:
         self.main_wf = None
         self.main_stage_in = None
         self.main_stage_out = None
-
+        self.start = None
         self.user_wf = None
         #    self.user_raw_wf_path = cwl
         self.inputs = []
@@ -232,11 +232,21 @@ class Blender:
 
         return self.__change_input_type(ret)
 
+    def add_secret_parameter(self, parameter):
+
+        logger.info(parameter)
+
+        if "hints" in self.main_wf.keys():
+            if "cwltool:Secrets" in self.main_wf["hints"].keys():
+                logger.info(f"adding {parameter} as secret")
+                self.start["hints"]["cwltool:Secrets"]["secrets"].append(parameter)
+
     def __update_zone_with_template(self, where, what):
         if "inputs" in self.main_stage_in:
             the_i = copy.deepcopy(what["inputs"])
 
             for it in the_i:
+                logger.info(it)
                 inner_id = self.__get_id(it)
                 obj = dict()
                 if not self.__exist_here(where, inner_id):
@@ -252,19 +262,23 @@ class Blender:
                     else:
                         where.append(self.__get_essential(obj, inner_id))
 
-                    # if type(id) is str:
-                    #     inner_id = id
-                    # else:
-                    #     inner_id =
-                    #
-                    # if __exist_here(where,)
-                    #
-                    # if type(where) is dict:
+                self.add_secret_parameter(parameter=it)
 
-                    # if the_i_what:
-                    #     print(str(it))
-                    # else:
-                    #     print(str(it))
+            logger.info(self.main_wf)
+
+            # if type(id) is str:
+            #     inner_id = id
+            # else:
+            #     inner_id =
+            #
+            # if __exist_here(where,)
+            #
+            # if type(where) is dict:
+
+            # if the_i_what:
+            #     print(str(it))
+            # else:
+            #     print(str(it))
 
     def __create_global_cwl_inputs(self, where):
 
@@ -277,6 +291,7 @@ class Blender:
         # if where_is_dict is not None:
         if inp:
             for it in inp:
+                logger.info(it)
                 if type(it) is str:
                     if where_is_dict:
                         where[it] = self.__change_input_type(inp[it], it)
@@ -310,7 +325,7 @@ class Blender:
         for it in to_add:
             where[it] = it
 
-    def __add_stage_in_graph_cwl(self, start):
+    def __add_stage_in_graph_cwl(self):
 
         # driver = self.rulez.get('/onstage/driver')
 
@@ -326,27 +341,27 @@ class Blender:
         if "outputs" not in self.main_stage_out:
             self.main_stage_out["outputs"] = {}
 
-        if "inputs" not in start:
-            start["inputs"] = {}
+        if "inputs" not in self.start:
+            self.start["inputs"] = {}
 
-        if "outputs" not in start:
-            start["outputs"] = {}
+        if "outputs" not in self.start:
+            self.start["outputs"] = {}
 
-        self.__create_global_cwl_inputs(start["inputs"])
+        self.__create_global_cwl_inputs(self.start["inputs"])
 
         connection_node_node_stage_in = self.rulez.get("/onstage/stage_in/connection_node")
         if connection_node_node_stage_in == "":
             connection_node_node_stage_in = "node_stage_in"
 
-        if start is None:
+        if self.start is None:
             raise Exception("maincwl.yaml not defined")
 
-        if "steps" not in start:
+        if "steps" not in self.start:
             # steps does not exist
-            start["steps"] = {}
+            self.start["steps"] = {}
 
         nodes_out = {}
-        steps = start["steps"]
+        steps = self.start["steps"]
         cursor = 0
         start_node_name = connection_node_node_stage_in
         overwrite_input = self.rulez.get("/onstage/stage_in/input/template/overwrite")
@@ -489,16 +504,19 @@ class Blender:
 
             # appending the stageout template outputs to the macro cwl outputs
             for stage_out_output_id in the_command_outputs:
-                nodes_out[stage_out_output_id] = "%s/%s" % (start_node_name, stage_out_output_id)
-                start["outputs"][stage_out_output_id] = dict()
-                start["outputs"][stage_out_output_id]["id"] = stage_out_output_id
-                start["outputs"][stage_out_output_id]["outputSource"] = []
-                start["outputs"][stage_out_output_id]["outputSource"].append(
+                nodes_out[stage_out_output_id] = "%s/%s" % (
+                    start_node_name,
+                    stage_out_output_id,
+                )
+                self.start["outputs"][stage_out_output_id] = dict()
+                self.start["outputs"][stage_out_output_id]["id"] = stage_out_output_id
+                self.start["outputs"][stage_out_output_id]["outputSource"] = []
+                self.start["outputs"][stage_out_output_id]["outputSource"].append(
                     nodes_out[stage_out_output_id]
                 )
-                start["outputs"][stage_out_output_id]["type"] = the_command_outputs[stage_out_output_id][
-                    "type"
-                ]
+                self.start["outputs"][stage_out_output_id]["type"] = the_command_outputs[
+                    stage_out_output_id
+                ]["type"]
 
             if overwrite_input and len(the_command_inputs) > 0:
                 if type(the_command_inputs) is list:
@@ -553,10 +571,10 @@ class Blender:
             cursor = cursor + 1
             start_node_name = "%s_%d" % (start_node_name, cursor)
 
-        self.__create_global_cwl_outputs(start["outputs"], nodes_out)
+        self.__create_global_cwl_outputs(self.start["outputs"], nodes_out)
         self.__connect_to_stage_out(nodes_out, steps)
 
-        return start
+        return self.start
 
     def set_main_workflow(self, wf_main):
         self.main_wf = wf_main
@@ -574,9 +592,8 @@ class Blender:
         # a = self.user_wf.get_raw_all_inputs()
 
     def get_output(self):
+        self.start = copy.deepcopy(self.main_wf)
 
-        start = copy.deepcopy(self.main_wf)
+        self.start = self.__add_stage_in_graph_cwl()
 
-        start = self.__add_stage_in_graph_cwl(start)
-
-        return start
+        return self.start
