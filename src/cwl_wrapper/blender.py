@@ -232,21 +232,26 @@ class Blender:
 
         return self.__change_input_type(ret)
 
-    def add_secret_parameter(self, parameter):
+    def add_secret_parameter(self, parameter, what):
 
         logger.info(parameter)
 
-        if "hints" in self.main_wf.keys():
-            if "cwltool:Secrets" in self.main_wf["hints"].keys():
-                logger.info(f"adding {parameter} as secret")
-                self.start["hints"]["cwltool:Secrets"]["secrets"].append(parameter)
+        if "hints" in self.main_wf.keys() and "hints" in what.keys():
+            logger.info("hints defined")
+            if (
+                "cwltool:Secrets" in self.main_wf["hints"].keys()
+                and "cwltool:Secrets" in what["hints"].keys()
+            ):
+                logger.info("secrets defined")
+                if parameter in what["hints"]["cwltool:Secrets"]["secrets"]:
+                    logger.info(f"adding {parameter} as secret")
+                    self.start["hints"]["cwltool:Secrets"]["secrets"].append(parameter)
 
     def __update_zone_with_template(self, where, what):
         if "inputs" in self.main_stage_in:
             the_i = copy.deepcopy(what["inputs"])
 
             for it in the_i:
-                logger.info(it)
                 inner_id = self.__get_id(it)
                 obj = dict()
                 if not self.__exist_here(where, inner_id):
@@ -262,7 +267,7 @@ class Blender:
                     else:
                         where.append(self.__get_essential(obj, inner_id))
 
-                self.add_secret_parameter(parameter=it)
+                self.add_secret_parameter(parameter=it, what=what)
 
             logger.info(self.main_wf)
 

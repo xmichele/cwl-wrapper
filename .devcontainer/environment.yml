@@ -17,3 +17,4 @@ dependencies:
   - cwltool
   - pip:
     - loguru
+    - pytest
