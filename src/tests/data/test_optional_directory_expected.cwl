@@ -13,8 +13,6 @@ $graph:
       type: string?
     ADES_STAGEOUT_AWS_ACCESS_KEY_ID:
       type: string?
-    ADES_STAGEOUT_AWS_PROFILE:
-      type: string?
     ADES_STAGEOUT_AWS_REGION:
       type: string?
     ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY:
@@ -28,8 +26,6 @@ $graph:
       id: aoi
       label: Area of interest in Well-known Text (WKT)
       type: string?
-    aws_profiles_location:
-      type: File?
     coreg_type:
       default: Rigid
       doc: Coregistration type
@@ -107,6 +103,11 @@ $graph:
         hints:
           DockerRequirement:
             dockerPull: terradue/stars:2.9.2
+          cwltool:Secrets:
+            secrets:
+            - ADES_STAGEIN_AWS_SERVICEURL
+            - ADES_STAGEIN_AWS_ACCESS_KEY_ID
+            - ADES_STAGEIN_AWS_SECRET_ACCESS_KEY
         id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
@@ -166,6 +167,11 @@ $graph:
         hints:
           DockerRequirement:
             dockerPull: terradue/stars:2.9.2
+          cwltool:Secrets:
+            secrets:
+            - ADES_STAGEIN_AWS_SERVICEURL
+            - ADES_STAGEIN_AWS_ACCESS_KEY_ID
+            - ADES_STAGEIN_AWS_SECRET_ACCESS_KEY
         id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
@@ -225,6 +231,11 @@ $graph:
         hints:
           DockerRequirement:
             dockerPull: terradue/stars:2.9.2
+          cwltool:Secrets:
+            secrets:
+            - ADES_STAGEIN_AWS_SERVICEURL
+            - ADES_STAGEIN_AWS_ACCESS_KEY_ID
+            - ADES_STAGEIN_AWS_SECRET_ACCESS_KEY
         id: stars
         inputs:
           ADES_STAGEIN_AWS_ACCESS_KEY_ID:
@@ -269,12 +280,10 @@ $graph:
     node_stage_out:
       in:
         ADES_STAGEOUT_AWS_ACCESS_KEY_ID: ADES_STAGEOUT_AWS_ACCESS_KEY_ID
-        ADES_STAGEOUT_AWS_PROFILE: ADES_STAGEOUT_AWS_PROFILE
         ADES_STAGEOUT_AWS_REGION: ADES_STAGEOUT_AWS_REGION
         ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY: ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY
         ADES_STAGEOUT_AWS_SERVICEURL: ADES_STAGEOUT_AWS_SERVICEURL
         ADES_STAGEOUT_OUTPUT: ADES_STAGEOUT_OUTPUT
-        aws_profiles_location: aws_profiles_location
         process: process
         wf_outputs: on_stage/wf_outputs
       out:
@@ -300,11 +309,14 @@ $graph:
         hints:
           DockerRequirement:
             dockerPull: terradue/stars:2.3.0
+          cwltool:Secrets:
+            secrets:
+            - ADES_STAGEOUT_AWS_SERVICEURL
+            - ADES_STAGEOUT_AWS_ACCESS_KEY_ID
+            - ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY
         id: stars
         inputs:
           ADES_STAGEOUT_AWS_ACCESS_KEY_ID:
-            type: string?
-          ADES_STAGEOUT_AWS_PROFILE:
             type: string?
           ADES_STAGEOUT_AWS_REGION:
             type: string?
@@ -314,8 +326,6 @@ $graph:
             type: string?
           ADES_STAGEOUT_OUTPUT:
             type: string?
-          aws_profiles_location:
-            type: File?
           process:
             type: string
           wf_outputs:

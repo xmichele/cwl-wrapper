@@ -24,8 +24,6 @@ $graph:
       type: string?
     ADES_STAGEOUT_AWS_ACCESS_KEY_ID:
       type: string?
-    ADES_STAGEOUT_AWS_PROFILE:
-      type: string?
     ADES_STAGEOUT_AWS_REGION:
       type: string?
     ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY:
@@ -38,8 +36,6 @@ $graph:
       doc: area of interest as a bounding box
       id: aoi
       type: string
-    aws_profiles_location:
-      type: File?
     bands:
       default:
       - B8A
@@ -77,12 +73,10 @@ $graph:
     node_stage_out:
       in:
         ADES_STAGEOUT_AWS_ACCESS_KEY_ID: ADES_STAGEOUT_AWS_ACCESS_KEY_ID
-        ADES_STAGEOUT_AWS_PROFILE: ADES_STAGEOUT_AWS_PROFILE
         ADES_STAGEOUT_AWS_REGION: ADES_STAGEOUT_AWS_REGION
         ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY: ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY
         ADES_STAGEOUT_AWS_SERVICEURL: ADES_STAGEOUT_AWS_SERVICEURL
         ADES_STAGEOUT_OUTPUT: ADES_STAGEOUT_OUTPUT
-        aws_profiles_location: aws_profiles_location
         process: process
         wf_outputs: on_stage/stac
       out:
@@ -108,11 +102,14 @@ $graph:
         hints:
           DockerRequirement:
             dockerPull: terradue/stars:2.3.0
+          cwltool:Secrets:
+            secrets:
+            - ADES_STAGEOUT_AWS_SERVICEURL
+            - ADES_STAGEOUT_AWS_ACCESS_KEY_ID
+            - ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY
         id: stars
         inputs:
           ADES_STAGEOUT_AWS_ACCESS_KEY_ID:
-            type: string?
-          ADES_STAGEOUT_AWS_PROFILE:
             type: string?
           ADES_STAGEOUT_AWS_REGION:
             type: string?
@@ -122,8 +119,6 @@ $graph:
             type: string?
           ADES_STAGEOUT_OUTPUT:
             type: string?
-          aws_profiles_location:
-            type: File?
           process:
             type: string
           wf_outputs:

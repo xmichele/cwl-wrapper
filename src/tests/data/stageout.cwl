@@ -5,6 +5,11 @@ class: CommandLineTool
 hints:
   DockerRequirement:
     dockerPull: terradue/stars:2.3.0
+  "cwltool:Secrets":
+    secrets:
+    - ADES_STAGEOUT_AWS_SERVICEURL
+    - ADES_STAGEOUT_AWS_ACCESS_KEY_ID
+    - ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY
 id: stars
 arguments:
   - copy
@@ -27,16 +32,12 @@ arguments:
                 return args;
             }
 inputs:
-  ADES_STAGEOUT_AWS_PROFILE:
-    type: string?
   ADES_STAGEOUT_AWS_SERVICEURL:
     type: string?
   ADES_STAGEOUT_AWS_ACCESS_KEY_ID:
     type: string?
   ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY:
     type: string?
-  aws_profiles_location:
-    type: File?
   ADES_STAGEOUT_OUTPUT:
     type: string?
   ADES_STAGEOUT_AWS_REGION:
@@ -53,8 +54,6 @@ requirements:
   EnvVarRequirement:
     envDef:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      # AWS__Profile: $(inputs.ADES_STAGEOUT_AWS_PROFILE)
-      # AWS__ProfilesLocation: $(inputs.aws_profiles_location.path)
       AWS__ServiceURL: $(inputs.ADES_STAGEOUT_AWS_SERVICEURL)
       AWS__Region: $(inputs.ADES_STAGEOUT_AWS_REGION)
       AWS__AuthenticationRegion: $(inputs.ADES_STAGEOUT_AWS_REGION)
