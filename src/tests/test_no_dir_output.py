@@ -33,6 +33,7 @@ class TestNoDirOutputCwl(unittest.TestCase):
                 self.app_cwl_file + "#s1-snapping-ifg",
             ],
         )
+        print(result.output)
 
         with open(self.expected_wrapped_cwl) as f:
             contents = f.read()

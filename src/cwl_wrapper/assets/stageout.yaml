@@ -8,7 +8,6 @@ hints:
   "cwltool:Secrets":
     secrets:
     - ADES_STAGEOUT_AWS_SERVICEURL
-    - ADES_STAGEOUT_AWS_REGION
     - ADES_STAGEOUT_AWS_ACCESS_KEY_ID
     - ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY
 id: stars
