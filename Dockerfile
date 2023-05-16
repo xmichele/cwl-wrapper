@@ -7,7 +7,7 @@ ENV BASH_ENV=~/.bashrc                                          \
 
 # Install basic commands and mamba
 RUN apt-get update                                                                                                          && \
-    apt-get install -y ca-certificates wget bash bzip2 gcc linux-libc-dev libc6-dev                                                                     && \
+    apt-get install -y ca-certificates wget bash bzip2 gcc linux-libc-dev libc6-dev curl                                    && \
     wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj bin/micromamba --strip-components=1 && \
     ./micromamba shell init -s bash -p ~/micromamba                                                                         && \
     apt-get clean autoremove --yes                                                                                          && \
