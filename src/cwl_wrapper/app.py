@@ -1,4 +1,5 @@
 import click
+import click_config_file
 from cwl_wrapper.parser import Parser
 
 
@@ -36,6 +37,9 @@ from cwl_wrapper.parser import Parser
     help="workflow id",
 )
 @click.argument("cwl")
+@click_config_file.configuration_option(
+    "--conf", "-c", implicit=True, config_file_name="/home/jovyan/.cwlwrapper"
+)
 def main(cwl, output, stagein, stageout, maincwl, rulez, assets, workflow_id):
     """
     The cwl-parser
