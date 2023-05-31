@@ -38,7 +38,12 @@ from cwl_wrapper.parser import Parser
 )
 @click.argument("cwl")
 @click_config_file.configuration_option(
-    "--conf", "-c", implicit=True, config_file_name="/home/jovyan/.cwlwrapper"
+    "--conf",
+    "-c",
+    implicit=True,
+    config_file_name="/home/jovyan/.cwlwrapper",
+    help="Read options from FILE instead of command line; "
+    + "default file: /home/jovyan/.cwlwrapper/default.conf",
 )
 def main(cwl, output, stagein, stageout, maincwl, rulez, assets, workflow_id):
     """
