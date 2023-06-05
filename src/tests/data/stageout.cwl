@@ -4,7 +4,7 @@ doc: "Run Stars for staging results"
 class: CommandLineTool
 hints:
   DockerRequirement:
-    dockerPull: terradue/stars:2.4.0
+    dockerPull: terradue/stars:2.3.0
   "cwltool:Secrets":
     secrets:
     - ADES_STAGEOUT_AWS_SERVICEURL

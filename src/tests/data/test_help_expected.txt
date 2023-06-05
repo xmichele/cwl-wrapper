@@ -10,5 +10,6 @@ Options:
   --rulez TEXT        rules default file assets/rules.yaml
   --assets TEXT       use <value> as maincwl from assets/<values>
   --workflow-id TEXT  workflow id
-  -c, --conf FILE     Read configuration from FILE.
+  -c, --conf FILE     Read options from FILE instead of command line; default
+                      file: /home/jovyan/.cwlwrapper/default.conf
   --help              Show this message and exit.
