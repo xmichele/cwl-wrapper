@@ -41,7 +41,7 @@ from cwl_wrapper.parser import Parser
     "--conf",
     "-c",
     implicit=True,
-    config_file_name="/home/jovyan/.cwlwrapper",
+    config_file_name="/home/jovyan/.cwlwrapper/default.conf",
     help="Read options from FILE instead of command line; "
     + "default file: /home/jovyan/.cwlwrapper/default.conf",
 )
