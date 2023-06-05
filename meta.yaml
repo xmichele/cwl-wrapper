@@ -20,6 +20,7 @@ requirements:
     - pyyaml
     - jinja2
     - click
+    - click-config-file
     - setuptools
     - loguru
 

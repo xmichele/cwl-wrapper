@@ -10,4 +10,5 @@ Options:
   --rulez TEXT        rules default file assets/rules.yaml
   --assets TEXT       use <value> as maincwl from assets/<values>
   --workflow-id TEXT  workflow id
+  -c, --conf FILE     Read configuration from FILE.
   --help              Show this message and exit.

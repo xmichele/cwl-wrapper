@@ -7,7 +7,7 @@
   </a>
 
   <h3 align="center">CWL-WRAPPER</h3>
-  <p align="center">    
+  <p align="center">
     <br />
     <a href="https://eoepca.github.io/proc-ades/master/">Open Design</a>
     .
@@ -77,18 +77,19 @@ cwl-wrapper --help
 #### Requirements
 
 - Python
-- console 
+- console
 
 #### Python requirements
 
 - jinja2
 - pyyaml
 - click
+- click-config-file
 
 ### Configuration
- 
-The rules, that establish connections and conventions with the user cwl, are defined in 
-[the cwl-wrapper configuration file](src/cwl_wrapper/assets/rules.yaml). 
+
+The rules, that establish connections and conventions with the user cwl, are defined in
+[the cwl-wrapper configuration file](src/cwl_wrapper/assets/rules.yaml).
 
 #### Rules
 
@@ -97,7 +98,7 @@ rulez:
   version: 1
 ```
 
-`rulez -> version` defines the Rules version. Currently only version 1 is managed  
+`rulez -> version` defines the Rules version. Currently only version 1 is managed
 
 ```yaml
 parser:
@@ -124,11 +125,11 @@ onstage:
     connection_node: node_stage_out
 ```
 
-The `onstage` configuration is applied to `maincwl.yaml` file 
+The `onstage` configuration is applied to `maincwl.yaml` file
 
 `onstage -> driver` defines the driver to use during the translation: The result must be a `CWL` format
 
-`onstage -> stage_in` 
+`onstage -> stage_in`
 
 `onstage -> stage_in -> connection_node` defines the anchor node name for `stage-in` start. If the node does not exist, the parser creates it.
 
@@ -142,9 +143,9 @@ The `onstage` configuration is applied to `maincwl.yaml` file
 
 `onstage -> stage_out -> connection_node` defines the anchor node name for `stage-out` start. If the node does not exist, the parser creates it.
 
-The `stage_in`, `stage_out` and `on-stage` nodes can be customized by user. 
+The `stage_in`, `stage_out` and `on-stage` nodes can be customized by user.
 
-The Parser uses the node name as an anchor to start the phase.  
+The Parser uses the node name as an anchor to start the phase.
 
 [Base template](src/cwl_wrapper/assets/maincwl.yaml) example
 
@@ -176,10 +177,10 @@ output:
 
 `output -> type` defines the type of output
 
-* `$graph` if driver is `CWL` the output will be in one file using 
+* `$graph` if driver is `CWL` the output will be in one file using
 [`$graph` entry point](https://www.commonwl.org/v1.1/SchemaSalad.html#Document_graph)
 
-Driver `CWL` needs the [templates to define the types](src/cwl_wrapper/assets/rules.yaml#L35-L75): 
+Driver `CWL` needs the [templates to define the types](src/cwl_wrapper/assets/rules.yaml#L35-L75):
 
 ```yaml
   GlobalInput:
@@ -187,9 +188,9 @@ Driver `CWL` needs the [templates to define the types](src/cwl_wrapper/assets/ru
     Directory[]: string[]
 ```
 
-defines the rules to replace the elements from user type to WPS type.   
+defines the rules to replace the elements from user type to WPS type.
 example:
-[user workflow](assets/vegetation.cwl#L40-L47) changes in 
+[user workflow](assets/vegetation.cwl#L40-L47) changes in
 
 * [workflow input](assets/vegetation.wf.yaml#L11-L16)
 * [on-stage-parameters-in](assets/vegetation.wf.yaml#L188-L189)
@@ -229,14 +230,14 @@ example
         position: 6
 ```
 
-defines the template of [stage-output](assets/vegetation.wf.yaml#L171-L174) 
-and depends from the user output type 
+defines the template of [stage-output](assets/vegetation.wf.yaml#L171-L174)
+and depends from the user output type
 
 ### Usage
 
 The cwl-wrapper requires
 * user CWL
-* 
+*
 
 ### Examples
 
@@ -245,7 +246,7 @@ In this section we will study how to create and change cwl-wrapper templates:
 * src/cwl_wrapper/assets/stagein.yaml
 * src/cwl_wrapper/assets/stageout.yaml
 * src/cwl_wrapper/assets/maincwl.yaml
- 
+
 #### [vegetation.cwl](assets/vegetation.cwl)
 
 Default run
@@ -325,7 +326,7 @@ cwlVersion: v1.0
 python cwl-wrapper assets/vegetation.cwl  --output  assets/vegetation.wf.yaml
 ```
 
-expected result is the file [vegetation.wf.yaml](assets/vegetation.wf.yaml) 
+expected result is the file [vegetation.wf.yaml](assets/vegetation.wf.yaml)
 
 In the new file, have been added the elements:
 
@@ -342,7 +343,7 @@ In the new file, have been added the elements:
 In the new [stage-in](assets/stagein-test.cwl) we are going to add two new parameters
 
 * parameter_A
-* paraneter_B  
+* paraneter_B
 
 ```yaml
 baseCommand: stage-in
@@ -356,7 +357,7 @@ arguments:
     position: 1
     valueFrom: "./"
 
-inputs: 
+inputs:
     parameter_A:
       doc: EO product for vegetation index
       label: EO product for vegetation index
@@ -373,15 +374,15 @@ requirements:
   ResourceRequirement: {}
 ```
 
-> the inputs can be written in Dict or List format 
- 
+> the inputs can be written in Dict or List format
+
 In the new run, we have to update the parameter `stagein`:
 
 ```shell script
 python cwl-wrapper assets/vegetation.cwl  --stagein assets/stagein-test.cwl --output  vegetation.wf_new_stagein.yaml
 ```
 
-In the new output file [vegetation.wf_new_stagein.yaml](assets/vegetation.wf_new_stagein.yaml) have been added: 
+In the new output file [vegetation.wf_new_stagein.yaml](assets/vegetation.wf_new_stagein.yaml) have been added:
 
 * New user template
 * In the general workflow:
@@ -400,7 +401,7 @@ python cwl-wrapper assets/vegetation.cwl  --stageout assets/stagein-test.cwl --o
 
 ##### New [maincwl.yaml](src/cwl_wrapper/assets/rules.yaml)
 
-The [maincwl.yaml](src/cwl_wrapper/assets/rules.yaml) is the workflow where the cwl-wrapper pastes 
+The [maincwl.yaml](src/cwl_wrapper/assets/rules.yaml) is the workflow where the cwl-wrapper pastes
 all the user templates creating a new cwl workflow
 
 maincwl.yaml works with the [rules file](src/cwl_wrapper/assets/rules.yaml) where are defined the connection rules
@@ -411,7 +412,7 @@ new workflow:
 * [stage-in](src/cwl_wrapper/assets/rules.yaml#L11-L12)
 * [onstage](src/cwl_wrapper/assets/rules.yaml#L19-L20)
 * [stage-out](src/cwl_wrapper/assets/rules.yaml#L22-L23)
-  
+
 
 Now we can try to change the maincwl.yaml adding a new custom step before the stage-in
 
@@ -475,7 +476,7 @@ See the [open issues](https://github.com/EOEPCA/proc-ades/issues) for a list of 
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. 
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create.
 Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
@@ -499,7 +500,7 @@ Project Link: [https://github.com/EOEPCA/proc-ades](https://github.com/EOEPCA/pr
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* README.md is based on [this template](https://github.com/othneildrew/Best-README-Template) by 
+* README.md is based on [this template](https://github.com/othneildrew/Best-README-Template) by
 [Othneil Drew](https://github.com/othneildrew).
 
 ## Try me on Binder
