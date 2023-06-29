@@ -11,5 +11,5 @@ Options:
   --assets TEXT       use <value> as maincwl from assets/<values>
   --workflow-id TEXT  workflow id
   -c, --conf FILE     Read options from FILE instead of command line; default
-                      file: /home/jovyan/.cwlwrapper/default.conf
+                      file: $HOME/.cwlwrapper/default.conf
   --help              Show this message and exit.

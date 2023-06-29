@@ -30,11 +30,14 @@ class TestConfig(unittest.TestCase):
             print('stagein="{0}/data/stagein.cwl"'.format(testdir), file=f)
             print('stageout="{0}/data/stageout_alt.cwl"'.format(testdir), file=f)
 
-        if not os.path.exists("/home/jovyan/.cwlwrapper"):
-            os.makedirs("/home/jovyan/.cwlwrapper")
+        home_dir = os.path.expanduser("~")
+
+        if not os.path.exists("{0}/.cwlwrapper".format(home_dir)):
+            os.makedirs("{0}/.cwlwrapper".format(home_dir))
 
         shutil.copy(
-            os.path.join(testdir, "data/default_config.conf"), "/home/jovyan/.cwlwrapper/default.conf"
+            os.path.join(testdir, "data/default_config.conf"),
+            "{0}/.cwlwrapper/default.conf".format(home_dir),
         )
 
     def test_default_config(self):
