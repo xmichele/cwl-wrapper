@@ -1,7 +1,11 @@
+import sys
+
 from loguru import logger
 
 from .cwl.t2cwl import Workflow as CWLWorkflow
 from .rulez import Rulez
+
+logger.add(sys.stderr, level="INFO")
 
 
 class Directory:
@@ -23,7 +27,7 @@ def parse_cwl_param_directory(vals: dict):
     res = []
     for it in vals:
         cwl_param = vals[it]  # cwl_param is of type InputParam
-        logger.info(f"{type(cwl_param)} {it} - {cwl_param.type}")
+        # logger.debug(f"{type(cwl_param)} {it} - {cwl_param.type}")
 
         if cwl_param.type in ["Directory"]:
             res.append(

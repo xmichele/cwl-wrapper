@@ -1,9 +1,12 @@
 import copy
+import sys
 
 from loguru import logger
 
 from .rulez import Rulez
 from .workflow import Workflow
+
+logger.add(sys.stderr, level="INFO")
 
 
 class Blender:
@@ -106,8 +109,8 @@ class Blender:
         return None
 
     def __create_on_stage_inputs(self, where, directories_out: dict):
-        logger.info(where)
-        logger.info(directories_out.__str__())
+        # # logger.debug(where)
+        # # logger.debug(directories_out.__str__())
 
         inp = copy.deepcopy(self.user_wf.get_raw_all_inputs())
 
@@ -129,27 +132,27 @@ class Blender:
                     where[pid] = pid
 
     def __connect_to_stage_out(self, what: dict, steps: dict):
-        logger.info(what)
-        logger.info(steps.keys())
+        # logger.debug(what)
+        # logger.debug(steps.keys())
         follow_node = self.rulez.get("/onstage/stage_out/follow_node")
-        logger.info(follow_node)
+        # logger.debug(follow_node)
         if follow_node != "" and follow_node in steps and "in" in steps[follow_node] and len(what) > 0:
             for d in what:
                 steps[follow_node]["in"][d] = what[d]
 
     def __create_global_cwl_outputs(self, where, stage_out_dir):
 
-        logger.info(where)
-        logger.info(f"stage_out_dir {stage_out_dir}")
+        # # logger.debug(where)
+        # # logger.debug(f"stage_out_dir {stage_out_dir}")
         inp = copy.deepcopy(self.user_wf.get_raw_all_outputs())
-        logger.info(inp)
+        # # logger.debug(inp)
         where_is_dict = self.__is_dict_or_list(where)
         if where_is_dict is None:
             raise Exception("__create_global_cwl_outputs where_is_dict is None")
 
         if inp:
             for it in inp:
-                logger.info(it)
+                # # logger.debug(it)
                 if type(it) is str:
 
                     if it in stage_out_dir:
@@ -177,7 +180,7 @@ class Blender:
 
                 if not stage_out_dir:
                     # there's no stage out step, the result comes from the on_stage step
-                    logger.info(f"add {it['id']}")
+                    # # logger.debug(f"add {it['id']}")
                     it["outputSource"] = [f"on_stage/{it['id']}"]
                     if where_is_dict:
                         pid, psa = self.__to_cwl_dict(it)
@@ -234,17 +237,17 @@ class Blender:
 
     def add_secret_parameter(self, parameter, what):
 
-        logger.info(parameter)
+        # logger.debug(parameter)
 
         if "hints" in self.main_wf.keys() and "hints" in what.keys():
-            logger.info("hints defined")
+            # # logger.debug("hints defined")
             if (
                 "cwltool:Secrets" in self.main_wf["hints"].keys()
                 and "cwltool:Secrets" in what["hints"].keys()
             ):
-                logger.info("secrets defined")
+                # # logger.debug("secrets defined")
                 if parameter in what["hints"]["cwltool:Secrets"]["secrets"]:
-                    logger.info(f"adding {parameter} as secret")
+                    # logger.debug(f"adding {parameter} as secret")
                     self.start["hints"]["cwltool:Secrets"]["secrets"].append(parameter)
 
     def __update_zone_with_template(self, where, what):
@@ -269,7 +272,7 @@ class Blender:
 
                 self.add_secret_parameter(parameter=it, what=what)
 
-            logger.info(self.main_wf)
+            # # logger.debug(self.main_wf)
 
             # if type(id) is str:
             #     inner_id = id
@@ -296,7 +299,7 @@ class Blender:
         # if where_is_dict is not None:
         if inp:
             for it in inp:
-                logger.info(it)
+                # # logger.debug(it)
                 if type(it) is str:
                     if where_is_dict:
                         where[it] = self.__change_input_type(inp[it], it)
@@ -397,7 +400,7 @@ class Blender:
 
             # why am I using copy.deepcopy??
             # https://ttl255.com/yaml-anchors-and-aliases-and-how-to-disable-them/
-            logger.info(it)
+            # logger.debug(it)
 
             if it.is_array:
                 the_val = copy.deepcopy(self.rulez.get("/cwl/stage_in/Directory[]"))
@@ -416,7 +419,7 @@ class Blender:
             if it.is_array:
                 the_val = self.rulez.get("/cwl/stage_in/Directory")
 
-            logger.info(the_val)
+            # logger.debug(the_val)
 
             if type(the_command_inputs) is list:
                 the_val["id"] = copy.deepcopy(it.id)
@@ -479,12 +482,12 @@ class Blender:
         start_node_name = connection_node_node_stage_out
 
         nodes_out.clear()
-        logger.info(f"outputs: {self.outputs}")
+        # logger.debug(f"outputs: {self.outputs}")
 
         if len(self.outputs) == 0:
             # no stage-out node(s) so the on_stage step lists the user workflow outputs
             outputs = self.user_wf.get_raw_all_outputs()
-            logger.info(outputs)
+            # logger.debug(outputs)
             for it in outputs:
                 steps[on_stage_node]["out"].append(it["id"])
 
