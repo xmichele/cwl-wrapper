@@ -62,7 +62,12 @@ skip-install = false
 dependencies = [
     "nose2", 
     "coverage",
-    # shared dependencies are already in the default environment
+    "click",
+    "click-config-file",
+    "jinja2",
+    "pyyaml",
+    "setuptools",
+    "loguru"
 ]
 
 #[tool.hatch.envs.test.env-vars]
