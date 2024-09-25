@@ -1,21 +1,56 @@
-FROM ubuntu:20.04
+# Stage 1: Build stage
+FROM rockylinux:9.3-minimal AS build
 
-SHELL ["/bin/bash", "-c"]
-ENV BASH_ENV=~/.bashrc                                          \
-    MAMBA_ROOT_PREFIX=/opt/conda                                \
-    PATH=$PATH:/opt/conda/envs/env_cwl_wrapper/bin
+# Install necessary build tools
+RUN microdnf install -y curl tar
 
-# Install basic commands and mamba
-RUN apt-get update                                                                                                          && \
-    apt-get install -y ca-certificates wget bash bzip2 gcc linux-libc-dev libc6-dev curl                                    && \
-    wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj bin/micromamba --strip-components=1 && \
-    ./micromamba shell init -s bash -p ~/micromamba                                                                         && \
-    apt-get clean autoremove --yes                                                                                          && \
-    rm -rf /var/lib/{apt,dpkg,cache,log}                                                                                    && \
-    cp ./micromamba /usr/bin
+# Download the hatch tar.gz file from GitHub
+RUN curl -L https://github.com/pypa/hatch/releases/latest/download/hatch-x86_64-unknown-linux-gnu.tar.gz -o /tmp/hatch-x86_64-unknown-linux-gnu.tar.gz
 
-COPY . /tmp
+# Extract the hatch binary
+RUN tar -xzf /tmp/hatch-x86_64-unknown-linux-gnu.tar.gz -C /tmp/
 
-RUN micromamba create -f /tmp/environment.yml                                                                               && \
-    cd /tmp                                                                                                                 && \
-    /opt/conda/envs/env_cwl_wrapper/bin/python setup.py install
+# Stage 2: Final stage
+FROM rockylinux:9.3-minimal
+
+# Install runtime dependencies
+RUN microdnf install -y --nodocs nodejs && \
+    microdnf clean all
+
+# Set up a default user and home directory
+ENV HOME=/home/wrapper
+
+# Create a user with UID 1001, group root, and a home directory
+RUN useradd -u 1001 -r -g 0 -m -d ${HOME} -s /sbin/nologin \
+        -c "Default CWL Wrapper User" wrapper && \
+    mkdir -p /app && \
+    mkdir -p /prod && \
+    chown -R 1001:0 /app && \
+    chmod g+rwx ${HOME} /app
+
+# Copy the hatch binary from the build stage
+COPY --from=build /tmp/hatch /usr/bin/hatch
+
+# Ensure the hatch binary is executable
+RUN chmod +x /usr/bin/hatch
+
+# Switch to the non-root user
+USER wrapper
+
+# Copy the application files into the /app directory
+COPY --chown=1001:0 . /tmp
+WORKDIR /tmp
+
+# Set up virtual environment paths
+ENV VIRTUAL_ENV=/app/envs/wrapper
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Prune any existing environments and create a new production environment
+RUN cd /tmp && hatch env prune && \
+    hatch env create prod && \
+    rm -fr /tmp/* /tmp/.git /tmp/.pytest_cache
+
+WORKDIR /app
+
+# Set the default command to run when the container starts
+CMD ["cwl-wrapper"]

@@ -5,13 +5,27 @@ build-backend = "hatchling.build"
 [project]
 name = "cwl-wrapper"
 dynamic = ["version"]
-description = "xxx"
+description = "CWL wrapper to add stage-in and stage-out to a base app package"
 readme = "README.md"
 license = "Apache-2.0"
-keywords = [
-    "keyword_1",
-    "keyword_2",
+keywords = []
+
+#To add other authors 
+authors = [
+{ name = "Fabrice Brito", email = "fabrice.brito@terradue.com"
+}
+] 
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: Implementation :: PyPy"
 ]
+
+[tool.hatch.envs.prod]
+path = "/app/envs/wrapper"
 
 [project.scripts]
 cwl-wrapper = "cwl_wrapper.app:main"
@@ -28,6 +42,11 @@ packages = [
 include = [
     "/src",
 ]
+
+[project.urls]
+Documentation = "https://github.com/EOEPCA/cwl-wrapper#readme"
+Issues = "https://github.com/EOEPCA/cwl-wrapper/issues"
+Source = "https://github.com/EOEPCA/cwl-wrapper"
 
 [tool.hatch.envs.default]
 dependencies = [
@@ -52,9 +71,15 @@ dependencies = [
     "loguru"
 ]
 
+#[tool.hatch.envs.test.env-vars]
+#RETRY_ATTEMPTS="0"
+
 [tool.hatch.envs.test.scripts]
 test = "hatch run nose2"
 testv = "hatch run nose2 --verbose"
+
+#it needs coverage in dependencies section
+#cov = ["coverage run --source=src -m nose2", "coverage report"]
 
 [[tool.hatch.envs.test.matrix]]
 python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
