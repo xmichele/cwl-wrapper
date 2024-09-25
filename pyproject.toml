@@ -12,9 +12,8 @@ keywords = []
 
 #To add other authors 
 authors = [
-{ name = "Fabrice Brito", email = "fabrice.brito@terradue.com"
-}
-] 
+  { name = "Fabrice Brito", email = "fabrice.brito@terradue.com" }
+]
 
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -35,12 +34,12 @@ path = "src/cwl_wrapper/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = [
-    "src/tests",
+    "src/cwl_wrapper",
 ]
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "/src",
+    "src",
 ]
 
 [project.urls]
@@ -60,15 +59,10 @@ dependencies = [
 
 [tool.hatch.envs.test]
 skip-install = false
-
 dependencies = [
     "nose2", 
-    "click",
-    "click-config-file",
-    "jinja2",
-    "pyyaml",
-    "setuptools",
-    "loguru"
+    "coverage",
+    # shared dependencies are already in the default environment
 ]
 
 #[tool.hatch.envs.test.env-vars]
@@ -77,8 +71,6 @@ dependencies = [
 [tool.hatch.envs.test.scripts]
 test = "hatch run nose2"
 testv = "hatch run nose2 --verbose"
-
-#it needs coverage in dependencies section
 #cov = ["coverage run --source=src -m nose2", "coverage report"]
 
 [[tool.hatch.envs.test.matrix]]
