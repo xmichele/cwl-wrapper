@@ -14,7 +14,14 @@ keywords = []
 authors = [
   { name = "Fabrice Brito", email = "fabrice.brito@terradue.com" }
 ]
-
+dependencies = [
+    "click",
+    "click-config-file",
+    "jinja2",
+    "pyyaml",
+    "setuptools",
+    "loguru"
+]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Environment :: Console",
